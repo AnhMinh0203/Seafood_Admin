@@ -1,0 +1,106 @@
+<!-- Add form -->
+<p-dialog
+  header="{{isEditMode ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}}"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '70rem' }"
+  [breakpoints]="{ '1199px': '90vw', '575px': '100vw' }"
+  (onHide)="onCancel()"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="row">
+    <div class="col-12 mb-2">
+      <!-- Ảnh đại diện -->
+      <div class="field col-12 md:col-6">
+        <label class="font-semibold">Ảnh đại diện</label>
+        <div class="flex align-items-center gap-3">
+          <p-fileUpload name="cover" mode="basic" accept="image/*" (onSelect)="onCoverSelect($event)"
+            chooseLabel="Chọn ảnh"></p-fileUpload>
+
+          <img *ngIf="previewCover" [src]="previewCover" class="border-round"
+            style="width: 60px; height: 60px; object-fit: cover" />
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="d-flex  w-100 gap-3 mb-2">
+        <!-- Tên sản phẩm -->
+        <div class="d-flex flex-column flex-fill">
+          <label class="font-semibold">Tên sản phẩm</label>
+          <input pInputText [(ngModel)]="form.name" name="name" class="w-full" />
+        </div>
+
+        <!-- Giá -->
+        <div class="d-flex flex-column flex-fill">
+          <label class="font-semibold">Giá</label>
+          <input pInputText [(ngModel)]="test" name="name" class="w-full" />
+        </div>
+
+        <!-- Xuất xứ -->
+        <div class="d-flex flex-column flex-fill mb-2">
+          <label class="font-semibold">Xuất xứ</label>
+          <input pInputText [(ngModel)]="form.origin" name="origin" class="w-full" />
+        </div>
+      </div>
+
+
+      <div class="d-flex  w-100 gap-3 mb-2">
+        <!-- Tình trạng -->
+        <div class="d-flex flex-column flex-fill">
+          <label class="font-semibold">Tình trạng</label>
+          <input pInputText [(ngModel)]="test" name="name" class="w-full" />
+        </div>
+        <!-- Danh mục -->
+        <div class="d-flex flex-column flex-fill">
+          <label class="font-semibold">Danh mục</label>
+          <p-select [options]="form.categoryId" [filter]="true" optionLabel="name" optionValue="id"
+            placeholder="Chọn danh mục" [(ngModel)]="test" name="categoryId" class="w-full"></p-select>
+        </div>
+
+        <!-- Đơn vị -->
+        <div class="d-flex flex-column flex-fill">
+          <label class="font-semibold">Đơn vị</label>
+          <p-multiselect
+            [options]="units"
+            [(ngModel)]="selectedUnits"
+            placeholder="Select Cities"
+            optionLabel="name"
+            display="chip"
+            class="w-full md:w-80"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Ảnh chi tiết -->
+     <div class="field col-12">
+      <label class="font-semibold">Ảnh chi tiết</label>
+
+      <p-fileUpload class="custom-upload" name="images" mode="advanced" accept="image/*" multiple="multiple"
+        (onSelect)="onImagesSelect($event)" chooseLabel="Chọn ảnh" uploadLabel="Tải lên"
+        cancelLabel="Hủy"></p-fileUpload>
+
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <img *ngFor="let img of previewImages" [src]="img" class="border-round"
+          style="width: 80px; height: 80px; object-fit: cover" />
+      </div>
+    </div>
+
+    <!-- Mô tả -->
+    <div class="field col-12">
+      <p-editor [(ngModel)]="form.description" [style]="{ height: '200px' }" />
+    </div>
+
+
+  </div>
+
+  <!-- Button Save - Cancel -->
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-2 w-full">
+      <p-button label="Hủy" severity="secondary" (click)="onCancel()"></p-button>
+      <p-button label="Lưu" severity="success" (click)="onSave()"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,103 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "4.3.6",
+      "isInstalled": true
+    },
+    "Volo.Abp.Account": {
+      "version": "9.3.6",
+      "isInstalled": true,
+      "creationTime": "11/19/2025 19:58:20 +00:00"
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "9.3.6",
+      "isInstalled": true,
+      "creationTime": "11/19/2025 19:58:20 +00:00"
+    },
+    "Volo.Abp.Identity": {
+      "version": "9.3.6",
+      "isInstalled": true,
+      "creationTime": "11/19/2025 19:58:20 +00:00"
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "9.3.6",
+      "isInstalled": true,
+      "creationTime": "11/19/2025 19:58:20 +00:00"
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "9.3.6",
+      "isInstalled": true,
+      "creationTime": "11/19/2025 19:58:20 +00:00"
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "9.3.6",
+      "isInstalled": true,
+      "creationTime": "11/19/2025 19:58:20 +00:00"
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "SeaFood.Application": {
+      "path": "src/SeaFood.Application/SeaFood.Application.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.Application.Tests": {
+      "path": "test/SeaFood.Application.Tests/SeaFood.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "SeaFood.Domain.Shared": {
+      "path": "src/SeaFood.Domain.Shared/SeaFood.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.Application.Contracts": {
+      "path": "src/SeaFood.Application.Contracts/SeaFood.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.HttpApi": {
+      "path": "src/SeaFood.HttpApi/SeaFood.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.HttpApi.Client": {
+      "path": "src/SeaFood.HttpApi.Client/SeaFood.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.EntityFrameworkCore.Tests": {
+      "path": "test/SeaFood.EntityFrameworkCore.Tests/SeaFood.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "SeaFood.EntityFrameworkCore": {
+      "path": "src/SeaFood.EntityFrameworkCore/SeaFood.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.TestBase": {
+      "path": "test/SeaFood.TestBase/SeaFood.TestBase.abppkg",
+      "folder": "test"
+    },
+    "SeaFood.Domain.Tests": {
+      "path": "test/SeaFood.Domain.Tests/SeaFood.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "SeaFood.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/SeaFood.HttpApi.Client.ConsoleTestApp/SeaFood.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "SeaFood.DbMigrator": {
+      "path": "src/SeaFood.DbMigrator/SeaFood.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.HttpApi.Host": {
+      "path": "src/SeaFood.HttpApi.Host/SeaFood.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "SeaFood.Domain": {
+      "path": "src/SeaFood.Domain/SeaFood.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

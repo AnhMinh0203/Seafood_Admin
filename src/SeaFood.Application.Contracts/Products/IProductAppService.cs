@@ -1,0 +1,24 @@
+﻿using SeaFood.Products.Dtos;
+using SeaFood.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.Application.Services;
+
+namespace SeaFood.Products
+{
+    public interface IProductAppService
+        //ICrudAppService<
+        //    ProductDto,
+        //    int,
+        //    PagedAndSortedResultRequestDto,
+        //    CreateUpdateProductDto> 
+    {
+        Task<PagedResultDto<ProductDto>> GetListWithUnitsAsync(PagedAndSortedResultRequestDto input);
+        //Task<string> CreateOrUpdateAsync(CreateUpdateProductDto input);
+        Task<BaseResponse<ProductDto>> CreateProductAsync(CreateProductDto input);
+    }
+}

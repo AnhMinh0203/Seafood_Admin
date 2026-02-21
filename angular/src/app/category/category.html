@@ -1,0 +1,81 @@
+<div>
+  <div class="d-flex justify-content-between w-100 align-items-center">
+    <div class="w-25 my-2">
+      <p-inputgroup>
+        <!-- <input pInputText placeholder="Keyword" (keyup)="updateFilter($event)" /> -->
+        <!-- <p-inputgroup-addon>
+          <p-button [label]="this.selectedField" severity="secondary" variant="text" (click)="menu.toggle($event)" />
+        </p-inputgroup-addon> -->
+      </p-inputgroup>
+      <p-menu #menu [model]="columnItems" popup appendTo="body" />
+    </div>
+    <div class="d-flex">
+      <!-- <p-splitbutton label="Save" [model]="actionItems"  size="small" /> -->
+      <p-button label="Delete" icon="pi pi-trash" iconPos="right" class="ms-1" size="small" />
+      <p-button label="Add" icon="pi pi-plus" iconPos="right" class="ms-1" size="small" (click)="add()" />
+    </div>
+
+  </div>
+
+
+  <div class=" p-0">
+    <ngx-datatable #table class="material" [rows]="rows" [columnMode]="ColumnMode.force" [headerHeight]="50"
+      [footerHeight]="50" rowHeight="auto" [limit]="5" [selected]="selected" [selectionType]="SelectionType.checkbox"
+      [messages]="messages" (activate)="onActivate($event)">
+      <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+        [resizeable]="false">
+        <ng-template ngx-datatable-header-template let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
+          <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn()" />
+        </ng-template>
+        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+          let-onCheckboxChangeFn="onCheckboxChangeFn">
+          <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Họ tên" prop="name"></ngx-datatable-column>
+      <ngx-datatable-column name="Giới tính" prop="gender"></ngx-datatable-column>
+      <ngx-datatable-column name="Công ty" prop="company"></ngx-datatable-column>
+
+      <ngx-datatable-column name="Action" [width]="120" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+        [resizeable]="false">
+
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <div class="d-flex gap-1 justify-content-center">
+
+            <p-button icon="pi pi-ellipsis-h" severity="secondary" size="small"
+              (click)="openRowMenu($event, row)"></p-button>
+
+            <p-menu #rowMenu [popup]="true" [model]="rowActions" appendTo="body"></p-menu>
+          </div>
+        </ng-template>
+
+      </ngx-datatable-column>
+
+
+    </ngx-datatable>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- Add form -->
+<p-dialog header="Thêm loại" [(visible)]="isAddFormVisible" [modal]="true" [style]="{ width: '40rem' }"
+  [breakpoints]="{ '1199px': '90vw', '575px': '100vw' }">
+
+  <div class="d-flex flex-column flex-fill">
+    <label class="font-semibold">Tên loại</label>
+    <input pInputText [(ngModel)]="unitName" name="name" class="w-full" />
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-2 w-full">
+      <p-button label="Hủy" severity="secondary" (click)="isAddFormVisible = false"></p-button>
+      <p-button label="Lưu" severity="success" (click)="saveProduct()"></p-button>
+    </div>
+  </ng-template>
+
+</p-dialog>
