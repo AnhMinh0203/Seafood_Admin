@@ -2,6 +2,7 @@ using AutoMapper;
 using SeaFood.Categories.Dtos;
 using SeaFood.Entities;
 using SeaFood.Products;
+using SeaFood.Products.Dtos;
 
 namespace SeaFood;
 

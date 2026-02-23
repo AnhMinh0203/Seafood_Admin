@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 
-namespace SeaFood.Products
+namespace SeaFood.Products.Dtos
 {
     public class ProductDto: EntityDto<int>
     {
@@ -17,7 +17,6 @@ namespace SeaFood.Products
         public string CoverImage { get; set; }
         public string Slug { get; set; }
         public List<ProductUnitDto> Units { get; set; }
-
         public List<ProductImageDto> Images { get; set; }
     }
 }

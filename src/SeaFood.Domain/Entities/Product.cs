@@ -7,7 +7,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace SeaFood.Entities
 {
-    public class Product: AuditedEntity<int>
+    public class Product: AuditedEntity<Guid>
     {
         public string Name { get; set; }
         public string Origin { get; set; }

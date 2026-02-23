@@ -24,17 +24,15 @@ namespace SeaFood.Controllers
         }
 
         [HttpGet("GetListWithUnits")]
-        public async Task<ActionResult> GetListWithUnits([FromQuery] PagedAndSortedResultRequestDto input)
+        public async Task<PagedResultDto<ProductDto>> GetListWithUnits([FromQuery] PagedAndSortedResultRequestDto input)
         {
-            var res = await _productAppService.GetListWithUnitsAsync(input);
-            return Ok(res);
+            return await _productAppService.GetListWithUnitsAsync(input);
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult> Create( CreateProductDto input)
+        public async Task<BaseResponse<ProductDto>> Create( CreateProductDto input)
         {
-            var res = await _productAppService.CreateProductAsync(input);
-            return Ok(res);
+            return await _productAppService.CreateProductAsync(input);
         }
     }
 }

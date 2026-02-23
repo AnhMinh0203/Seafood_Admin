@@ -1,2 +1,3 @@
+import * as Dtos from './dtos';
 export * from './models';
-export * from './product.service';
+export { Dtos };

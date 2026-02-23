@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Content;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 namespace SeaFood.Products
@@ -31,7 +32,7 @@ namespace SeaFood.Products
         private readonly IAmazonS3 _s3Client;
         private readonly string? _containerCoverImg;
         //private readonly SeaFoodDbContext _context;
-        private readonly IRepository<Product, int> _productRepo;
+        private readonly IRepository<Product, Guid> _productRepo;
         public readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
@@ -40,7 +41,7 @@ namespace SeaFood.Products
             IConfiguration config,
             IAmazonS3 s3Client,
             IMapper mapper,
-            IRepository<Product, int> productRepo
+            IRepository<Product, Guid> productRepo
             )
         {
             _config = config;     
@@ -90,7 +91,7 @@ namespace SeaFood.Products
             return new PagedResultDto<ProductDto>(totalCount, items);
         }
 
-        public async Task<ProductDto> GetDetailAsync(int id)
+        public async Task<ProductDto> GetDetailAsync(Guid id)
         {
             //var product = await _context.Products
             //    .Include(p => p.Units)
@@ -118,7 +119,7 @@ namespace SeaFood.Products
 
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             //var product = await _context.Products
             //    .Include(p => p.Units)
@@ -230,12 +231,58 @@ namespace SeaFood.Products
             return BaseResponse<ProductDto>.Success("Tạo sản phẩm thành công", productDto);
         }
 
-        public async Task<string> UploadFileToS3(IFormFile file, string prefix, string fileName)
+        public async Task<string> UploadImageAsync (IRemoteStreamContent file, bool isCoverImg)
+        {
+            var extension = Path.GetExtension(file.FileName);
+            var fileName = $"img-{Guid.NewGuid()}{extension}";
+            if (isCoverImg)
+            {
+                fileName = $"cover-{Guid.NewGuid()}{extension}";
+            }
+
+                
+            return await UploadFileToS3(
+                file,
+                _containerCoverImg,
+                fileName
+            );
+        }
+
+        //public async Task<string> UploadFileToS3(IFormFile file, string prefix, string fileName)
+        //{
+        //    try
+        //    {             
+        //        var key = $"{prefix}/{fileName}";
+        //        using var stream = file.OpenReadStream();
+        //        var request = new PutObjectRequest
+        //        {
+        //            BucketName = _bucketName,
+        //            Key = key,
+        //            InputStream = stream,
+        //            ContentType = file.ContentType,
+        //            Headers = { CacheControl = "no-store, no-cache, must-revalidate" }
+        //        };
+
+        //        var response = await _s3Client.PutObjectAsync(request);
+        //        if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
+        //        {
+        //            return $"{_cloudFrontDomain}/{key}";
+        //        }
+
+        //        throw new Exception("Upload file lên S3 thất bại");
+        //    }
+        //    catch (AmazonS3Exception ex)
+        //    {
+        //        throw new Exception($"Lỗi upload file lên S3: {ex.Message}");
+        //    }
+        //}
+
+        public async Task<string> UploadFileToS3(IRemoteStreamContent file, string prefix, string fileName)
         {
             try
-            {             
+            {
                 var key = $"{prefix}/{fileName}";
-                using var stream = file.OpenReadStream();
+                using var stream = file.GetStream();
                 var request = new PutObjectRequest
                 {
                     BucketName = _bucketName,

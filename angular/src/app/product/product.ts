@@ -26,9 +26,10 @@ import { CardModule } from 'primeng/card';
 import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { EditorModule } from 'primeng/editor';
-import { ProductService } from '../proxy/products/product.service';
-import { CreateUpdateProductDto, ProductDto } from 'src/app/proxy/products';
+import { ProductService } from '../proxy/controllers/product.service';
+
 import { ProductForm } from "./product-form/product-form";
+import { ProductDto } from 'src/app/proxy/products/dtos';
 
 
 @Component({
@@ -159,7 +160,7 @@ export class Product {
 
   // ---
   loadProducts() {
-    this.productService.GetListWithUnitsAsync({
+    this.productService.getListWithUnitsByInput({
       skipCount: this.pageIndex * this.pageSize,
       maxResultCount: this.pageSize,
       sorting: 'Name'
@@ -214,18 +215,18 @@ export class Product {
     this.isFormVisible = false;
   }
 
-  onSave(input: CreateUpdateProductDto) {
-  input.productId = 1; 
-  input.coverImage =  'https://picsum.photos/600/400';
+  // onSave(input: CreateUpdateProductDto) {
+  // input.productId = 1; 
+  // input.coverImage =  'https://picsum.photos/600/400';
 
-    this.productService.create(input).subscribe({
-      next: () => {
-        this.isFormVisible = false;
-        this.loadProducts();
-      }
-    });
+  //   this.productService.create(input).subscribe({
+  //     next: () => {
+  //       this.isFormVisible = false;
+  //       this.loadProducts();
+  //     }
+  //   });
 
-  }
+  // }
 
 
   // ---

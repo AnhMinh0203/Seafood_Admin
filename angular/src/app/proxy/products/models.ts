@@ -1,24 +1,10 @@
-import type { ProductUnit } from '../entities/models';
-import type { AuditedEntityDto } from '@abp/ng.core';
+import type { IFormFile } from '../microsoft/asp-net-core/http/models';
 
-export interface CreateUpdateProductDto {
-  productId?: number;
-  name?: string;
-  origin?: string;
-  description?: string;
-  categoryId: number;
-  coverImage: string;
-  units: ProductUnitDto[];
-}
-
-export interface ProductDto extends AuditedEntityDto<number> {
-  name?: string;
-  origin?: string;
-  description?: string;
-  slug?: string;
-  categoryId: number;
-  coverImage?: string;
-  units: ProductUnitDto[];
+export interface ProductImageDto {
+  productId: number;
+  childImage: IFormFile;
+  imageUrl?: string;
+  displayOrder: number;
 }
 
 export interface ProductUnitDto {

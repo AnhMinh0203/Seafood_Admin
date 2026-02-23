@@ -1,4 +1,5 @@
-import * as Entities from './entities';
+import * as Controllers from './controllers';
+import * as Microsoft from './microsoft';
 import * as Products from './products';
-import * as Volo from './volo';
-export { Entities, Products, Volo };
+import * as Utils from './utils';
+export { Controllers, Microsoft, Products, Utils };
