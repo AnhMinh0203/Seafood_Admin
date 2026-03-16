@@ -10,7 +10,8 @@ namespace SeaFood.Entities
 {
     public class ProductUnit: Entity<int>
     {
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
+        public Product Product { get; set; }
         public string UnitName { get; set; }     
         public decimal Price { get; set; }      
         public int StockQuantity { get; set; }

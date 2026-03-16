@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeaFood.Categories;
+using SeaFood.Categories.Dtos;
+using SeaFood.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +22,33 @@ namespace SeaFood.Controllers
         }
 
         [HttpGet("getList")]
-        public async Task<ActionResult> GetList()
+        public async Task<PagedResultDto<CategoryDto>> GetList([FromQuery] PagedAndSortedResultRequestDto input)
         {
-            var res = await _categoryAppService.GetListAsync();
-            return Ok(res);
+            return await _categoryAppService.GetListAsync(input);
         }
 
+        [HttpPost("create")]
+        public async Task<CategoryDto> Create([FromBody] CreateCategoryDto input)
+        {
+            return await _categoryAppService.CreateAsync(input);
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<CategoryDto> Update(int id, [FromBody] UpdateCategoryDto input)
+        {
+            return await _categoryAppService.UpdateAsync(id, input);
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<BaseResponse<bool>> Delete( int id)
+        {
+            return await _categoryAppService.DeleteCategoryAsync(id);
+        }
+
+        [HttpDelete("BatchDelete")]
+        public async Task<BaseResponse<bool>> BatchDelete([FromBody] List<int> ids)
+        {
+            return await _categoryAppService.BatchDeleteCategoriesAsync(ids);
+        }
     }
 }

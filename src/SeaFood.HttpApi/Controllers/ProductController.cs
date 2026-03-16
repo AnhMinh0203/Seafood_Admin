@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Content;
 
 namespace SeaFood.Controllers
 {
@@ -30,9 +31,36 @@ namespace SeaFood.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<BaseResponse<ProductDto>> Create( CreateProductDto input)
+        public async Task<BaseResponse<ProductDto>> Create([FromForm] CreateProductDto input,[FromForm] List<IRemoteStreamContent> childImages)
         {
-            return await _productAppService.CreateProductAsync(input);
+            return await _productAppService.CreateProductAsync(input, childImages);
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<BaseResponse<ProductDto>> Update(
+            Guid id,
+            [FromForm] UpdateProductDto input,
+            [FromForm] List<IRemoteStreamContent>? childImages)
+        {
+            return await _productAppService.UpdateProductAsync(id, input, childImages);
+        }
+
+        [HttpGet("GetDetail")]
+        public async Task<ProductDto> GetProductById(Guid productId)
+        {
+            return await _productAppService.GetDetailAsync(productId);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<BaseResponse<bool>> Delete(Guid id)
+        {
+            return await _productAppService.DeleteProductAsync(id);
+        }
+
+        [HttpDelete("BatchDelete")]
+        public async Task<BaseResponse<bool>> BatchDelete([FromBody] List<Guid> ids)
+        {
+            return await _productAppService.BatchDeleteProductsAsync(ids);
         }
     }
 }

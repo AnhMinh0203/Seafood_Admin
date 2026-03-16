@@ -8,7 +8,7 @@ using Volo.Abp.Application.Dtos;
 
 namespace SeaFood.Products.Dtos
 {
-    public class ProductDto: EntityDto<int>
+    public class ProductDto: EntityDto<Guid>
     {
         public string Name { get; set; }
         public string Origin { get; set; }

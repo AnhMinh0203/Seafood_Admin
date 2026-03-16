@@ -34,8 +34,10 @@ public class SeaFoodApplicationModule : AbpModule
 
             var accessKey = configuration["AWS:AccessKey"];
             var secretKey = configuration["AWS:SecretKey"];
-            var region = RegionEndpoint.USEast1;
+            var regionName = configuration["AWS:Region"];
+
             var creds = new BasicAWSCredentials(accessKey, secretKey);
+            var region = RegionEndpoint.GetBySystemName(regionName);
 
             return new AmazonS3Client(creds, region);
         });

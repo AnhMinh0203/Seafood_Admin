@@ -29,9 +29,38 @@ import { EditorModule } from 'primeng/editor';
 import { ProductService } from '../proxy/controllers/product.service';
 
 import { ProductForm } from "./product-form/product-form";
-import { ProductDto } from 'src/app/proxy/products/dtos';
+import { CreateProductDto, ProductDto } from 'src/app/proxy/products/dtos';
+// ----
+
+import { OnInit } from '@angular/core';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { Dialog } from 'primeng/dialog';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RatingModule } from 'primeng/rating';
+import { Table, TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { CommonModule } from '@angular/common';
+import { CategoryService } from 'src/app/proxy/controllers/category.service';
+import { CategoryDto } from 'src/app/proxy/categories/dtos/models';
+import { ProductPreview } from "./product-preview/product-preview";
 
 
+interface Column {
+  field: string;
+  header: string;
+  customExportHeader?: string;
+}
+
+interface ExportColumn {
+  title: string;
+  dataKey: string;
+}
 @Component({
   selector: 'app-product',
   imports: [
@@ -52,22 +81,40 @@ import { ProductDto } from 'src/app/proxy/products/dtos';
     SelectModule,
     MultiSelectModule,
     EditorModule,
-    ProductForm
+    ProductForm,
+    ConfirmDialogModule,
+    Dialog,
+    IconFieldModule,
+    InputIconModule,
+    InputNumberModule,
+    RadioButtonModule,
+    RatingModule,
+    TableModule,
+    TagModule,
+    ToastModule,
+    ToolbarModule,
+    CommonModule,
+    ProductPreview
   ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './product.html',
   styleUrl: './product.scss'
 })
 export class Product {
   @ViewChild('rowMenu') rowMenu!: Menu;
+  private messageService = inject(MessageService);
+  private categoryService = inject(CategoryService);
+  private confirmationService = inject(ConfirmationService);
 
   rows: ProductDto[] = [];
   selected: ProductDto[] = [];
   temp: ProductDto[] = [];
-  pageSize = 3;
-  pageIndex = 0;
-  totalCount = 0;
 
-
+  selectedProducts!: ProductDto[] | null;
+  selectedProduct: ProductDto | null = null;
+  // pageSize = 10;
+  // pageIndex = 0;
+   totalCount = 0;
 
 
   ColumnMode = ColumnMode;
@@ -79,7 +126,8 @@ export class Product {
   coverImage: any;
   description: any;
   selectedUnits: any[] = [];
-
+  cols!: Column[];
+  categories: CategoryDto[] = [];
 
   units = [
     { name: 'Kilogram (kg)', code: 'kg' },
@@ -87,6 +135,10 @@ export class Product {
     { name: 'Piece (pc)', code: 'pc' },
     { name: 'Box', code: 'box' }
   ]
+
+  totalRecords: number = 0;
+  pageSize = 100;
+  pageIndex = 0;
 
   newProduct: any = {
     name: '',
@@ -100,20 +152,43 @@ export class Product {
 
   rowActions: MenuItem[] = [];
 
-  openRowMenu(event: Event, row: Employee) {
-    this.rowActions = [
-      {
-        label: 'Edit',
-        icon: 'pi pi-pencil',
-        command: () => this.update(row)
+  ngOnInit() {
+    this.loadCategories();
+  }
+
+  loadCategories() {
+    const input = {
+      skipCount: this.pageIndex * this.pageSize,
+      maxResultCount: this.pageSize
+    };
+    this.categoryService.getList(input).subscribe({
+      next: (res) => {
+        this.categories = res.items;
       },
-      {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => this.remove(row)
+      error: (err) => {
+        console.error(err);
       }
-    ];
-    this.rowMenu.toggle(event);
+    });
+  }
+  // openRowMenu(event: Event, row: Employee) {
+  //   this.rowActions = [
+  //     {
+  //       label: 'Edit',
+  //       icon: 'pi pi-pencil',
+  //       command: () => this.update(row)
+  //     },
+  //     {
+  //       label: 'Delete',
+  //       icon: 'pi pi-trash',
+  //       command: () => this.remove(row)
+  //     }
+  //   ];
+  //   this.rowMenu.toggle(event);
+  // }
+
+  getCategoryName(categoryId: number): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.name : '';
   }
 
   resetForm() {
@@ -128,14 +203,11 @@ export class Product {
     };
   }
   previewCover: any = null;
-  categories = [
-    { id: 1, name: 'Hải sản' },
-    { id: 2, name: 'Nông sản' }
-  ];
 
   // ---
   isFormVisible = false;
   isEditMode = false;
+  isPreViewMode = false;
   // ---
 
   @ViewChild(DatatableComponent) table!: DatatableComponent<Employee>;
@@ -168,25 +240,9 @@ export class Product {
       this.rows = res.items;
       this.temp = [...res.items];
       this.totalCount = res.totalCount;
-      // this.mapProducts(res.items);
-
-      console.log('Response products:', res);
     });
 
   }
-
-  // mapProducts(data: any[]) {
-  //   this.rows = data.map(p => {
-  //     const defaultUnit = p.units?.find((u: any) => u.isDefault);
-
-  //     return {
-  //       ...p,
-  //       defaultPrice: defaultUnit?.price ?? 0,
-  //       defaultUnitName: defaultUnit?.unitName ?? '',
-  //       stockQuantity: defaultUnit?.stockQuantity ?? 0
-  //     };
-  //   });
-  // }
 
   getDefaultUnit(product: ProductDto) {
     return product.units?.find(u => u.isDefault);
@@ -205,9 +261,28 @@ export class Product {
     const file = event.files[0];
     this.previewCover = URL.createObjectURL(file);
   }
-  add() {
+  addProduct() {
     console.log('Adding new product');
+
+    this.newProduct = {
+      name: '',
+      origin: '',
+      slug: '',
+      description: '',
+      categoryId: null,
+      units: [],
+      coverImage: '',
+      images: []
+    };
+    this.isFormVisible = true;
+    this.previewCover = null;
     this.isEditMode = false;
+  }
+
+  editProduct(product: ProductDto) {
+    console.log('Editing product', product);
+    this.isEditMode = true;
+    this.newProduct = { ...product };
     this.isFormVisible = true;
   }
 
@@ -215,31 +290,19 @@ export class Product {
     this.isFormVisible = false;
   }
 
-  // onSave(input: CreateUpdateProductDto) {
-  // input.productId = 1; 
-  // input.coverImage =  'https://picsum.photos/600/400';
+  onProductSaved() {
+    this.isFormVisible = false;
+    this.loadProducts();
 
-  //   this.productService.create(input).subscribe({
-  //     next: () => {
-  //       this.isFormVisible = false;
-  //       this.loadProducts();
-  //     }
-  //   });
-
-  // }
+  }
 
 
   // ---
 
 
 
-  update(row) {
-    this.selected = [this.rows[1], this.rows[3]];
-  }
 
-  remove(row) {
-    this.selected = [];
-  }
+
 
   updateFilter(event: KeyboardEvent) {
     const val = (event.target as HTMLInputElement).value.toLowerCase();
@@ -296,5 +359,117 @@ export class Product {
       this.coverImageDisplay = e.target.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  getSeverity(status: string) {
+    switch (status) {
+      case 'INSTOCK':
+        return 'success';
+      case 'LOWSTOCK':
+        return 'warning';
+      case 'OUTOFSTOCK':
+        return 'danger';
+      default:
+        return 'info';
+    }
+  }
+
+  getDefaultPrice(product: any): number | null {
+    if (!product?.units?.length) return null;
+
+    const defaultUnit = product.units.find(u => u.isDefault);
+    return defaultUnit?.price ?? null;
+  }
+
+  getImageUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return 'https://' + url;
+  }
+
+  deleteProduct(product: any) {
+
+    this.confirmationService.confirm({
+      message: `Bạn có chắc muốn xóa sản phẩm "${product.name}"?`,
+      header: 'Xác nhận xóa',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Xóa',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+
+        this.productService.deleteProduct(product.id)
+          .subscribe({
+            next: () => {
+              console.log('Deleted successfully');
+              this.loadProducts(); // reload table
+            },
+            error: (err) => {
+              console.error(err);
+            }
+          });
+
+      }
+    });
+
+  }
+
+  deleteBatchProducts() {
+
+    if (!this.selectedProducts || this.selectedProducts.length === 0) {
+      return;
+    }
+
+    const ids = this.selectedProducts.map(p => p.id);
+
+    this.confirmationService.confirm({
+      message: `Bạn có chắc muốn xóa ${ids.length} sản phẩm đã chọn?`,
+      header: 'Xác nhận xóa',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Xóa',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-danger',
+
+      accept: () => {
+
+        this.productService.batchDeleteProducts(ids)
+          .subscribe({
+            next: (res) => {
+
+              if (res.isSuccess) {
+
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Thành công',
+                  detail: res.message
+                });
+
+                this.loadProducts();        // reload table
+                this.selectedProducts = null; // clear checkbox
+              }
+            },
+
+            error: (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Lỗi',
+                detail: err.error?.message || 'Xóa thất bại'
+              });
+            }
+          });
+
+      }
+    });
+  }
+
+  viewProduct(product: any) {
+    this.selectedProduct = product;
+    this.isPreViewMode = true;
+    console.log('Viewing product', product);
+  }
+
+  handlePreviewClose() {
+    this.isPreViewMode = false;
+    this.selectedProduct = null;   // QUAN TRỌNG
   }
 }

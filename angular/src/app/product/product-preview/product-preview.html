@@ -1,0 +1,129 @@
+<p-dialog [(visible)]="isEditMode" [modal]="true" [style]="{ width: '1100px' }" [closable]="true" (onHide)="onClose()"
+  styleClass="product-preview-dialog">
+
+  <div *ngIf="product" class="product-layout">
+
+    <!-- LEFT: GALLERY -->
+    <!-- <div class="gallery-section">
+      <img [src]="'https://' + product.coverImage" class="main-image" />
+
+      <div class="thumbnail-row" *ngIf="product.images?.length">
+        <img *ngFor="let img of product.images" [src]="'https://' +img.imageUrl" class="thumbnail">
+      </div>
+    </div> -->
+
+    <div class="gallery-section" *ngIf="galleryImages.length">
+
+      <p-galleria [value]="galleryImages" [responsiveOptions]="responsiveOptions"
+        [containerStyle]="{ 'max-width': '520px' }" [numVisible]="5" [circular]="true" [showItemNavigators]="true"
+        [showThumbnails]="true">
+
+        <ng-template #item let-item>
+          <img [src]="item.itemImageSrc" class="galleria-main-img" />
+        </ng-template>
+
+        <ng-template #thumbnail let-item>
+          <img [src]="item.thumbnailImageSrc" class="galleria-thumb" />
+        </ng-template>
+
+      </p-galleria>
+
+    </div>
+
+    <!-- RIGHT: INFO -->
+    <div class="info-section">
+
+      <h1 class="product-title">
+        {{ product.name }}
+      </h1>
+
+      <!-- DEFAULT UNIT PRICE -->
+      <div class="price-section">
+        {{ defaultUnit?.price | number }} đ
+      </div>
+
+
+
+      <!-- UNITS -->
+      <div class="unit-wrapper mb-2">
+        <div *ngFor="let unit of product.units" class="unit-card" [class.default-unit]="unit.isDefault">
+
+          <div class="unit-name">
+            {{ unit.unitName }}
+          </div>
+
+          <div class="unit-price">
+            {{ unit.price | number }} đ
+          </div>
+
+          <div class="unit-stock" [class.out-stock]="unit.stockQuantity === 0">
+            {{
+            unit.stockQuantity > 0
+            ? 'Còn ' + unit.stockQuantity
+            : 'Hết hàng'
+            }}
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-info mb-2">
+        <span><b>Xuất xứ:</b> {{ product.origin }}</span>
+
+      </div>
+
+      <!-- QUANTITY -->
+      <div class="mb-3 quantity-row">
+        <b>Số lượng:</b>
+
+        <p-inputgroup class="quantity-group">
+          <p-button icon="pi pi-minus" severity="secondary" size="small" variant="outlined" (click)="decreaseQty()">
+          </p-button>
+
+          <p-inputnumber [(ngModel)]="quantity" [min]="1" size="small" inputStyleClass="text-center"
+            [showButtons]="false">
+          </p-inputnumber>
+
+          <p-button icon="pi pi-plus" severity="secondary" size="small" variant="outlined" (click)="increaseQty()">
+          </p-button>
+        </p-inputgroup>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-buttons">
+        <p-button label="Thêm giỏ hàng" icon="pi pi-cart-plus" severity="success" styleClass="w-100" [rounded]="true"
+          (click)="addToCart()">
+        </p-button>
+
+        <p-button label="Mua ngay" icon="pi pi-shopping-bag" severity="danger" styleClass="w-100" [rounded]="true"
+          (click)="buyNow()">
+        </p-button>
+      </div>
+
+      <!-- ADVICE -->
+      <div class="advice-section">
+
+        <div class="divider-text">
+          <span>Hoặc</span>
+        </div>
+
+        <b class="advice-title">Để lại số điện thoại để được tư vấn</b>
+
+        <p-inputgroup class="mt-1">
+          <input pInputText placeholder="Nhập số điện thoại" [(ngModel)]="phoneNumber" />
+          <p-button label="Gửi" (click)="sendAdvice()" />
+        </p-inputgroup>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- DESCRIPTION -->
+  <div class="description-section" *ngIf="product?.description">
+    <h3>Mô tả sản phẩm</h3>
+    <div class="description-content" [innerHTML]="product.description">
+    </div>
+  </div>
+
+</p-dialog>

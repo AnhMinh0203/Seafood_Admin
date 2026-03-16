@@ -66,7 +66,6 @@ namespace SeaFood.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CoverImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreationTime")
@@ -78,7 +77,6 @@ namespace SeaFood.Migrations
                         .HasColumnName("CreatorId");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -94,11 +92,9 @@ namespace SeaFood.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Origin")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Slug")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -123,15 +119,12 @@ namespace SeaFood.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ProductId1")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId1");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
                 });
@@ -150,10 +143,7 @@ namespace SeaFood.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("ProductId1")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("StockQuantity")
@@ -165,7 +155,7 @@ namespace SeaFood.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId1");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductUnits");
                 });
@@ -1969,7 +1959,7 @@ namespace SeaFood.Migrations
                 {
                     b.HasOne("SeaFood.Entities.Product", "Product")
                         .WithMany("Images")
-                        .HasForeignKey("ProductId1")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1978,9 +1968,13 @@ namespace SeaFood.Migrations
 
             modelBuilder.Entity("SeaFood.Entities.ProductUnit", b =>
                 {
-                    b.HasOne("SeaFood.Entities.Product", null)
+                    b.HasOne("SeaFood.Entities.Product", "Product")
                         .WithMany("Units")
-                        .HasForeignKey("ProductId1");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

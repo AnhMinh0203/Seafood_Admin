@@ -26,3 +26,11 @@ html, body {
 :host ::ng-deep .row-action-menu {
   max-width: 220px;
 }
+
+.card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  //padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}

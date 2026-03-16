@@ -29,6 +29,7 @@ namespace SeaFood.Products
     {
         private readonly string? _bucketName;
         private readonly string? _cloudFrontDomain;
+        private readonly string? _s3Domain;
         private readonly IAmazonS3 _s3Client;
         private readonly string? _containerCoverImg;
         //private readonly SeaFoodDbContext _context;
@@ -48,7 +49,8 @@ namespace SeaFood.Products
             _s3Client = s3Client;
             _bucketName = _config["BucketName"];
             _containerCoverImg = _config["ContainerCoverImg"];
-            _cloudFrontDomain = _config["CloudFrontDomain"];
+            _cloudFrontDomain = _config["AWS:CloudFrontDomain"];
+            _s3Domain = _config["AWS:S3Domain"];
             _mapper = mapper;
             _productRepo = productRepo;
         }
@@ -75,7 +77,7 @@ namespace SeaFood.Products
 
             //var items = ObjectMapper.Map<List<Product>, List<ProductDto>>(entities);
             //return new PagedResultDto<ProductDto>(totalCount, items);
-            var query = await _productRepo.WithDetailsAsync(p => p.Units);
+            var query = await _productRepo.WithDetailsAsync(p => p.Units, p => p.Images);
             var totalCount = await AsyncExecuter.CountAsync(query);
             if (!input.Sorting.IsNullOrWhiteSpace())
             {
@@ -160,17 +162,9 @@ namespace SeaFood.Products
 
         }
 
-        public async Task<BaseResponse<ProductDto>> CreateProductAsync(CreateProductDto input)
+        public async Task<BaseResponse<ProductDto>> CreateProductAsync(CreateProductDto input, List<IRemoteStreamContent> childImages)
         {
-            var coverImgFile =
-                    $"cover-{Guid.NewGuid()}{Path.GetExtension(input.CoverImage.FileName)}";
-
-            string primaryImgUrl = await UploadFileToS3(
-                input.CoverImage,
-                _containerCoverImg,
-                coverImgFile
-            );
-
+           
             var product = new Product
             {
                 Name = input.Name,
@@ -178,14 +172,12 @@ namespace SeaFood.Products
                 Origin = input.Origin ?? "",
                 Description = input.Description ?? "",
                 CategoryId = input.CategoryId,
-                CoverImage = primaryImgUrl,
                 Units = new List<ProductUnit>(),
                 Images = new List<ProductImage>()
             };
 
-
             // Units
-            if (input.Units != null)
+            if (input.Units != null && input.Units.Any())
             {
                 foreach (var unit in input.Units)
                 {
@@ -199,53 +191,59 @@ namespace SeaFood.Products
                 }
             }
 
-
-
-            if (input.ChildImages != null && input.ChildImages.Any())
+            await _productRepo.InsertAsync(product, autoSave: true);
+            var prefix = $"products/{product.Id}";
+            try
             {
-                var uploadTasks = input.ChildImages.Select(async item =>
+                // Upload Cover
+                if (input.CoverImage != null)
                 {
-                    var fileName = $"child-{Guid.NewGuid()}{Path.GetExtension(item.ChildImage.FileName)}";
+                    var extension = Path.GetExtension(input.CoverImage.FileName);
+                    var fileName = $"cover-{Guid.NewGuid()}{extension}";
 
-                    var url = await UploadFileToS3(
-                        item.ChildImage,
-                        _containerCoverImg,
+                    var coverUrl = await UploadFileToS3(
+                        input.CoverImage,
+                        prefix,
                         fileName
                     );
+                    product.CoverImage = coverUrl;
+                }
 
-                    return new ProductImage
+                // Upload Child Images
+                if (childImages != null && childImages.Any())
+                {
+                    for (int i = 0; i < childImages.Count; i++)
                     {
-                        ImageUrl = url,
-                        DisplayOrder = item.DisplayOrder
-                    };
-                });
+                        var item = childImages[i];
 
-                var images = await Task.WhenAll(uploadTasks);
-                product.Images.AddRange(images);
+                        var extension = Path.GetExtension(item.FileName);
+                        var fileName = $"child-{Guid.NewGuid()}{extension}";
+
+                        var url = await UploadFileToS3(
+                            item,
+                            prefix,
+                            fileName
+                        );
+
+                        product.Images.Add(new ProductImage
+                        {
+                            ImageUrl = url,
+                            DisplayOrder = i  
+                        });
+                    }
+                }
+                await _productRepo.UpdateAsync(product, autoSave: true);
+                var productDto = ObjectMapper.Map<Product, ProductDto>(product);
+
+                return BaseResponse<ProductDto>.Success("Tạo sản phẩm thành công", productDto);
             }
-
-            //_context.Products.Add(product);
-            //await _context.SaveChangesAsync();
-            await _productRepo.InsertAsync(product, autoSave: true);
-            var productDto = _mapper.Map<ProductDto>(product);
-            return BaseResponse<ProductDto>.Success("Tạo sản phẩm thành công", productDto);
-        }
-
-        public async Task<string> UploadImageAsync (IRemoteStreamContent file, bool isCoverImg)
-        {
-            var extension = Path.GetExtension(file.FileName);
-            var fileName = $"img-{Guid.NewGuid()}{extension}";
-            if (isCoverImg)
+            catch
             {
-                fileName = $"cover-{Guid.NewGuid()}{extension}";
+                // Nếu upload lỗi thì xóa product để tránh rác DB
+                await _productRepo.DeleteAsync(product.Id);
+                throw;
             }
 
-                
-            return await UploadFileToS3(
-                file,
-                _containerCoverImg,
-                fileName
-            );
         }
 
         //public async Task<string> UploadFileToS3(IFormFile file, string prefix, string fileName)
@@ -277,6 +275,153 @@ namespace SeaFood.Products
         //    }
         //}
 
+        public async Task<BaseResponse<ProductDto>> UpdateProductAsync(
+            Guid id,
+            UpdateProductDto input,
+            List<IRemoteStreamContent>? childImages)
+        {
+            var product = await _productRepo
+                .WithDetailsAsync(p => p.Units, p => p.Images);
+
+            var entity = await AsyncExecuter
+                .FirstOrDefaultAsync(product.Where(p => p.Id == id));
+
+            if (entity == null)
+                throw new UserFriendlyException("Product not found");
+
+            // ========================
+            // Update basic info
+            // ========================
+            entity.Name = input.Name;
+            entity.Slug = input.Slug ?? "";
+            entity.Origin = input.Origin ?? "";
+            entity.Description = input.Description ?? "";
+            entity.CategoryId = input.CategoryId;
+
+            // ========================
+            // Update Units (clear + add lại)
+            // ========================
+            entity.Units.Clear();
+
+            if (input.Units != null && input.Units.Any())
+            {
+                foreach (var unit in input.Units)
+                {
+                    entity.Units.Add(new ProductUnit
+                    {
+                        UnitName = unit.UnitName,
+                        Price = unit.Price,
+                        StockQuantity = unit.StockQuantity,
+                        IsDefault = unit.IsDefault
+                    });
+                }
+            }
+
+            var prefix = $"products/{entity.Id}";
+
+            try
+            {
+                // ========================
+                // Update Cover (nếu có file mới)
+                // ========================
+                if (input.CoverImage != null)
+                {
+                    var extension = Path.GetExtension(input.CoverImage.FileName);
+                    var fileName = $"cover-{Guid.NewGuid()}{extension}";
+
+                    var coverUrl = await UploadFileToS3(
+                        input.CoverImage,
+                        prefix,
+                        fileName
+                    );
+
+                    entity.CoverImage = coverUrl;
+                }
+
+                // ========================
+                // Add new child images (không xoá ảnh cũ)
+                // ========================
+                if (childImages != null && childImages.Any())
+                {
+                    var startOrder = entity.Images.Count;
+
+                    for (int i = 0; i < childImages.Count; i++)
+                    {
+                        var item = childImages[i];
+
+                        var extension = Path.GetExtension(item.FileName);
+                        var fileName = $"child-{Guid.NewGuid()}{extension}";
+
+                        var url = await UploadFileToS3(
+                            item,
+                            prefix,
+                            fileName
+                        );
+
+                        entity.Images.Add(new ProductImage
+                        {
+                            ImageUrl = url,
+                            DisplayOrder = startOrder + i
+                        });
+                    }
+                }
+
+                await _productRepo.UpdateAsync(entity, autoSave: true);
+
+                var productDto = ObjectMapper.Map<Product, ProductDto>(entity);
+
+                return BaseResponse<ProductDto>.Success(
+                    "Cập nhật sản phẩm thành công",
+                    productDto
+                );
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<BaseResponse<bool>> DeleteProductAsync(Guid id)
+        {
+            var product = await _productRepo
+                .WithDetailsAsync(p => p.Units, p => p.Images);
+
+            var entity = await AsyncExecuter
+                .FirstOrDefaultAsync(product.Where(p => p.Id == id));
+
+            if (entity == null)
+                throw new UserFriendlyException("Product not found");
+
+            // Nếu muốn xóa luôn file trên S3 thì xử lý tại đây
+
+            await _productRepo.DeleteAsync(entity, autoSave: true);
+
+            return BaseResponse<bool>.Success("Xóa sản phẩm thành công", true);
+        }
+
+        public async Task<BaseResponse<bool>> BatchDeleteProductsAsync(List<Guid> ids)
+        {
+            if (ids == null || !ids.Any())
+                throw new UserFriendlyException("Danh sách sản phẩm cần xóa không hợp lệ");
+
+            var query = await _productRepo
+                .WithDetailsAsync(p => p.Units, p => p.Images);
+
+            var products = query.Where(p => ids.Contains(p.Id));
+
+            var entities = await AsyncExecuter.ToListAsync(products);
+
+            if (!entities.Any())
+                throw new UserFriendlyException("Không tìm thấy sản phẩm nào");
+
+            await _productRepo.DeleteManyAsync(entities, autoSave: true);
+
+            return BaseResponse<bool>.Success(
+                $"Đã xóa {entities.Count} sản phẩm thành công",
+                true
+            );
+        }
+
         public async Task<string> UploadFileToS3(IRemoteStreamContent file, string prefix, string fileName)
         {
             try
@@ -295,7 +440,8 @@ namespace SeaFood.Products
                 var response = await _s3Client.PutObjectAsync(request);
                 if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    return $"{_cloudFrontDomain}/{key}";
+                    //return $"{_cloudFrontDomain}/{key}";
+                    return $"{_s3Domain}/{key}";
                 }
 
                 throw new Exception("Upload file lên S3 thất bại");

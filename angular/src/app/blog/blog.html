@@ -1,103 +1,82 @@
-<div>
-  <div class="d-flex justify-content-between w-100 align-items-center">
-    <div class="w-25 my-2">
-      <p-inputgroup></p-inputgroup>
-      <p-menu #menu [model]="columnItems" popup appendTo="body" />
-    </div>
-    <div class="d-flex">
-      <!-- <p-splitbutton label="Save" [model]="actionItems"  size="small" /> -->
-      <p-button label="Delete" icon="pi pi-trash" iconPos="right" class="ms-1" size="small" />
-      <p-button label="Add" icon="pi pi-plus" iconPos="right" class="ms-1" size="small" (click)="add()" />
-    </div>
-  </div>
+<div class="card">
+  <p-toast />
+  <p-toolbar class="mb-6">
+    <ng-template #start>
+      <p-button label="Thêm" icon="pi pi-plus" size="small" class="me-1" (onClick)="addBlog()" />
+      <p-button severity="danger" label="Xóa" size="small" icon="pi pi-trash" outlined
+        (onClick)="deleteBatchBlogs()" [disabled]="!selectedBlogs || !selectedBlogs.length" />
+    </ng-template>
+  </p-toolbar>
 
-
-  <div class=" p-0">
-    <ngx-datatable #table class="material" [rows]="rows" [columnMode]="ColumnMode.force" [headerHeight]="50"
-      [footerHeight]="50" rowHeight="auto" [limit]="5" [selected]="selected" [selectionType]="SelectionType.checkbox"
-      [messages]="messages" (activate)="onActivate($event)">
-      <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false" [draggable]="false"
-        [resizeable]="false">
-        <ng-template ngx-datatable-header-template let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
-          <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn()" />
-        </ng-template>
-        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-          let-onCheckboxChangeFn="onCheckboxChangeFn">
-          <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column name="Họ tên" prop="name"></ngx-datatable-column>
-      <ngx-datatable-column name="Giới tính" prop="gender"></ngx-datatable-column>
-      <ngx-datatable-column name="Công ty" prop="company"></ngx-datatable-column>
-
-      <ngx-datatable-column name="Action" [width]="120" [sortable]="false" [canAutoResize]="false" [draggable]="false"
-        [resizeable]="false">
-
-        <ng-template ngx-datatable-cell-template let-row="row">
-          <div class="d-flex gap-1 justify-content-center">
-
-            <p-button icon="pi pi-ellipsis-h" severity="secondary" size="small"
-              (click)="openRowMenu($event, row)"></p-button>
-
-            <p-menu #rowMenu [popup]="true" [model]="rowActions" appendTo="body"></p-menu>
+  <p-table #dt [value]="rows" [rows]="pageSize" [columns]="cols" [paginator]="true" class="mt-1"
+    [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+    [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedBlogs" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" (onPage)="onPage($event)">
+    <ng-template #caption>
+      <div class="d-flex align-items-center justify-content-between">
+        <h5 class="m-0">Manage Blogs</h5>
+        <p-iconfield>
+          <p-inputicon class="pi pi-search" />
+          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
+        </p-iconfield>
+      </div>
+    </ng-template>
+    <ng-template #header>
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox />
+        </th>
+        <th pSortableColumn="name" style="min-width:16rem">
+          <div class="flex items-center gap-2">
+            Tên loại
+            <p-sortIcon field="name" />
           </div>
-        </ng-template>
+        </th>
+        <th pSortableColumn="productCount" style="min-width: 8rem; text-align:center">
+          <div class="flex items-center justify-content-center gap-2">
+            Số lượng sản phẩm
+            <p-sortIcon field="productCount" />
+          </div>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-blog>
+      <tr>
+        <td style="width: 3rem">
+          <p-tableCheckbox [value]="blog" />
+        </td>
+        <td style="min-width: 16rem">{{ blog.name }}</td>
+        <td class="text-center">
+          {{ blog.productCount }}
+        </td>
+        <td>
+          <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+            (click)="editBlog(blog)" />
+          <p-button icon="pi pi-trash" class="ms-2" severity="danger" [rounded]="true" [outlined]="true"
+            (click)="deleteBlog(blog)" />
+          <!-- <p-button icon="pi pi-eye" class="ms-2" severity="info" [rounded]="true" [outlined]="true"
+            (click)="viewBlog(blog)" /> -->
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 
-      </ngx-datatable-column>
-
-
-    </ngx-datatable>
-  </div>
 </div>
 
 
-
-<!-- Add form -->
-<p-dialog header="Tạo mới Blog" [(visible)]="isAddFormVisible" [modal]="true" [style]="{ width: '70rem' }"
-  [breakpoints]="{ '1199px': '90vw', '575px': '100vw' }">
-  <div class="row">
-    <div class="col-12 mb-2">
-      <!-- Ảnh đại diện -->
-      <div class="field col-12 md:col-6">
-        <label class="font-semibold">Ảnh đại diện</label>
-        <div class="flex align-items-center gap-3">
-          <p-fileUpload name="cover" mode="basic" accept="image/*" (onSelect)="onCoverSelect($event)"
-            chooseLabel="Chọn ảnh"></p-fileUpload>
-
-          <img *ngIf="previewCover" [src]="previewCover" class="border-round"
-            style="width: 60px; height: 60px; object-fit: cover" />
-        </div>
-      </div>
-    </div>
-    <div class="col-12">
-      <div class="d-flex  w-100 gap-3 mb-2">
-        <!-- Tên sản phẩm -->
-        <div class="d-flex flex-column flex-fill">
-          <label class="font-semibold">Tên sản phẩm</label>
-          <input pInputText [(ngModel)]="newBlog.name" name="name" class="w-full" />
-        </div>
-
-        <!-- Xuất xứ -->
-       <div class="d-flex flex-column flex-fill">
-          <label class="font-semibold">Đơn vị</label>
-          <p-multiselect [options]="units" [(ngModel)]="selectedUnits" placeholder="Select Cities" optionLabel="name"
-            display="chip" class="w-full md:w-80" />
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- Mô tả -->
-    <div class="field col-12">
-      <p-editor [(ngModel)]="newBlog.description" [style]="{ height: '200px' }" />
-    </div>
+<p-dialog [header]="isEditMode ? 'Chỉnh sửa thể loại' : 'Thêm thể loại'" [modal]="true" [(visible)]="isFormVisible"
+  [style]="{ width: '25rem' }" [draggable]="false">
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <label for="blogName" class="font-semibold w-24">Tên thể loại</label>
+    <input pInputText id="blogName" class="flex-grow-1" autocomplete="off" [(ngModel)]="newBlogName"/>
   </div>
 
-  <ng-template pTemplate="footer">
-    <div class="d-flex justify-content-end gap-2 w-full">
-      <p-button label="Hủy" severity="secondary" (click)="isAddFormVisible = false"></p-button>
-      <p-button label="Lưu" severity="success" (click)="saveProduct()"></p-button>
-    </div>
-  </ng-template>
+  <div class="d-flex justify-content-end gap-2">
+    <p-button label="Hủy" severity="secondary" (click)="isFormVisible = false" />
+    <p-button label="Lưu" (click)="onSubmit()" />
+  </div>
 </p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

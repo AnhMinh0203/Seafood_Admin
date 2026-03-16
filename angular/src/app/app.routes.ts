@@ -21,7 +21,7 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'product',
-    loadComponent: () => import('./product/product').then(c => c.Product),
+    loadComponent: () => import('./product/product').then(c => c.Product ),
   },
   {
     path: 'unit',

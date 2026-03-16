@@ -891,8 +891,8 @@
               "parametersOnMethod": [],
               "parameters": [],
               "returnValue": {
-                "type": "Microsoft.AspNetCore.Mvc.ActionResult",
-                "typeSimple": "Microsoft.AspNetCore.Mvc.ActionResult"
+                "type": "System.Collections.Generic.List<SeaFood.Categories.Dtos.CategoryDto>",
+                "typeSimple": "[SeaFood.Categories.Dtos.CategoryDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "SeaFood.Controllers.CategoryController"
@@ -969,8 +969,8 @@
               "allowAnonymous": null,
               "implementFrom": "SeaFood.Controllers.ProductController"
             },
-            "CreateByInput": {
-              "uniqueName": "CreateByInput",
+            "CreateByInputAndChildImages": {
+              "uniqueName": "CreateByInputAndChildImages",
               "name": "Create",
               "httpMethod": "POST",
               "url": "api/app/product/Create",
@@ -981,6 +981,14 @@
                   "typeAsString": "SeaFood.Products.Dtos.CreateProductDto, SeaFood.Application.Contracts",
                   "type": "SeaFood.Products.Dtos.CreateProductDto",
                   "typeSimple": "SeaFood.Products.Dtos.CreateProductDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "childImages",
+                  "typeAsString": "System.Collections.Generic.List`1[[Volo.Abp.Content.IRemoteStreamContent, Volo.Abp.Core, Version=9.3.6.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.List<Volo.Abp.Content.IRemoteStreamContent>",
+                  "typeSimple": "[Volo.Abp.Content.IRemoteStreamContent]",
                   "isOptional": false,
                   "defaultValue": null
                 }
@@ -995,15 +1003,15 @@
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
+                  "bindingSourceId": "Form",
                   "descriptorName": "input"
                 },
                 {
                   "nameOnMethod": "input",
                   "name": "CoverImage",
                   "jsonName": null,
-                  "type": "Microsoft.AspNetCore.Http.IFormFile",
-                  "typeSimple": "Microsoft.AspNetCore.Http.IFormFile",
+                  "type": "Volo.Abp.Content.IRemoteStreamContent",
+                  "typeSimple": "Volo.Abp.Content.IRemoteStreamContent",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -1019,7 +1027,7 @@
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
+                  "bindingSourceId": "Form",
                   "descriptorName": "input"
                 },
                 {
@@ -1031,7 +1039,7 @@
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
+                  "bindingSourceId": "Form",
                   "descriptorName": "input"
                 },
                 {
@@ -1043,7 +1051,7 @@
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
+                  "bindingSourceId": "Form",
                   "descriptorName": "input"
                 },
                 {
@@ -1055,7 +1063,7 @@
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
+                  "bindingSourceId": "Form",
                   "descriptorName": "input"
                 },
                 {
@@ -1067,25 +1075,62 @@
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
+                  "bindingSourceId": "Form",
                   "descriptorName": "input"
                 },
                 {
-                  "nameOnMethod": "input",
-                  "name": "ChildImages",
+                  "nameOnMethod": "childImages",
+                  "name": "childImages",
                   "jsonName": null,
-                  "type": "System.Collections.Generic.List<SeaFood.Products.ProductImageDto>",
-                  "typeSimple": "[SeaFood.Products.ProductImageDto]",
+                  "type": "System.Collections.Generic.List<Volo.Abp.Content.IRemoteStreamContent>",
+                  "typeSimple": "[Volo.Abp.Content.IRemoteStreamContent]",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
+                  "bindingSourceId": "Form",
+                  "descriptorName": ""
                 }
               ],
               "returnValue": {
                 "type": "SeaFood.Utils.BaseResponse<SeaFood.Products.Dtos.ProductDto>",
                 "typeSimple": "SeaFood.Utils.BaseResponse<SeaFood.Products.Dtos.ProductDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.ProductController"
+            },
+            "GetProductByIdByProductId": {
+              "uniqueName": "GetProductByIdByProductId",
+              "name": "GetProductById",
+              "httpMethod": "GET",
+              "url": "api/app/product/GetDetail",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "productId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "productId",
+                  "name": "productId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Query",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Products.Dtos.ProductDto",
+                "typeSimple": "SeaFood.Products.Dtos.ProductDto"
               },
               "allowAnonymous": null,
               "implementFrom": "SeaFood.Controllers.ProductController"
@@ -3299,7 +3344,7 @@
     }
   },
   "types": {
-    "Microsoft.AspNetCore.Http.IFormFile": {
+    "SeaFood.Categories.Dtos.CategoryDto": {
       "baseType": null,
       "isEnum": false,
       "enumNames": null,
@@ -3307,45 +3352,9 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "ContentType",
+          "name": "Id",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ContentDisposition",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Headers",
-          "jsonName": null,
-          "type": "{System.String:Microsoft.Extensions.Primitives.StringValues}",
-          "typeSimple": "{string:Microsoft.Extensions.Primitives.StringValues}",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Length",
-          "jsonName": null,
-          "type": "System.Int64",
+          "type": "System.Int32",
           "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
@@ -3365,9 +3374,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
-        },
+        }
+      ]
+    },
+    "SeaFood.Entities.Category": {
+      "baseType": "Volo.Abp.Domain.Entities.Auditing.AuditedEntity<System.Int32>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
         {
-          "name": "FileName",
+          "name": "Name",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -3379,14 +3397,6 @@
           "regex": null
         }
       ]
-    },
-    "Microsoft.AspNetCore.Mvc.ActionResult": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": []
     },
     "SeaFood.Products.Dtos.CreateProductDto": {
       "baseType": null,
@@ -3410,8 +3420,8 @@
         {
           "name": "CoverImage",
           "jsonName": null,
-          "type": "Microsoft.AspNetCore.Http.IFormFile",
-          "typeSimple": "Microsoft.AspNetCore.Http.IFormFile",
+          "type": "Volo.Abp.Content.IRemoteStreamContent",
+          "typeSimple": "Volo.Abp.Content.IRemoteStreamContent",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -3478,23 +3488,11 @@
           "minimum": null,
           "maximum": null,
           "regex": null
-        },
-        {
-          "name": "ChildImages",
-          "jsonName": null,
-          "type": "[SeaFood.Products.ProductImageDto]",
-          "typeSimple": "[SeaFood.Products.ProductImageDto]",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
         }
       ]
     },
     "SeaFood.Products.Dtos.ProductDto": {
-      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Int32>",
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
       "isEnum": false,
       "enumNames": null,
       "enumValues": null,
@@ -3541,6 +3539,18 @@
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Category",
+          "jsonName": null,
+          "type": "SeaFood.Entities.Category",
+          "typeSimple": "SeaFood.Entities.Category",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -3608,8 +3618,8 @@
         {
           "name": "ProductId",
           "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
+          "type": "System.Guid",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -3620,8 +3630,8 @@
         {
           "name": "ChildImage",
           "jsonName": null,
-          "type": "Microsoft.AspNetCore.Http.IFormFile",
-          "typeSimple": "Microsoft.AspNetCore.Http.IFormFile",
+          "type": "Volo.Abp.Content.IRemoteStreamContent",
+          "typeSimple": "Volo.Abp.Content.IRemoteStreamContent",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -6503,6 +6513,152 @@
           "jsonName": null,
           "type": "System.Boolean",
           "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "Volo.Abp.Content.IRemoteStreamContent": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "FileName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ContentType",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ContentLength",
+          "jsonName": null,
+          "type": "System.Int64?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "Volo.Abp.Domain.Entities.Auditing.AuditedEntity<T0>": {
+      "baseType": "Volo.Abp.Domain.Entities.Auditing.CreationAuditedEntity<TKey>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": [
+        "TKey"
+      ],
+      "properties": [
+        {
+          "name": "LastModificationTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "LastModifierId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "Volo.Abp.Domain.Entities.Auditing.CreationAuditedEntity<T0>": {
+      "baseType": "Volo.Abp.Domain.Entities.Entity<TKey>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": [
+        "TKey"
+      ],
+      "properties": [
+        {
+          "name": "CreationTime",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreatorId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "Volo.Abp.Domain.Entities.Entity": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": []
+    },
+    "Volo.Abp.Domain.Entities.Entity<T0>": {
+      "baseType": "Volo.Abp.Domain.Entities.Entity",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": [
+        "TKey"
+      ],
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "TKey",
+          "typeSimple": "TKey",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

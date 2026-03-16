@@ -1,8 +1,8 @@
-import type { IFormFile } from '../microsoft/asp-net-core/http/models';
+import type { IRemoteStreamContent } from '../volo/abp/content/models';
 
 export interface ProductImageDto {
-  productId: number;
-  childImage: IFormFile;
+  productId?: string;
+  childImage: IRemoteStreamContent;
   imageUrl?: string;
   displayOrder: number;
 }
