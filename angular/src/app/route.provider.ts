@@ -32,12 +32,6 @@ function configureRoutes() {
       layout: eLayoutType.application,
     },
     {
-      path: '/unit',
-      name: '::Menu:Units',
-      parentName: '::Menu:SeaFoodStore',
-      layout: eLayoutType.application,
-    },
-    {
       path: '/category',
       name: '::Menu:Categories',
       parentName: '::Menu:SeaFoodStore',

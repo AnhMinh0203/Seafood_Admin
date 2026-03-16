@@ -21,17 +21,13 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'product',
-    loadComponent: () => import('./product/product').then(c => c.Product ),
+    loadComponent: () => import('./product/product').then(c => c.Product),
   },
   {
-    path: 'unit',
-    loadComponent: () => import('./unit/unit').then(c => c.Unit),
-  },
-    {
     path: 'category',
     loadComponent: () => import('./category/category').then(c => c.Category),
   },
-      {
+  {
     path: 'blog',
     loadComponent: () => import('./blog/blog').then(c => c.Blog),
   },

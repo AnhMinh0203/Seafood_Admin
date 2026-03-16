@@ -32,7 +32,6 @@ namespace SeaFood.Products
         private readonly string? _s3Domain;
         private readonly IAmazonS3 _s3Client;
         private readonly string? _containerCoverImg;
-        //private readonly SeaFoodDbContext _context;
         private readonly IRepository<Product, Guid> _productRepo;
         public readonly IConfiguration _config;
         private readonly IMapper _mapper;
@@ -57,26 +56,6 @@ namespace SeaFood.Products
 
         public async Task<PagedResultDto<ProductDto>> GetListWithUnitsAsync(PagedAndSortedResultRequestDto input)
         {
-            //var query = _context.Products
-            //    .Include(p => p.Units)
-            //    .AsQueryable();
-
-            //var totalCount = await query.CountAsync();  
-            //if(!input.Sorting.IsNullOrWhiteSpace())
-            //{
-            //    query = query.OrderBy(input.Sorting);
-            //}
-            //else
-            //{
-            //    query = query.OrderByDescending(p => p.Id);
-            //}
-            //var entities = await query
-            //    .Skip(input.SkipCount)
-            //    .Take(input.MaxResultCount)
-            //    .ToListAsync();
-
-            //var items = ObjectMapper.Map<List<Product>, List<ProductDto>>(entities);
-            //return new PagedResultDto<ProductDto>(totalCount, items);
             var query = await _productRepo.WithDetailsAsync(p => p.Units, p => p.Images);
             var totalCount = await AsyncExecuter.CountAsync(query);
             if (!input.Sorting.IsNullOrWhiteSpace())
@@ -95,15 +74,6 @@ namespace SeaFood.Products
 
         public async Task<ProductDto> GetDetailAsync(Guid id)
         {
-            //var product = await _context.Products
-            //    .Include(p => p.Units)
-            //    .Include(p => p.Images)
-            //    .FirstOrDefaultAsync(p => p.Id == id);
-            //if(product == null)
-            //{
-            //    throw new UserFriendlyException("Sản phẩm không tồn tại");
-            //}
-            //return ObjectMapper.Map<Product, ProductDto>(product);
             var query = await _productRepo.WithDetailsAsync(
                 p => p.Units,
                 p => p.Images
@@ -123,23 +93,6 @@ namespace SeaFood.Products
 
         public async Task DeleteAsync(Guid id)
         {
-            //var product = await _context.Products
-            //    .Include(p => p.Units)
-            //    .Include(p => p.Images)
-            //    .FirstOrDefaultAsync(p => p.Id == id);
-            //if(product == null)
-            //{
-            //    throw new UserFriendlyException("Sản phẩm không tồn tại");
-            //}
-            //// Xóa hình ảnh trên S3
-            //await DeleteFileFromS3(product.CoverImage);
-            //foreach(var img in product.Images)
-            //{
-            //    await DeleteFileFromS3(img.ImageUrl);
-            //}
-            //_context.Products.Remove(product);
-            //await _context.SaveChangesAsync();
-
             var query = await _productRepo.WithDetailsAsync(
                 p => p.Units,
                 p => p.Images
@@ -239,41 +192,11 @@ namespace SeaFood.Products
             }
             catch
             {
-                // Nếu upload lỗi thì xóa product để tránh rác DB
                 await _productRepo.DeleteAsync(product.Id);
                 throw;
             }
 
         }
-
-        //public async Task<string> UploadFileToS3(IFormFile file, string prefix, string fileName)
-        //{
-        //    try
-        //    {             
-        //        var key = $"{prefix}/{fileName}";
-        //        using var stream = file.OpenReadStream();
-        //        var request = new PutObjectRequest
-        //        {
-        //            BucketName = _bucketName,
-        //            Key = key,
-        //            InputStream = stream,
-        //            ContentType = file.ContentType,
-        //            Headers = { CacheControl = "no-store, no-cache, must-revalidate" }
-        //        };
-
-        //        var response = await _s3Client.PutObjectAsync(request);
-        //        if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-        //        {
-        //            return $"{_cloudFrontDomain}/{key}";
-        //        }
-
-        //        throw new Exception("Upload file lên S3 thất bại");
-        //    }
-        //    catch (AmazonS3Exception ex)
-        //    {
-        //        throw new Exception($"Lỗi upload file lên S3: {ex.Message}");
-        //    }
-        //}
 
         public async Task<BaseResponse<ProductDto>> UpdateProductAsync(
             Guid id,
@@ -289,18 +212,11 @@ namespace SeaFood.Products
             if (entity == null)
                 throw new UserFriendlyException("Product not found");
 
-            // ========================
-            // Update basic info
-            // ========================
             entity.Name = input.Name;
             entity.Slug = input.Slug ?? "";
             entity.Origin = input.Origin ?? "";
             entity.Description = input.Description ?? "";
             entity.CategoryId = input.CategoryId;
-
-            // ========================
-            // Update Units (clear + add lại)
-            // ========================
             entity.Units.Clear();
 
             if (input.Units != null && input.Units.Any())
@@ -321,9 +237,6 @@ namespace SeaFood.Products
 
             try
             {
-                // ========================
-                // Update Cover (nếu có file mới)
-                // ========================
                 if (input.CoverImage != null)
                 {
                     var extension = Path.GetExtension(input.CoverImage.FileName);
@@ -338,9 +251,6 @@ namespace SeaFood.Products
                     entity.CoverImage = coverUrl;
                 }
 
-                // ========================
-                // Add new child images (không xoá ảnh cũ)
-                // ========================
                 if (childImages != null && childImages.Any())
                 {
                     var startOrder = entity.Images.Count;
@@ -367,7 +277,6 @@ namespace SeaFood.Products
                 }
 
                 await _productRepo.UpdateAsync(entity, autoSave: true);
-
                 var productDto = ObjectMapper.Map<Product, ProductDto>(entity);
 
                 return BaseResponse<ProductDto>.Success(
@@ -391,11 +300,7 @@ namespace SeaFood.Products
 
             if (entity == null)
                 throw new UserFriendlyException("Product not found");
-
-            // Nếu muốn xóa luôn file trên S3 thì xử lý tại đây
-
             await _productRepo.DeleteAsync(entity, autoSave: true);
-
             return BaseResponse<bool>.Success("Xóa sản phẩm thành công", true);
         }
 
@@ -406,9 +311,7 @@ namespace SeaFood.Products
 
             var query = await _productRepo
                 .WithDetailsAsync(p => p.Units, p => p.Images);
-
             var products = query.Where(p => ids.Contains(p.Id));
-
             var entities = await AsyncExecuter.ToListAsync(products);
 
             if (!entities.Any())
@@ -440,7 +343,6 @@ namespace SeaFood.Products
                 var response = await _s3Client.PutObjectAsync(request);
                 if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    //return $"{_cloudFrontDomain}/{key}";
                     return $"{_s3Domain}/{key}";
                 }
 
