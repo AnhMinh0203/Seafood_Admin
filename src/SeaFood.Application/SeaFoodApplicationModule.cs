@@ -3,6 +3,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SeaFood.Storage;
 using System;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
@@ -41,6 +42,7 @@ public class SeaFoodApplicationModule : AbpModule
 
             return new AmazonS3Client(creds, region);
         });
+        context.Services.AddScoped<IFileStorageService, FileStorageService>();
 
         Configure<AbpAutoMapperOptions>(options =>
         {
