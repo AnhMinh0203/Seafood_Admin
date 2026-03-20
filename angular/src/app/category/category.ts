@@ -136,7 +136,7 @@ export class Category {
       maxResultCount: this.pageSize
     };
 
-    this.CategoryService.getList(input).subscribe({
+    this.CategoryService.getListByInput(input).subscribe({
       next: (res) => {
         console.log('Categories loaded:', res);
         this.rows = res.items;
@@ -151,7 +151,7 @@ export class Category {
       this.messageService.add({ severity: 'warn', summary: 'Tên danh mục không được để trống' });
       return;
     } else {
-      this.CategoryService.create({ name: this.newCategoryName }).subscribe({
+      this.CategoryService.createByInput({ name: this.newCategoryName }).subscribe({
         next: () => {
           this.messageService.add({ severity: 'success', summary: 'Thêm danh mục thành công' });
           this.newCategoryName = '';
@@ -175,7 +175,7 @@ export class Category {
       return;
     }
     console.log('Saving category', this.selectedCategory);
-    this.CategoryService.update(this.selectedCategory.id, { name: this.newCategoryName    }).subscribe({
+    this.CategoryService.updateByIdAndInput(this.selectedCategory.id, { name: this.newCategoryName    }).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: "Thông báo", detail: 'Cập nhật danh mục thành công' });
         this.newCategoryName = '';
@@ -191,7 +191,7 @@ export class Category {
 
       return;
     }
-    this.CategoryService.create({ name: this.newCategoryName }).subscribe({
+    this.CategoryService.createByInput({ name: this.newCategoryName }).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: "Thông báo", detail: 'Thêm danh mục thành công' });
         this.newCategoryName = '';
@@ -224,7 +224,7 @@ export class Category {
       header: 'Xác nhận',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.CategoryService.deleteCategory(category.id).subscribe({
+        this.CategoryService.deleteById(category.id).subscribe({
           next: (res) => {
               console.log("res",res);
             if(res.isSuccess != true){
@@ -247,7 +247,7 @@ export class Category {
       header: 'Xác nhận',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.CategoryService.batchDeleteCategories(ids).subscribe({
+        this.CategoryService.batchDeleteByIds(ids).subscribe({
           next: (res) => {
              console.log("res",res);
             if(res.isSuccess != true){

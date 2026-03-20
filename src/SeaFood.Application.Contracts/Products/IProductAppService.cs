@@ -12,11 +12,6 @@ using Volo.Abp.Content;
 namespace SeaFood.Products
 {
     public interface IProductAppService
-        //ICrudAppService<
-        //    ProductDto,
-        //    int,
-        //    PagedAndSortedResultRequestDto,
-        //    CreateUpdateProductDto> 
     {
         Task<PagedResultDto<ProductDto>> GetListWithUnitsAsync(PagedAndSortedResultRequestDto input);
         //Task<string> CreateOrUpdateAsync(CreateUpdateProductDto input);

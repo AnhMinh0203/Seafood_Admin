@@ -1,0 +1,36 @@
+.p-menu {
+  max-width: 100vw;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.surface-100 {
+    background: #f4f4f5;
+}
+
+// Custome upload button hide
+:host ::ng-deep .custom-upload .p-fileupload-file-badge,
+:host ::ng-deep .custom-upload .p-fileupload-upload-button{
+  display: none !important;
+}
+
+//
+html, body {
+  overflow-y: scroll;
+}
+
+:host ::ng-deep .row-action-menu {
+  max-width: 220px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  //padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}

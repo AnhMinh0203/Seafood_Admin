@@ -31,7 +31,7 @@ namespace SeaFood.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<BaseResponse<ProductDto>> Create([FromForm] CreateProductDto input,[FromForm] List<IRemoteStreamContent> childImages)
+        public async Task<BaseResponse<ProductDto>> Create([FromForm] CreateProductDto input, [FromForm] List<IRemoteStreamContent> childImages)
         {
             return await _productAppService.CreateProductAsync(input, childImages);
         }

@@ -1,0 +1,40 @@
+.action-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.action-icon:hover {
+  transform: scale(1.2);
+  opacity: 0.8;
+}
+
+.image-preview-box {
+  width: 320px;
+  height: 320px;
+  border: 2px dashed #dcdcdc;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+}
+
+.image-placeholder i {
+  font-size: 48px;
+  margin-bottom: 8px;
+}

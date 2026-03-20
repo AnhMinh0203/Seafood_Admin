@@ -9,6 +9,7 @@ using Polly;
 using SeaFood.Entities;
 using SeaFood.EntityFrameworkCore;
 using SeaFood.Products.Dtos;
+using SeaFood.Storage;
 using SeaFood.Utils;
 using System;
 using System.Collections.Generic;
@@ -30,28 +31,28 @@ namespace SeaFood.Products
         private readonly string? _bucketName;
         private readonly string? _cloudFrontDomain;
         private readonly string? _s3Domain;
-        private readonly IAmazonS3 _s3Client;
+        //private readonly IAmazonS3 _s3Client;
         private readonly string? _containerCoverImg;
         private readonly IRepository<Product, Guid> _productRepo;
         public readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
+        private readonly IFileStorageService _fileService;
 
         public ProductAppService(
             SeaFoodDbContext context,
             IConfiguration config,
-            IAmazonS3 s3Client,
             IMapper mapper,
-            IRepository<Product, Guid> productRepo
+            IRepository<Product, Guid> productRepo,
+            IFileStorageService fileService
             )
         {
             _config = config;     
-            _s3Client = s3Client;
             _bucketName = _config["BucketName"];
             _containerCoverImg = _config["ContainerCoverImg"];
             _cloudFrontDomain = _config["AWS:CloudFrontDomain"];
             _s3Domain = _config["AWS:S3Domain"];
-            _mapper = mapper;
             _productRepo = productRepo;
+            _fileService = fileService;
         }
 
         public async Task<PagedResultDto<ProductDto>> GetListWithUnitsAsync(PagedAndSortedResultRequestDto input)
@@ -106,10 +107,10 @@ namespace SeaFood.Products
                 throw new UserFriendlyException("Sản phẩm không tồn tại");
             }
             // Xóa hình ảnh trên S3
-            await DeleteFileFromS3(product.CoverImage);
+            await _fileService.DeleteFileFromS3(product.CoverImage);
             foreach (var img in product.Images)
             {
-                await DeleteFileFromS3(img.ImageUrl);
+                await _fileService.DeleteFileFromS3(img.ImageUrl);
             }
             await _productRepo.DeleteAsync(product);
 
@@ -154,7 +155,7 @@ namespace SeaFood.Products
                     var extension = Path.GetExtension(input.CoverImage.FileName);
                     var fileName = $"cover-{Guid.NewGuid()}{extension}";
 
-                    var coverUrl = await UploadFileToS3(
+                    var coverUrl = await _fileService.UploadFileToS3(
                         input.CoverImage,
                         prefix,
                         fileName
@@ -172,7 +173,7 @@ namespace SeaFood.Products
                         var extension = Path.GetExtension(item.FileName);
                         var fileName = $"child-{Guid.NewGuid()}{extension}";
 
-                        var url = await UploadFileToS3(
+                        var url = await _fileService.UploadFileToS3(
                             item,
                             prefix,
                             fileName
@@ -242,7 +243,7 @@ namespace SeaFood.Products
                     var extension = Path.GetExtension(input.CoverImage.FileName);
                     var fileName = $"cover-{Guid.NewGuid()}{extension}";
 
-                    var coverUrl = await UploadFileToS3(
+                    var coverUrl = await _fileService.UploadFileToS3(
                         input.CoverImage,
                         prefix,
                         fileName
@@ -262,7 +263,7 @@ namespace SeaFood.Products
                         var extension = Path.GetExtension(item.FileName);
                         var fileName = $"child-{Guid.NewGuid()}{extension}";
 
-                        var url = await UploadFileToS3(
+                        var url = await _fileService.UploadFileToS3(
                             item,
                             prefix,
                             fileName
@@ -325,58 +326,7 @@ namespace SeaFood.Products
             );
         }
 
-        public async Task<string> UploadFileToS3(IRemoteStreamContent file, string prefix, string fileName)
-        {
-            try
-            {
-                var key = $"{prefix}/{fileName}";
-                using var stream = file.GetStream();
-                var request = new PutObjectRequest
-                {
-                    BucketName = _bucketName,
-                    Key = key,
-                    InputStream = stream,
-                    ContentType = file.ContentType,
-                    Headers = { CacheControl = "no-store, no-cache, must-revalidate" }
-                };
-
-                var response = await _s3Client.PutObjectAsync(request);
-                if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    return $"{_s3Domain}/{key}";
-                }
-
-                throw new Exception("Upload file lên S3 thất bại");
-            }
-            catch (AmazonS3Exception ex)
-            {
-                throw new Exception($"Lỗi upload file lên S3: {ex.Message}");
-            }
-        }
-
-        public async Task DeleteFileFromS3(string fileUrl)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(fileUrl))
-                    return;
-                var uri = new Uri(fileUrl);
-                var key = uri.AbsolutePath.Substring(1);
-
-                var request = new DeleteObjectRequest
-                {
-                    BucketName = _bucketName,
-                    Key = key
-                };
-
-                await _s3Client.DeleteObjectAsync(request);
-            }
-            catch (AmazonS3Exception ex)
-            {
-                throw new Exception($"Lỗi xóa file trên S3: {ex.Message}");
-            }
-        }
-
+        
     }
 
 }

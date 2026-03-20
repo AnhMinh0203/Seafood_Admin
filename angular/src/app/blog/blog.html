@@ -8,7 +8,7 @@
     </ng-template>
   </p-toolbar>
 
-  <p-table #dt [value]="rows" [rows]="pageSize" [columns]="cols" [paginator]="true" class="mt-1"
+  <p-table #dt [value]="blogs" [rows]="pageSize" [columns]="cols" [paginator]="true" class="mt-1"
     [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
     [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedBlogs" [rowHover]="true" dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" (onPage)="onPage($event)">
@@ -29,13 +29,14 @@
         </th>
         <th pSortableColumn="name" style="min-width:16rem">
           <div class="flex items-center gap-2">
-            Tên loại
+            Tiêu đề
             <p-sortIcon field="name" />
           </div>
         </th>
+        <th>Ảnh</th>
         <th pSortableColumn="productCount" style="min-width: 8rem; text-align:center">
           <div class="flex items-center justify-content-center gap-2">
-            Số lượng sản phẩm
+            Ngày tạo
             <p-sortIcon field="productCount" />
           </div>
         </th>
@@ -47,9 +48,12 @@
         <td style="width: 3rem">
           <p-tableCheckbox [value]="blog" />
         </td>
-        <td style="min-width: 16rem">{{ blog.name }}</td>
+        <td style="min-width: 16rem">{{ blog.title }}</td>
+        <td>
+          <img [src]="getImageUrl(blog.coverImage)" [alt]="blog.title" style="width: 64px" class="rounded" />
+        </td>
         <td class="text-center">
-          {{ blog.productCount }}
+          {{ blog.creationTime | date: 'dd/MM/yyyy' }}
         </td>
         <td>
           <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
@@ -66,17 +70,8 @@
 </div>
 
 
-<p-dialog [header]="isEditMode ? 'Chỉnh sửa thể loại' : 'Thêm thể loại'" [modal]="true" [(visible)]="isFormVisible"
-  [style]="{ width: '25rem' }" [draggable]="false">
-  <div class="d-flex align-items-center gap-3 mb-4">
-    <label for="blogName" class="font-semibold w-24">Tên thể loại</label>
-    <input pInputText id="blogName" class="flex-grow-1" autocomplete="off" [(ngModel)]="newBlogName"/>
-  </div>
-
-  <div class="d-flex justify-content-end gap-2">
-    <p-button label="Hủy" severity="secondary" (click)="isFormVisible = false" />
-    <p-button label="Lưu" (click)="onSubmit()" />
-  </div>
-</p-dialog>
+<!-- Product Form Template -->
+<app-blog-form [visible]="isFormVisible" [isEditMode]="isEditMode" (close)="closeForm()"
+  (save)="onBlogSaved()" [blogInput]="newBlog"></app-blog-form>
 
 <p-confirmdialog [style]="{ width: '450px' }" />

@@ -1,6 +1,6 @@
 
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { Menu, MenuModule } from 'primeng/menu';
@@ -41,6 +41,9 @@ import { RatingModule } from 'primeng/rating';
 import { TagModule } from 'primeng/tag';
 import { ProductForm } from 'src/app/product/product-form/product-form';
 import { ProductPreview } from 'src/app/product/product-preview/product-preview';
+import { BlogForm } from "./blog-form/blog-form";
+import { BlogService } from 'src/app/proxy/controllers/blog.service';
+import { BlogDto } from 'src/app/proxy/blogs/dtos/models';
 
 @Component({
   selector: 'app-unit',
@@ -76,53 +79,63 @@ import { ProductPreview } from 'src/app/product/product-preview/product-preview'
     ToolbarModule,
     CommonModule,
     ProductPreview,
-    DialogModule
+    DialogModule,
+    BlogForm
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './blog.html',
   styleUrl: './blog.scss'
 })
 export class Blog {
+
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
+  private blogService = inject(BlogService);
+
   selectedBlogs: any;
-
-  isFormVisible: any;
-  newBlogName: any;
-
+  newBlog: any;
+  blogs: BlogDto[] = [];
   isAddFormVisible: boolean = false;
-
   columnItems: MenuItem[] | undefined;
   actionItems: MenuItem[] | undefined;
   rows: Employee[] = [];
   selected: Employee[] = [];
   ColumnMode = ColumnMode;
-  SelectionType = SelectionType;
-  unitName: string = '';
+  isFormVisible = false;
+  isEditMode = false;
+  isPreViewMode = false;
 
-  messages = {
-    totalMessage: 'tổng cộng',
-    selectedMessage: 'đã chọn',
-    emptyMessage: 'Không có dữ liệu'
-  };
+  // messages = {
+  //   totalMessage: 'tổng cộng',
+  //   selectedMessage: 'đã chọn',
+  //   emptyMessage: 'Không có dữ liệu'
+  // };
 
-  selectedUnits: any[] = [];
-  units = [
-    { name: 'Kilogram (kg)', code: 'kg' },
-    { name: 'Gram (g)', code: 'g' },
-    { name: 'Piece (pc)', code: 'pc' },
-    { name: 'Box', code: 'box' }
-  ]
-
-  newBlog: any = {
-    title: '',
-    description: '',
-    categoryId: null,
-    coverImage: '',
-    tags: []
-  };
   previewCover: any = null;
-  isEditMode: any;
-  pageSize: any;
+
   cols: any;
+  pageSize = 100;
+  pageIndex = 0;
+
+  ngOnInit() {
+    this.loadBlogs();
+  }
+
+  loadBlogs() {
+    const input = {
+      skipCount: this.pageIndex * this.pageSize,
+      maxResultCount: this.pageSize
+    };
+    this.blogService.getListByInput(input).subscribe({
+      next: (res) => {
+        this.blogs = res.items;
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
 
   onActivate(event: ActivateEvent<Employee>) {
     console.log('Activate Event', event);
@@ -141,5 +154,28 @@ export class Blog {
 
   onPage($event: any) {
     throw new Error('Method not implemented.');
+  }
+
+  onBlogSaved() {
+    this.isFormVisible = false;
+    //this.loadBlogs();
+
+  }
+
+  closeForm() {
+    this.isFormVisible = false;
+  }
+
+  addBlog() {
+    console.log('Adding new blog');
+    this.isFormVisible = true;
+    this.previewCover = null;
+    this.isEditMode = false;
+  }
+
+  getImageUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return 'https://' + url;
   }
 }

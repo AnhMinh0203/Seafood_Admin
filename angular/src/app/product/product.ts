@@ -161,7 +161,7 @@ export class Product {
       skipCount: this.pageIndex * this.pageSize,
       maxResultCount: this.pageSize
     };
-    this.categoryService.getList(input).subscribe({
+    this.categoryService.getListByInput(input).subscribe({
       next: (res) => {
         this.categories = res.items;
       },
@@ -170,21 +170,6 @@ export class Product {
       }
     });
   }
-  // openRowMenu(event: Event, row: Employee) {
-  //   this.rowActions = [
-  //     {
-  //       label: 'Edit',
-  //       icon: 'pi pi-pencil',
-  //       command: () => this.update(row)
-  //     },
-  //     {
-  //       label: 'Delete',
-  //       icon: 'pi pi-trash',
-  //       command: () => this.remove(row)
-  //     }
-  //   ];
-  //   this.rowMenu.toggle(event);
-  // }
 
   getCategoryName(categoryId: number): string {
     const category = this.categories.find(c => c.id === categoryId);
@@ -348,7 +333,6 @@ export class Product {
     const maxSizeKB = 8000;
 
     if (file.size / 1024 > maxSizeKB) {
-      // this._responseHandler.showWarning('Kích thước ảnh không được lớn hơn 8MB');
       alert('Kích thước ảnh không được lớn hơn 8MB');
       return;
     }
@@ -470,6 +454,6 @@ export class Product {
 
   handlePreviewClose() {
     this.isPreViewMode = false;
-    this.selectedProduct = null;   // QUAN TRỌNG
+    this.selectedProduct = null;
   }
 }

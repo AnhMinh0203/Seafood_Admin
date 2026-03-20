@@ -1,4 +1,5 @@
 using AutoMapper;
+using SeaFood.Blogs.Dtos;
 using SeaFood.Categories.Dtos;
 using SeaFood.Entities;
 using SeaFood.Products;
@@ -15,7 +16,7 @@ public class SeaFoodApplicationAutoMapperProfile : Profile
         CreateMap<ProductUnit, ProductUnitDto>();
         CreateMap<ProductImage, ProductImageDto>();
         CreateMap<Category, CategoryDto>();
-
+        CreateMap<Blog, BlogDto>();
 
     }
 }

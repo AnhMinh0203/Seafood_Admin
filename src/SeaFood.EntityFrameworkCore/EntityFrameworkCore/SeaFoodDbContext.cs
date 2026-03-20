@@ -27,6 +27,7 @@ public class SeaFoodDbContext :
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Blog> Blogs { get; set; }
 
 
     #region Entities from the modules

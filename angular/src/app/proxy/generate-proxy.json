@@ -871,8 +871,80 @@
     },
     "app": {
       "rootPath": "app",
-      "remoteServiceName": "Default",
+      "remoteServiceName": "Blog",
       "controllers": {
+        "SeaFood.Controllers.BlogController": {
+          "controllerName": "Blog",
+          "controllerGroupName": "Blog",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "SeaFood.Controllers.BlogController",
+          "interfaces": [],
+          "actions": {
+            "GetListByInput": {
+              "uniqueName": "GetListByInput",
+              "name": "GetList",
+              "httpMethod": "GET",
+              "url": "api/app/blog/getList",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto, Volo.Abp.Ddd.Application.Contracts",
+                  "type": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
+                  "typeSimple": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "Sorting",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Query",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "SkipCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Query",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "MaxResultCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Query",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SeaFood.Blogs.Dtos.BlogDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SeaFood.Blogs.Dtos.BlogDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.BlogController"
+            }
+          }
+        },
         "SeaFood.Controllers.CategoryController": {
           "controllerName": "Category",
           "controllerGroupName": null,
@@ -882,17 +954,231 @@
           "type": "SeaFood.Controllers.CategoryController",
           "interfaces": [],
           "actions": {
-            "GetList": {
-              "uniqueName": "GetList",
+            "GetListByInput": {
+              "uniqueName": "GetListByInput",
               "name": "GetList",
               "httpMethod": "GET",
               "url": "api/app/category/getList",
               "supportedVersions": [],
-              "parametersOnMethod": [],
-              "parameters": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto, Volo.Abp.Ddd.Application.Contracts",
+                  "type": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
+                  "typeSimple": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "Sorting",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Query",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "SkipCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Query",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "MaxResultCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Query",
+                  "descriptorName": "input"
+                }
+              ],
               "returnValue": {
-                "type": "System.Collections.Generic.List<SeaFood.Categories.Dtos.CategoryDto>",
-                "typeSimple": "[SeaFood.Categories.Dtos.CategoryDto]"
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<SeaFood.Categories.Dtos.CategoryDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<SeaFood.Categories.Dtos.CategoryDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.CategoryController"
+            },
+            "CreateByInput": {
+              "uniqueName": "CreateByInput",
+              "name": "Create",
+              "httpMethod": "POST",
+              "url": "api/app/category/create",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "SeaFood.Categories.Dtos.CreateCategoryDto, SeaFood.Application.Contracts",
+                  "type": "SeaFood.Categories.Dtos.CreateCategoryDto",
+                  "typeSimple": "SeaFood.Categories.Dtos.CreateCategoryDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "SeaFood.Categories.Dtos.CreateCategoryDto",
+                  "typeSimple": "SeaFood.Categories.Dtos.CreateCategoryDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Categories.Dtos.CategoryDto",
+                "typeSimple": "SeaFood.Categories.Dtos.CategoryDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.CategoryController"
+            },
+            "UpdateByIdAndInput": {
+              "uniqueName": "UpdateByIdAndInput",
+              "name": "Update",
+              "httpMethod": "PUT",
+              "url": "api/app/category/update/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "SeaFood.Categories.Dtos.UpdateCategoryDto, SeaFood.Application.Contracts",
+                  "type": "SeaFood.Categories.Dtos.UpdateCategoryDto",
+                  "typeSimple": "SeaFood.Categories.Dtos.UpdateCategoryDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "SeaFood.Categories.Dtos.UpdateCategoryDto",
+                  "typeSimple": "SeaFood.Categories.Dtos.UpdateCategoryDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Categories.Dtos.CategoryDto",
+                "typeSimple": "SeaFood.Categories.Dtos.CategoryDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.CategoryController"
+            },
+            "DeleteById": {
+              "uniqueName": "DeleteById",
+              "name": "Delete",
+              "httpMethod": "DELETE",
+              "url": "api/app/category/Delete/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Utils.BaseResponse<System.Boolean>",
+                "typeSimple": "SeaFood.Utils.BaseResponse<boolean>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.CategoryController"
+            },
+            "BatchDeleteByIds": {
+              "uniqueName": "BatchDeleteByIds",
+              "name": "BatchDelete",
+              "httpMethod": "DELETE",
+              "url": "api/app/category/BatchDelete",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "ids",
+                  "typeAsString": "System.Collections.Generic.List`1[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.List<System.Int32>",
+                  "typeSimple": "[number]",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "ids",
+                  "name": "ids",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<System.Int32>",
+                  "typeSimple": "[number]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Utils.BaseResponse<System.Boolean>",
+                "typeSimple": "SeaFood.Utils.BaseResponse<boolean>"
               },
               "allowAnonymous": null,
               "implementFrom": "SeaFood.Controllers.CategoryController"
@@ -1098,6 +1384,167 @@
               "allowAnonymous": null,
               "implementFrom": "SeaFood.Controllers.ProductController"
             },
+            "UpdateByIdAndInputAndChildImages": {
+              "uniqueName": "UpdateByIdAndInputAndChildImages",
+              "name": "Update",
+              "httpMethod": "PUT",
+              "url": "api/app/product/Update/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "SeaFood.Products.Dtos.UpdateProductDto, SeaFood.Application.Contracts",
+                  "type": "SeaFood.Products.Dtos.UpdateProductDto",
+                  "typeSimple": "SeaFood.Products.Dtos.UpdateProductDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "childImages",
+                  "typeAsString": "System.Collections.Generic.List`1[[Volo.Abp.Content.IRemoteStreamContent, Volo.Abp.Core, Version=9.3.6.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.List<Volo.Abp.Content.IRemoteStreamContent>",
+                  "typeSimple": "[Volo.Abp.Content.IRemoteStreamContent]",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "ProductId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Name",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "CoverImage",
+                  "jsonName": null,
+                  "type": "Volo.Abp.Content.IRemoteStreamContent",
+                  "typeSimple": "Volo.Abp.Content.IRemoteStreamContent",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "FormFile",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Origin",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Description",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Slug",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "CategoryId",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Units",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<SeaFood.Products.ProductUnitDto>",
+                  "typeSimple": "[SeaFood.Products.ProductUnitDto]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "childImages",
+                  "name": "childImages",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<Volo.Abp.Content.IRemoteStreamContent>",
+                  "typeSimple": "[Volo.Abp.Content.IRemoteStreamContent]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Form",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Utils.BaseResponse<SeaFood.Products.Dtos.ProductDto>",
+                "typeSimple": "SeaFood.Utils.BaseResponse<SeaFood.Products.Dtos.ProductDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.ProductController"
+            },
             "GetProductByIdByProductId": {
               "uniqueName": "GetProductByIdByProductId",
               "name": "GetProductById",
@@ -1131,6 +1578,80 @@
               "returnValue": {
                 "type": "SeaFood.Products.Dtos.ProductDto",
                 "typeSimple": "SeaFood.Products.Dtos.ProductDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.ProductController"
+            },
+            "DeleteById": {
+              "uniqueName": "DeleteById",
+              "name": "Delete",
+              "httpMethod": "DELETE",
+              "url": "api/app/product/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Utils.BaseResponse<System.Boolean>",
+                "typeSimple": "SeaFood.Utils.BaseResponse<boolean>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "SeaFood.Controllers.ProductController"
+            },
+            "BatchDeleteByIds": {
+              "uniqueName": "BatchDeleteByIds",
+              "name": "BatchDelete",
+              "httpMethod": "DELETE",
+              "url": "api/app/product/BatchDelete",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "ids",
+                  "typeAsString": "System.Collections.Generic.List`1[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.List<System.Guid>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "ids",
+                  "name": "ids",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<System.Guid>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "SeaFood.Utils.BaseResponse<System.Boolean>",
+                "typeSimple": "SeaFood.Utils.BaseResponse<boolean>"
               },
               "allowAnonymous": null,
               "implementFrom": "SeaFood.Controllers.ProductController"
@@ -3344,6 +3865,75 @@
     }
   },
   "types": {
+    "SeaFood.Blogs.Dtos.BlogDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Title",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CoverImage",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Content",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreationTime",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "SeaFood.Categories.Dtos.CategoryDto": {
       "baseType": null,
       "isEnum": false,
@@ -3374,11 +3964,44 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "ProductCount",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
-    "SeaFood.Entities.Category": {
-      "baseType": "Volo.Abp.Domain.Entities.Auditing.AuditedEntity<System.Int32>",
+    "SeaFood.Categories.Dtos.CreateCategoryDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SeaFood.Categories.Dtos.UpdateCategoryDto": {
+      "baseType": null,
       "isEnum": false,
       "enumNames": null,
       "enumValues": null,
@@ -3547,18 +4170,6 @@
           "regex": null
         },
         {
-          "name": "Category",
-          "jsonName": null,
-          "type": "SeaFood.Entities.Category",
-          "typeSimple": "SeaFood.Entities.Category",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "CoverImage",
           "jsonName": null,
           "type": "System.String",
@@ -3599,6 +4210,111 @@
           "jsonName": null,
           "type": "[SeaFood.Products.ProductImageDto]",
           "typeSimple": "[SeaFood.Products.ProductImageDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "SeaFood.Products.Dtos.UpdateProductDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ProductId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CoverImage",
+          "jsonName": null,
+          "type": "Volo.Abp.Content.IRemoteStreamContent",
+          "typeSimple": "Volo.Abp.Content.IRemoteStreamContent",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Origin",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Description",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Slug",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CategoryId",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Units",
+          "jsonName": null,
+          "type": "[SeaFood.Products.ProductUnitDto]",
+          "typeSimple": "[SeaFood.Products.ProductUnitDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -6558,107 +7274,6 @@
           "jsonName": null,
           "type": "System.Int64?",
           "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "Volo.Abp.Domain.Entities.Auditing.AuditedEntity<T0>": {
-      "baseType": "Volo.Abp.Domain.Entities.Auditing.CreationAuditedEntity<TKey>",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": [
-        "TKey"
-      ],
-      "properties": [
-        {
-          "name": "LastModificationTime",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "LastModifierId",
-          "jsonName": null,
-          "type": "System.Guid?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "Volo.Abp.Domain.Entities.Auditing.CreationAuditedEntity<T0>": {
-      "baseType": "Volo.Abp.Domain.Entities.Entity<TKey>",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": [
-        "TKey"
-      ],
-      "properties": [
-        {
-          "name": "CreationTime",
-          "jsonName": null,
-          "type": "System.DateTime",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "CreatorId",
-          "jsonName": null,
-          "type": "System.Guid?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "Volo.Abp.Domain.Entities.Entity": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": []
-    },
-    "Volo.Abp.Domain.Entities.Entity<T0>": {
-      "baseType": "Volo.Abp.Domain.Entities.Entity",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": [
-        "TKey"
-      ],
-      "properties": [
-        {
-          "name": "Id",
-          "jsonName": null,
-          "type": "TKey",
-          "typeSimple": "TKey",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

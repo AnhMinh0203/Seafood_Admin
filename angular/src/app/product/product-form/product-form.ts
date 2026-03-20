@@ -78,7 +78,7 @@ export class ProductForm implements OnChanges {
       skipCount: this.pageIndex * this.pageSize,
       maxResultCount: this.pageSize
     };
-    this.categoryService.getList(input).subscribe(res => {
+    this.categoryService.getListByInput(input).subscribe(res => {
       this.categories = res.items;
       console.log('Categories:', this.categories);
     });
