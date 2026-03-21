@@ -47,7 +47,7 @@ namespace SeaFood.Storage
                 var response = await _s3Client.PutObjectAsync(request);
                 if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    return $"{_s3Domain}/{key}";
+                    return $"https://{_s3Domain}/{key}";
                 }
 
                 throw new Exception("Upload file lên S3 thất bại");

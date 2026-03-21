@@ -6,3 +6,15 @@ export interface BlogDto {
   content?: string;
   creationTime?: string;
 }
+
+export interface CreateBlogDto {
+  title?: string;
+  coverImage: File | null;
+  content?: string;
+}
+
+export interface UpdateBlogDto {
+  title?: string;
+  coverImage: File | null;
+  content?: string;
+}

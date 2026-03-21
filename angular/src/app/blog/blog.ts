@@ -93,7 +93,12 @@ export class Blog {
   private blogService = inject(BlogService);
 
   selectedBlogs: any;
-  newBlog: any;
+
+  newBlog: any = {
+    title: '',
+    content: ''
+  };
+
   blogs: BlogDto[] = [];
   isAddFormVisible: boolean = false;
   columnItems: MenuItem[] | undefined;
@@ -158,7 +163,7 @@ export class Blog {
 
   onBlogSaved() {
     this.isFormVisible = false;
-    //this.loadBlogs();
+    this.loadBlogs();
 
   }
 
@@ -177,5 +182,12 @@ export class Blog {
     if (!url) return '';
     if (url.startsWith('http')) return url;
     return 'https://' + url;
+  }
+
+  editBlog(blog: BlogDto) {
+    console.log('Editing blog', blog);
+    this.isEditMode = true;
+    this.newBlog = { ...blog };
+    this.isFormVisible = true;
   }
 }
