@@ -428,8 +428,8 @@ export class Product {
                   detail: res.message
                 });
 
-                this.loadProducts();        // reload table
-                this.selectedProducts = null; // clear checkbox
+                this.loadProducts();        
+                this.selectedProducts = null; 
               }
             },
 

@@ -48,5 +48,17 @@ namespace SeaFood.Controllers
         {
             return await _blogAppService.UpdateBlogAsync(id, input);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<BaseResponse<bool>> Delete(int id)
+        {
+            return await _blogAppService.DeleteBlogAsync(id);
+        }
+
+        [HttpDelete("BatchDelete")]
+        public async Task<BaseResponse<bool>> BatchDelete([FromBody] List<int> ids)
+        {
+            return await _blogAppService.BatchDeleteBlogsAsync(ids);
+        }
     }
 }

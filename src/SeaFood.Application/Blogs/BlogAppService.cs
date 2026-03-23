@@ -15,6 +15,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Content;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
 
@@ -139,6 +140,31 @@ namespace SeaFood.Blogs
             {
                 throw new UserFriendlyException($"Update failed: {ex.Message}");
             }
+        }
+
+        public async Task<BaseResponse<bool>> DeleteBlogAsync(int id)
+        {
+            var entity = await _blogRepository.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (entity == null)
+                throw new UserFriendlyException("Product not found");
+            await _blogRepository.DeleteAsync(entity, autoSave: true);
+            return BaseResponse<bool>.Success("Xóa sản phẩm thành công", true);
+        }
+
+        public async Task<BaseResponse<bool>> BatchDeleteBlogsAsync(List<int> ids)
+        {
+            if (ids == null || !ids.Any())
+                throw new UserFriendlyException("Danh sách sản phẩm cần xóa không hợp lệ");
+
+            var blogs = await _blogRepository.GetListAsync(x => ids.Contains(x.Id));
+
+            if (blogs == null || !blogs.Any())
+                throw new UserFriendlyException("Không tìm thấy blog nào để xóa");
+
+            await _blogRepository.DeleteManyAsync(blogs, autoSave: true);
+
+            return BaseResponse<bool>.Success("Xóa danh sách blog thành công", true);
         }
     }
 }

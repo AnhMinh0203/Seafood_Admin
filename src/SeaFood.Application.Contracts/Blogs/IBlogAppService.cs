@@ -15,5 +15,7 @@ namespace SeaFood.Blogs
         Task<BlogDto> GetDetailAsync(int id);
         Task<BaseResponse<BlogDto>> CreateBlogAsync(CreateBlogDto input);
         Task<BaseResponse<BlogDto>> UpdateBlogAsync(int iteamId, UpdateBlogDto input);
+        Task<BaseResponse<bool>> DeleteBlogAsync(int id);
+        Task<BaseResponse<bool>> BatchDeleteBlogsAsync(List<int> ids);
     }
 }

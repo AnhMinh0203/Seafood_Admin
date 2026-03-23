@@ -100,6 +100,7 @@ export class Blog {
   };
 
   blogs: BlogDto[] = [];
+  selectedBlog: BlogDto | null = null;
   isAddFormVisible: boolean = false;
   columnItems: MenuItem[] | undefined;
   actionItems: MenuItem[] | undefined;
@@ -189,5 +190,90 @@ export class Blog {
     this.isEditMode = true;
     this.newBlog = { ...blog };
     this.isFormVisible = true;
+  }
+
+  deleteBlog(blog: any) {
+
+    this.confirmationService.confirm({
+      message: `Bạn có chắc muốn xóa sản phẩm "${blog.name}"?`,
+      header: 'Xác nhận xóa',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Xóa',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+
+        this.blogService.deleteBlog(blog.id)
+          .subscribe({
+            next: () => {
+              console.log('Deleted successfully');
+              this.loadBlogs();
+            },
+            error: (err) => {
+              console.error(err);
+            }
+          });
+
+      }
+    });
+
+  }
+
+  deleteBatchBlogs() {
+
+    if (!this.selectedBlogs || this.selectedBlogs.length === 0) {
+      return;
+    }
+
+    const ids = this.selectedBlogs.map(b => b.id);
+
+    this.confirmationService.confirm({
+      message: `Bạn có chắc muốn xóa ${ids.length} blog đã chọn?`,
+      header: 'Xác nhận xóa',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Xóa',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-danger',
+
+      accept: () => {
+
+        this.blogService.batchDeleteBlogs(ids)
+          .subscribe({
+            next: (res) => {
+
+              if (res.isSuccess) {
+
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Thành công',
+                  detail: res.message
+                });
+
+                this.loadBlogs();        // reload table
+                this.selectedBlogs = null; // clear checkbox
+              }
+            },
+
+            error: (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Lỗi',
+                detail: err.error?.message || 'Xóa thất bại'
+              });
+            }
+          });
+      }
+    });
+  }
+
+  viewBlog(blog: any) {
+    this.selectedBlog = blog;
+    this.isPreViewMode = true;
+    console.log('Viewing blog', blog);
+  }
+
+  handlePreviewClose() {
+    this.isPreViewMode = false;
+    this.selectedBlog = null;
   }
 }

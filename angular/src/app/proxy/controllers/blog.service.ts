@@ -52,5 +52,22 @@ export class BlogService {
     });
   }
 
+  deleteBlog(id: number) {
+    return this.restService.request<any, BaseResponse<boolean>>({
+      method: 'DELETE',
+      url: `/api/app/blog/${id}`
+    },
+      { apiName: this.apiName });
+  }
+
+  batchDeleteBlogs(ids: number[]) {
+    return this.restService.request<any, BaseResponse<boolean>>({
+      method: 'DELETE',
+      url: '/api/app/blog/BatchDelete',
+      body: ids
+    },
+      { apiName: this.apiName });
+  }
+
   constructor(private restService: RestService) { }
 }
