@@ -26,15 +26,19 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/css/bootstrap.min.css",
+              "src/assets/css/style.css",
+              "src/assets/lib/animate/animate.min.css",
+              "src/assets/lib/owlcarousel/assets/owl.carousel.min.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "src/assets/lib/wow/wow.min.js",
+              "src/assets/lib/owlcarousel/owl.carousel.min.js"
+            ],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
@@ -103,5 +107,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
