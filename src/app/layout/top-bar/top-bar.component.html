@@ -1,14 +1,13 @@
 <div class="top-bar">
-  <!-- LEFT: USER -->
-  <div class="left">
+  <button type="button" class="top-btn user-btn" (click)="openUserSidebar()">
     <i class="fa fa-user"></i>
-  </div>
+  </button>
 
-  <!-- RIGHT: CART -->
-  <div class="right">
-    <div class="cart">
-      <i class="fa fa-shopping-cart"></i>
-      <span class="badge">{{ cartCount }}</span>
-    </div>
-  </div>
+  <button type="button" class="top-btn cart-btn" routerLink="/order">
+    <i class="fa fa-shopping-cart"></i>
+
+    @if (cartService.cartCount() > 0) {
+      <span class="badge">{{ cartService.cartCount() }}</span>
+    }
+  </button>
 </div>

@@ -1,0 +1,54 @@
+<section class="notifications-page mt-5">
+  <div class="page-header">
+    <!-- <div>
+      <h2>Thông báo</h2>
+      <p>Theo dõi đơn hàng, ưu đãi và cập nhật mới nhất</p>
+    </div> -->
+
+    @if (notifications.length > 0 && getUnreadCount() > 0) {
+      <button class="mark-all-btn justify-content-end" type="button" (click)="markAllAsRead()">
+        Đọc tất cả
+      </button>
+    }
+  </div>
+
+  @if (notifications.length > 0) {
+    <div class="notification-list">
+      @for (item of notifications; track item.id) {
+        <div
+          class="notification-card"
+          [class.unread]="!item.isRead"
+          (click)="markAsRead(item)"
+        >
+          <div class="notification-icon" [ngClass]="getIconClass(item.type)">
+            <i [class]="getIcon(item.type)"></i>
+          </div>
+
+          <div class="notification-content">
+            <div class="notification-top">
+              <h3>{{ item.title }}</h3>
+              <span class="notification-time">{{ item.time }}</span>
+            </div>
+
+            <p>{{ item.message }}</p>
+          </div>
+
+          @if (!item.isRead) {
+            <span class="unread-dot"></span>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fa-regular fa-bell"></i>
+      </div>
+
+      <h3>Chưa có thông báo</h3>
+      <p>Bạn chưa có thông báo nào vào lúc này.</p>
+
+      <a routerLink="/menu" class="go-menu-btn">Khám phá menu</a>
+    </div>
+  }
+</section>

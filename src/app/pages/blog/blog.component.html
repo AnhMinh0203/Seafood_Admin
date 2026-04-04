@@ -1,0 +1,55 @@
+<!-- Navbar & Hero Start -->
+<div class="container-xxl position-relative p-0">
+  <div class="container-xxl py-5 bg-dark hero-header mb-5">
+    <div class="container text-center my-5 pt-5 pb-4">
+      <h1 class="display-3 text-white mb-3 animated slideInDown">Food Blog</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb justify-content-center text-uppercase">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item"><a href="#">Pages</a></li>
+          <li class="breadcrumb-item text-white active" aria-current="page">Blog</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+</div>
+<!-- Navbar & Hero End -->
+
+<section class="blog-page">
+  <div class="blog-header">
+    <h2 class="blog-title">Latest Blog</h2>
+    <p class="blog-subtitle">Khám phá các bài viết mới nhất về hải sản và ẩm thực</p>
+  </div>
+
+  <div class="blog-list">
+    @for (blog of blogs; track blog.id) {
+      <article class="blog-card">
+        <a class="blog-image-wrap" [routerLink]="['/blog', blog.id]">
+          <img [src]="blog.coverImage" [alt]="blog.title" class="blog-image" />
+        </a>
+
+        <div class="blog-content">
+          <div class="blog-meta">
+            <span class="blog-author">{{ blog.creatorName }}</span>
+            <span class="dot">•</span>
+            <span class="blog-date">{{ blog.creationTime | date:'dd/MM/yyyy' }}</span>
+            <span class="dot">•</span>
+            <span class="blog-view">{{ blog.view }} views</span>
+          </div>
+
+          <h3 class="blog-card-title">
+            <a [routerLink]="['/blog', blog.id]">{{ blog.title }}</a>
+          </h3>
+
+          <p class="blog-desc">
+            {{ blog.content }}
+          </p>
+
+          <a class="read-more" [routerLink]="['/blog', blog.id]">
+            Read more
+          </a>
+        </div>
+      </article>
+    }
+  </div>
+</section>

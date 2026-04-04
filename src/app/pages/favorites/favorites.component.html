@@ -1,0 +1,22 @@
+<section class="favorites-page mt-5">
+    <div class="page-header">
+        <h2>Sản phẩm yêu thích</h2>
+        <p>Lưu lại những món bạn thích để xem lại dễ hơn</p>
+    </div>
+
+    @if (favoriteProducts.length > 0) {
+    <app-product-list [products]="favoriteProducts" [showHeader]="false" layout="grid">
+    </app-product-list>
+    } @else {
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fa-regular fa-heart"></i>
+        </div>
+
+        <h3>Chưa có sản phẩm yêu thích</h3>
+        <p>Hãy thêm những món bạn thích vào danh sách yêu thích để xem lại dễ hơn.</p>
+
+        <a routerLink="/menu" class="go-menu-btn">Khám phá menu</a>
+    </div>
+    }
+</section>

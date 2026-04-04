@@ -3,11 +3,27 @@ import { HomeComponent } from './pages/home/home.component';
 import { AboutComponent } from './pages/about/about.component';
 import { MenuComponent } from './pages/menu/menu.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
+import { OrderComponent } from './pages/order/order.component';
+import { BlogComponent } from './pages/blog/blog.component';
+import { BlogDetailComponent } from './pages/blog-detail/blog-detail.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
+import { OrderHistoryComponent } from './pages/order-history/order-history.component';
+import { FavoritesComponent } from './pages/favorites/favorites.component';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, data: { showBanner: true } },
-  { path: 'home', component: HomeComponent, data: { showBanner: false } },
-  { path: 'about', component: AboutComponent, data: { showBanner: false } },
-  { path: 'menu', component: MenuComponent, data: { showBanner: false } },
-  { path: 'contact', component: ContactComponent, data: { showBanner: false } },
+  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'menu', component: MenuComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: 'product-detail/:id', component: ProductDetailComponent },
+  { path: 'order', component: OrderComponent },
+  { path: 'order-history', component: OrderHistoryComponent },
+  { path: 'blog', component: BlogComponent },
+  { path: 'blog/:id', component: BlogDetailComponent },
+  { path: 'profile', component: UserProfileComponent },
+  { path: 'favorites', component: FavoritesComponent },
+  { path: 'notifications', component: NotificationsComponent },
 ];

@@ -1,0 +1,60 @@
+@if (sidebarService.isOpen()) {
+  <div class="sidebar-overlay" (click)="close()"></div>
+}
+
+<aside class="user-sidebar" [class.open]="sidebarService.isOpen()">
+  <div class="sidebar-header">
+    <div>
+      <h3 class="sidebar-title">My Account</h3>
+      <p class="sidebar-subtitle">Quản lý thông tin cá nhân</p>
+    </div>
+
+    <button type="button" class="close-btn" (click)="close()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="avatar">
+      <i class="fa fa-user"></i>
+    </div>
+
+    <div class="user-info">
+      <h4>Guest User</h4>
+    </div>
+  </div>
+
+  <nav class="sidebar-menu">
+    <a routerLink="/profile" class="menu-item" (click)="close()">
+      <i class="fa fa-id-card"></i>
+      <span>Profile</span>
+    </a>
+
+    <a routerLink="/order" class="menu-item" (click)="close()">
+      <i class="fa fa-shopping-bag"></i>
+      <span>My Orders</span>
+    </a>
+
+    <a routerLink="/order-history" class="menu-item" (click)="close()">
+      <i class="fa fa-shopping-bag"></i>
+      <span>Orders history</span>
+    </a>
+
+    <a routerLink="/blog" class="menu-item" (click)="close()">
+      <i class="fa-solid fa-newspaper"></i>
+      <span>Blog</span>
+    </a>
+
+    <a routerLink="/contact" class="menu-item" (click)="close()">
+      <i class="fa fa-phone"></i>
+      <span>Contact</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button type="button" class="logout-btn">
+      <i class="fa fa-sign-out"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>

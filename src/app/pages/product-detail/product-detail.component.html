@@ -1,0 +1,231 @@
+<!-- <div class="pd-header-spacer"></div>
+@if (product; as p) {
+<div class="pd-page">
+    <div class="pd-container">
+        <a routerLink="/" class="pd-back-btn">← Quay lại</a>
+
+        <div class="pd-wrapper">
+  
+            <div class="pd-gallery-card">
+                <div class="pd-main-image">
+                    <img [src]="selectedImage || p.coverImage" [alt]="p.name" />
+                </div>
+
+                <div class="pd-thumb-list">
+                    @for (img of getGalleryImages(p); track $index) {
+                    <button type="button" class="pd-thumb-item" [class.active]="selectedImage === img"
+                        (click)="selectImage(img)">
+                        <img [src]="img" [alt]="p.name" />
+                    </button>
+                    }
+                </div>
+            </div>
+
+         
+            <div class="pd-info-card">
+                <h1 class="pd-product-name">{{ p.name }}</h1>
+
+                <div class="pd-product-price">
+                    {{ formatCurrency(displayPrice) }}
+                </div>
+
+                @if (p.units?.length) {
+                <div class="pd-block">
+                    <div class="pd-block-title">Chọn đơn vị</div>
+
+                    <div class="pd-option-list">
+                        @for (unit of p.units; track unit.unitName) {
+                        <button type="button" class="pd-option-card"
+                            [class.active]="selectedUnit?.unitName === unit.unitName" (click)="selectUnit(unit)">
+                            <div class="pd-option-name">{{ unit.unitName }}</div>
+                            <div class="pd-option-price">{{ formatCurrency(unit.price) }}</div>
+                            <div class="pd-option-stock">Còn {{ unit.stockQuantity }}</div>
+                        </button>
+                        }
+                    </div>
+                </div>
+                }
+
+                <div class="pd-meta-grid">
+                    <div class="pd-meta-item">
+                        <span class="pd-label">Xuất xứ</span>
+                        <span class="pd-value">{{ p.origin }}</span>
+                    </div>
+
+                    <div class="pd-meta-item">
+                        <span class="pd-label">Danh mục ID</span>
+                        <span class="pd-value">{{ p.categoryId }}</span>
+                    </div>
+
+                    <div class="pd-meta-item">
+                        <span class="pd-label">Đơn giá</span>
+                        <span class="pd-value">{{ formatCurrency(displayPrice) }} / {{ displayUnitName }}</span>
+                    </div>
+
+                    <div class="pd-meta-item">
+                        <span class="pd-label">Tồn kho</span>
+                        <span class="pd-value pd-stock">{{ displayStock }}</span>
+                    </div>
+                </div>
+
+                <div class="pd-block">
+                    <div class="pd-block-title">Số lượng</div>
+
+                    <div class="pd-qty-box">
+                        <button type="button" class="pd-qty-btn" (click)="decreaseQuantity()">−</button>
+                        <input type="text" [value]="quantity" readonly />
+                        <button type="button" class="pd-qty-btn" (click)="increaseQuantity()">+</button>
+                    </div>
+                </div>
+
+                <div class="pd-action-group">
+                    <button type="button" class="pd-cart-btn" (click)="addToCart()">
+                        Thêm giỏ hàng
+                    </button>
+
+                    <button type="button" class="pd-buy-btn" (click)="buyNow()">
+                        Mua ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="pd-description-card">
+            <div class="pd-description-header">
+                <h2 class="pd-description-title">Mô tả sản phẩm</h2>
+                <span class="pd-description-line"></span>
+            </div>
+
+            <div class="pd-description-content" [innerHTML]="p.description"></div>
+        </div>
+    </div>
+</div>
+} @else {
+<div class="pd-empty">
+    <h2>Không tìm thấy sản phẩm</h2>
+    <a routerLink="/">Quay về trang chủ</a>
+</div>
+} -->
+
+
+<div class="pd-header-spacer"></div>
+
+@if (product; as p) {
+<div class="pd-page">
+  <div class="pd-container">
+    <a routerLink="/" class="pd-back-btn">← Quay lại</a>
+
+    <div class="row g-24">
+      <!-- LEFT -->
+      <div class="col-12 col-lg-6">
+        <div class="pd-gallery-card">
+          <div class="pd-main-image">
+            <img [src]="selectedImage || p.coverImage" [alt]="p.name" />
+          </div>
+
+          <div class="pd-thumb-list">
+            @for (img of getGalleryImages(p); track $index) {
+            <button
+              type="button"
+              class="pd-thumb-item"
+              [class.active]="selectedImage === img"
+              (click)="selectImage(img)">
+              <img [src]="img" [alt]="p.name" />
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="col-12 col-lg-6">
+        <div class="pd-info-card">
+          <h1 class="pd-product-name">{{ p.name }}</h1>
+
+          <div class="pd-product-price">
+            {{ formatCurrency(displayPrice) }}
+          </div>
+
+          @if (p.units.length) {
+          <div class="pd-block">
+            <div class="pd-block-title">Chọn đơn vị</div>
+
+            <div class="pd-option-list">
+              @for (unit of p.units; track unit.unitName) {
+              <button
+                type="button"
+                class="pd-option-card"
+                [class.active]="selectedUnit?.unitName === unit.unitName"
+                (click)="selectUnit(unit)">
+                <div class="pd-option-name">{{ unit.unitName }}</div>
+                <div class="pd-option-price">{{ formatCurrency(unit.price) }}</div>
+                <div class="pd-option-stock">Còn {{ unit.stockQuantity }}</div>
+              </button>
+              }
+            </div>
+          </div>
+          }
+
+          <div class="pd-meta-grid">
+            <div class="pd-meta-item">
+              <span class="pd-label">Xuất xứ</span>
+              <span class="pd-value">{{ p.origin }}</span>
+            </div>
+
+            <div class="pd-meta-item">
+              <span class="pd-label">Danh mục ID</span>
+              <span class="pd-value">{{ p.categoryId }}</span>
+            </div>
+
+            <div class="pd-meta-item">
+              <span class="pd-label">Đơn giá</span>
+              <span class="pd-value">{{ formatCurrency(displayPrice) }} / {{ displayUnitName }}</span>
+            </div>
+
+            <div class="pd-meta-item">
+              <span class="pd-label">Tồn kho</span>
+              <span class="pd-value pd-stock">{{ displayStock }}</span>
+            </div>
+          </div>
+
+          <div class="pd-block">
+            <div class="pd-block-title">Số lượng</div>
+
+            <div class="pd-qty-box">
+              <button type="button" class="pd-qty-btn" (click)="decreaseQuantity()">−</button>
+              <input type="text" [value]="quantity" readonly />
+              <button type="button" class="pd-qty-btn" (click)="increaseQuantity()">+</button>
+            </div>
+          </div>
+
+          <div class="pd-action-group">
+            <button type="button" class="pd-cart-btn" (click)="addToCart()">
+              Thêm giỏ hàng
+            </button>
+
+            <button type="button" class="pd-buy-btn" (click)="buyNow()">
+              Mua ngay
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="col-12">
+        <div class="pd-description-card">
+          <div class="pd-description-header">
+            <h2 class="pd-description-title">Mô tả sản phẩm</h2>
+            <span class="pd-description-line"></span>
+          </div>
+
+          <div class="pd-description-content" [innerHTML]="p.description"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+} @else {
+<div class="pd-empty">
+  <h2>Không tìm thấy sản phẩm</h2>
+  <a routerLink="/">Quay về trang chủ</a>
+</div>
+}

@@ -1,0 +1,260 @@
+.menu-section {
+  padding: 30px 0 80px;
+  background: #f8fafc;
+}
+
+.menu-header {
+  max-width: 720px;
+  margin: 0 auto 32px;
+
+  h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+}
+
+.menu-subtitle {
+  margin: 0 auto;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 620px;
+}
+
+.menu-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+
+.menu-tab {
+  border: none;
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 180px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.02);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.menu-tab:hover {
+  transform: translateY(-2px);
+}
+
+.menu-tab.active {
+  background: linear-gradient(135deg, #ffb347, #ff8c42);
+  color: #fff;
+}
+
+.menu-tab.active small,
+.menu-tab.active span,
+.menu-tab.active i {
+  color: #fff;
+}
+
+.menu-tab-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #fff7ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    font-size: 20px;
+    color: #f97316;
+  }
+}
+
+.menu-tab.active .menu-tab-icon {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.menu-tab-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  small {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 2px;
+  }
+
+  span {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+}
+
+.menu-card {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.02);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.menu-card:hover {
+  transform: translateY(-3px);
+}
+
+.menu-image-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  background: #f8fafc;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.menu-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.menu-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-info-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  h5 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+}
+
+.menu-price {
+  color: #f97316;
+  font-weight: 800;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.menu-info p {
+  margin: 0 0 14px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.menu-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.menu-detail-btn {
+  border: none;
+  background: #fff7ed;
+  color: #f97316;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.menu-detail-btn:hover {
+  background: #fed7aa;
+}
+
+.menu-cart-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #f97316;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.menu-cart-btn:hover {
+  background: #ea580c;
+  transform: scale(1.05);
+}
+
+@media (max-width: 767.98px) {
+  .menu-header h1 {
+    font-size: 30px;
+  }
+
+  .menu-tab {
+    width: 100%;
+    min-width: unset;
+    justify-content: flex-start;
+  }
+
+  .menu-card {
+    align-items: flex-start;
+    gap: 14px;
+    border-radius: 20px;
+    padding: 14px;
+  }
+
+  .menu-image-wrap {
+    width: 88px;
+    height: 88px;
+    border-radius: 16px;
+  }
+
+  .menu-info-top h5 {
+    font-size: 16px;
+  }
+
+  .menu-price {
+    font-size: 16px;
+  }
+
+  .menu-info p {
+    font-size: 13px;
+  }
+}

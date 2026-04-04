@@ -1,0 +1,116 @@
+<!-- <div class="container-xxl position-relative p-0">
+  <div class="container-xxl py-5 bg-dark hero-header mb-5">
+    <div class="container text-center my-5 pt-5 pb-4">
+      <h1 class="display-3 text-white mb-3 animated slideInDown">Order History</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb justify-content-center text-uppercase">
+          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+          <li class="breadcrumb-item text-white active" aria-current="page">Order History</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+</div> -->
+
+<section class="order-history-page mt-5">
+  <div class="container">
+    <div class="page-header">
+      <h2>Lịch sử đặt hàng</h2>
+      <p>Theo dõi các đơn hàng bạn đã đặt tại SeaFood</p>
+    </div>
+
+    @if (orders.length > 0) {
+      <div class="order-list">
+        @for (order of orders; track order.id) {
+          <article class="order-card">
+            <div class="order-card-header">
+              <div class="order-main-info">
+                <div class="order-code">#{{ order.orderCode }}</div>
+                <div class="order-meta">
+                  <span>{{ order.createdTime | date:'dd/MM/yyyy HH:mm' }}</span>
+                  <span class="dot">•</span>
+                  <span>{{ getTotalItems(order) }} sản phẩm</span>
+                </div>
+              </div>
+
+              <span class="order-status" [ngClass]="getStatusClass(order.status)">
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </div>
+
+            <div class="delivery-info">
+              <div class="info-row">
+                <i class="fa-solid fa-user"></i>
+                <span>{{ order.customerName }}</span>
+              </div>
+
+              <div class="info-row">
+                <i class="fa-solid fa-phone"></i>
+                <span>{{ order.phoneNumber }}</span>
+              </div>
+
+              <div class="info-row">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>{{ order.address }}</span>
+              </div>
+
+              @if (order.note) {
+                <div class="info-row">
+                  <i class="fa-solid fa-note-sticky"></i>
+                  <span>{{ order.note }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="order-items">
+              @for (item of order.items; track item.id) {
+                <div class="order-item">
+                  <img [src]="item.image" [alt]="item.name" class="item-image" />
+
+                  <div class="item-content">
+                    <h4 class="item-name">{{ item.name }}</h4>
+                    <div class="item-meta">
+                      <span>SL: {{ item.quantity }}</span>
+                      <span class="dot">•</span>
+                      <span>{{ item.price | number }}₫</span>
+                    </div>
+                  </div>
+
+                  <div class="item-total">
+                    {{ item.price * item.quantity | number }}₫
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="order-card-footer">
+              <div class="total-box">
+                <span class="total-label">Tổng thanh toán</span>
+                <strong class="total-value">{{ order.totalAmount | number }}₫</strong>
+              </div>
+
+              <div class="order-actions">
+                <a routerLink="/menu" class="action-btn secondary-btn">
+                  Đặt lại
+                </a>
+
+                <a routerLink="/contact" class="action-btn primary-btn">
+                  Hỗ trợ
+                </a>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <h3>Bạn chưa có đơn hàng nào</h3>
+        <p>Hãy khám phá thực đơn và đặt món yêu thích của bạn ngay hôm nay.</p>
+        <a routerLink="/menu" class="shop-now-btn">Đi tới menu</a>
+      </div>
+    }
+  </div>
+</section>

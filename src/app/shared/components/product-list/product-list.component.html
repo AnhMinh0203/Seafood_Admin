@@ -1,37 +1,43 @@
 <div class="container-xxl py-5">
-  <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-    <h5 class="section-title ff-secondary text-center text-primary fw-normal">Đề xuất</h5>
-    <h1 class="mb-5">Most Popular Items</h1>
-  </div>
-  <div class="container">
-    <div class="product-scroll">
-      <div class="product-item" *ngFor="let item of products">
-        <div class="product-card">
+  @if (showHeader) {
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+      <h5 class="section-title ff-secondary text-center text-primary fw-normal">Đề xuất</h5>
+      <h1 class="mb-5">Most Popular Items</h1>
+    </div>
+  }
 
-          <div class="image-wrapper">
-            <img [src]="item.image" alt="food" />
+  <!-- <div class="container">
+    
+  </div> -->
 
-            <div class="favorite" (click)="toggleFavorite(item)">
-              <i [ngClass]="item.isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
-            </div>
-          </div>
+  <div class="product-list" [ngClass]="layout">
+      @for (item of displayProducts; track item.id) {
+        <div class="product-item">
+          <div class="product-card" (click)="goToDetail(item)">
+            <div class="image-wrapper">
+              <img [src]="item.image" alt="food" />
 
-          <div class="info">
-            <div class="name">{{ item.name }}</div>
-
-            <div class="bottom">
-              <div>
-                <div class="price">${{ item.price }}</div>
-                <div class="weight">{{ item.weight }}</div>
+              <div class="favorite" (click)="toggleFavorite(item, $event)">
+                <i [ngClass]="item.isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
               </div>
+            </div>
 
-              <button class="add-btn" (click)="addToCart(item)">
-                +
-              </button>
+            <div class="info">
+              <div class="name">{{ item.name }}</div>
+
+              <div class="bottom">
+                <div>
+                  <div class="price">${{ item.price }}</div>
+                  <div class="weight">{{ item.weight }}</div>
+                </div>
+
+                <button class="add-btn" type="button" (click)="addToCart(item, $event)">
+                  +
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      }
     </div>
-  </div>
 </div>
