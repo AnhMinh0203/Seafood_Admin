@@ -1,64 +1,73 @@
-<section class="about-page mt-5">
-  <!-- Hero -->
-  <!-- Navbar & Hero Start -->
-  <div class="about-page-hero">
-    <div class="container-xxl position-relative p-0">
-      <div class="container-xxl py-5 bg-dark hero-header mb-5">
-        <div class="container text-center my-5 pt-5 pb-4">
-          <h1 class="display-3 text-white mb-3 animated slideInDown">About Us</h1>
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb justify-content-center text-uppercase">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Pages</a></li>
-              <li class="breadcrumb-item text-white active" aria-current="page">About</li>
-            </ol>
-          </nav>
+<section class="about-page">
+  @if (isAboutPage) {
+    <div class="about-page-hero">
+      <div class="container-xxl position-relative p-0">
+        <div class="container-xxl py-5 bg-dark hero-header mb-5">
+          <div class="container text-center my-5 pt-5 pb-4">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Về Chúng Tôi</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb justify-content-center text-uppercase">
+                <li class="breadcrumb-item"><a routerLink="/">Trang chủ</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Giới thiệu</li>
+              </ol>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
-  <!-- Navbar & Hero End -->
-
-  <!-- Main content -->
   <div class="container">
     <div class="about-wrapper">
       <div class="about-gallery">
         <div class="gallery-item large">
-          <img src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=900&q=80"
-            alt="Món ăn nổi bật">
+          <img
+            src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=900&q=80"
+            alt="Hải sản tươi ngon"
+          />
         </div>
+
         <div class="gallery-item small top-offset">
-          <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=900&q=80"
-            alt="Không gian nhà hàng">
+          <img
+            src="https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=900&q=80"
+            alt="Sản phẩm chả chất lượng"
+          />
         </div>
+
         <div class="gallery-item small">
-          <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=80"
-            alt="Nguyên liệu tươi ngon">
+          <img
+            src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=80"
+            alt="Nguyên liệu tươi sạch"
+          />
         </div>
+
         <div class="gallery-item large">
-          <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80"
-            alt="Đội ngũ phục vụ">
+          <img
+            src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80"
+            alt="Đóng gói và giao hàng cẩn thận"
+          />
         </div>
       </div>
 
       <div class="about-content">
         <span class="section-badge">Câu chuyện thương hiệu</span>
-        <h2>Chào mừng bạn đến với Restoran</h2>
+        <h2>Hải sản tươi ngon - Chả chất lượng cho mọi bữa ăn</h2>
 
         <p>
-          Chúng tôi xây dựng trải nghiệm đặt món đơn giản, nhanh chóng và thuận tiện,
-          giúp khách hàng dễ dàng lựa chọn món ăn yêu thích mọi lúc mọi nơi.
+          Chúng tôi chuyên cung cấp hải sản tươi, chả cá, chả mực và nhiều sản phẩm
+          chế biến sẵn chất lượng, giúp khách hàng dễ dàng lựa chọn thực phẩm ngon,
+          tiện lợi và an toàn cho gia đình.
         </p>
 
         <p>
-          Với đội ngũ giàu kinh nghiệm cùng quy trình chế biến chú trọng chất lượng,
-          Restoran luôn mong muốn mang đến những bữa ăn ngon, an toàn và đáng nhớ.
+          Với tiêu chí đặt chất lượng lên hàng đầu, mỗi sản phẩm đều được chọn lọc kỹ,
+          bảo quản cẩn thận và ưu tiên nguồn gốc rõ ràng. Chúng tôi mong muốn mang đến
+          hương vị tươi ngon, đậm đà và sự yên tâm trong từng đơn hàng.
         </p>
 
         <div class="about-stats">
           <div class="stat-card">
-            <h3>15+</h3>
+            <h3>10+</h3>
             <div>
               <span>Năm</span>
               <strong>Kinh nghiệm</strong>
@@ -66,16 +75,16 @@
           </div>
 
           <div class="stat-card">
-            <h3>50+</h3>
+            <h3>100+</h3>
             <div>
-              <span>Đầu bếp</span>
-              <strong>Chuyên nghiệp</strong>
+              <span>Sản phẩm</span>
+              <strong>Đa dạng lựa chọn</strong>
             </div>
           </div>
         </div>
 
         <div class="about-actions">
-          <a routerLink="/menu" class="primary-btn">Khám phá menu</a>
+          <a routerLink="/menu" class="primary-btn">Khám phá sản phẩm</a>
           <a routerLink="/contact" class="secondary-btn">Liên hệ ngay</a>
         </div>
       </div>

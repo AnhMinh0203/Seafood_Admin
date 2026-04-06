@@ -22,92 +22,112 @@ interface MenuItem {
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
-  activeCategory = 'breakfast';
+  activeCategory = 'all';
 
   categories: MenuCategory[] = [
     {
-      key: 'breakfast',
-      label: 'Breakfast',
-      subLabel: 'Popular',
-      icon: 'fa fa-coffee'
+      key: 'all',
+      label: 'Tất cả',
+      subLabel: 'Danh mục',
+      icon: 'fa fa-border-all'
     },
     {
-      key: 'lunch',
-      label: 'Lunch',
-      subLabel: 'Special',
-      icon: 'fa fa-hamburger'
+      key: 'seafood',
+      label: 'Hải sản tươi',
+      subLabel: 'Fresh',
+      icon: 'fa fa-fish'
     },
     {
-      key: 'dinner',
-      label: 'Dinner',
-      subLabel: 'Lovely',
+      key: 'cha',
+      label: 'Chả các loại',
+      subLabel: 'Best Seller',
       icon: 'fa fa-utensils'
+    },
+    {
+      key: 'frozen',
+      label: 'Đông lạnh',
+      subLabel: 'Preserved',
+      icon: 'fa fa-snowflake'
+    },
+    {
+      key: 'combo',
+      label: 'Combo tiện lợi',
+      subLabel: 'Family',
+      icon: 'fa fa-box'
     }
   ];
 
   menuItems: MenuItem[] = [
     {
       id: '1',
-      name: 'Chicken Burger',
-      price: 115,
-      description: 'Burger gà giòn, rau tươi và sốt đặc biệt.',
+      name: 'Tôm Sú Tươi',
+      price: 220000,
+      description: 'Tôm sú tươi ngon, thịt chắc ngọt, phù hợp hấp, nướng hoặc chế biến món gia đình.',
       image: 'assets/img/menu-1.jpg',
-      category: 'breakfast',
+      category: 'seafood',
       isPopular: true
     },
     {
       id: '2',
-      name: 'Beef Burger',
-      price: 135,
-      description: 'Bò nướng mềm, phô mai thơm béo, bánh mì nướng giòn.',
+      name: 'Mực Lá Tươi',
+      price: 180000,
+      description: 'Mực lá tươi, giòn tự nhiên, thích hợp chiên, hấp gừng hoặc nướng sa tế.',
       image: 'assets/img/menu-2.jpg',
-      category: 'breakfast'
+      category: 'seafood'
     },
     {
       id: '3',
-      name: 'Italian Pizza',
-      price: 210,
-      description: 'Pizza phong cách Ý với phô mai và xúc xích.',
+      name: 'Chả Cá Thác Lác',
+      price: 95000,
+      description: 'Chả cá dai ngon, đậm vị, tiện lợi cho bữa ăn gia đình hằng ngày.',
       image: 'assets/img/menu-3.jpg',
-      category: 'lunch',
+      category: 'cha',
       isPopular: true
     },
     {
       id: '4',
-      name: 'Seafood Pasta',
-      price: 189,
-      description: 'Mì Ý hải sản sốt kem đậm vị.',
+      name: 'Chả Mực Giã Tay',
+      price: 165000,
+      description: 'Chả mực thơm giòn, được chế biến từ nguyên liệu tươi, chuẩn vị hấp dẫn.',
       image: 'assets/img/menu-4.jpg',
-      category: 'lunch'
-    },
-    {
-      id: '5',
-      name: 'Grilled Salmon',
-      price: 255,
-      description: 'Cá hồi nướng dùng kèm rau củ tươi.',
-      image: 'assets/img/menu-5.jpg',
-      category: 'dinner',
+      category: 'cha',
       isPopular: true
     },
     {
+      id: '5',
+      name: 'Cá Viên Đông Lạnh',
+      price: 85000,
+      description: 'Cá viên đông lạnh tiện lợi, dễ chế biến cho các món chiên, lẩu hoặc ăn vặt.',
+      image: 'assets/img/menu-5.jpg',
+      category: 'frozen'
+    },
+    {
       id: '6',
-      name: 'Steak Premium',
-      price: 320,
-      description: 'Bít tết mềm mọng, sốt tiêu đen đặc biệt.',
+      name: 'Combo Hải Sản Gia Đình',
+      price: 399000,
+      description: 'Combo tiết kiệm gồm nhiều loại hải sản và chả, phù hợp cho bữa ăn gia đình.',
       image: 'assets/img/menu-6.jpg',
-      category: 'dinner'
+      category: 'combo',
+      isPopular: true
     }
   ];
 
   get filteredItems(): MenuItem[] {
+    if (this.activeCategory === 'all') {
+      return this.menuItems;
+    }
     return this.menuItems.filter(item => item.category === this.activeCategory);
+  }
+
+  get isMenuPage(): boolean {
+    return this.router.url.includes('menu');
   }
 
   selectCategory(categoryKey: string): void {
@@ -123,6 +143,6 @@ export class MenuComponent {
   }
 
   formatPrice(price: number): string {
-    return '$' + price;
+    return price.toLocaleString('vi-VN') + 'đ';
   }
 }

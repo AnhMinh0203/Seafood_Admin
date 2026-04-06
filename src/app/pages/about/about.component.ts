@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-about',
@@ -9,4 +9,14 @@ import { RouterLink } from '@angular/router';
   templateUrl: './about.component.html',
   styleUrl: './about.component.scss'
 })
-export class AboutComponent {}
+export class AboutComponent {
+
+
+  constructor(private router: Router) {
+
+  }
+
+  get isAboutPage(): boolean {
+    return this.router.url.includes('/about');
+  }
+}

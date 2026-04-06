@@ -11,6 +11,8 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { OrderHistoryComponent } from './pages/order-history/order-history.component';
 import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
+import { LoginComponent } from './pages/login/login.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,4 +28,6 @@ export const routes: Routes = [
   { path: 'profile', component: UserProfileComponent },
   { path: 'favorites', component: FavoritesComponent },
   { path: 'notifications', component: NotificationsComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 ];

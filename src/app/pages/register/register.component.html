@@ -1,0 +1,153 @@
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-card register-card">
+      <div class="card-header">
+        <h2>Tạo tài khoản</h2>
+        <p>Đăng ký thành viên để đặt món và nhận nhiều ưu đãi hấp dẫn</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fullName">Họ và tên</label>
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              [(ngModel)]="form.fullName"
+              #fullNameRef="ngModel"
+              required
+              placeholder="Nhập họ và tên"
+              class="form-control"
+              [class.is-invalid]="submitted && fullNameRef.invalid"
+            />
+            @if (submitted && fullNameRef.invalid) {
+              <div class="error-text">Vui lòng nhập họ và tên.</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Số điện thoại</label>
+            <input
+              id="phone"
+              name="phone"
+              type="text"
+              [(ngModel)]="form.phone"
+              #phoneRef="ngModel"
+              required
+              placeholder="Nhập số điện thoại"
+              class="form-control"
+              [class.is-invalid]="submitted && phoneRef.invalid"
+            />
+            @if (submitted && phoneRef.invalid) {
+              <div class="error-text">Vui lòng nhập số điện thoại.</div>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="registerusername">Tên đăng nhập</label>
+          <input
+            id="registerusername"
+            name="username"
+            type="username"
+            [(ngModel)]="form.username"
+            #usernameRef="ngModel"
+            required
+            username
+            placeholder="Nhập username của bạn"
+            class="form-control"
+            [class.is-invalid]="submitted && usernameRef.invalid"
+          />
+          @if (submitted && usernameRef.invalid) {
+            <div class="error-text">Vui lòng nhập username hợp lệ.</div>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="registerPassword">Mật khẩu</label>
+            <div class="password-wrap">
+              <input
+                id="registerPassword"
+                name="password"
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="form.password"
+                #passwordRef="ngModel"
+                required
+                minlength="6"
+                placeholder="Tạo mật khẩu"
+                class="form-control"
+                [class.is-invalid]="submitted && passwordRef.invalid"
+              />
+              <button type="button" class="toggle-password" (click)="togglePassword()">
+                <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+            </div>
+            @if (submitted && passwordRef.invalid) {
+              <div class="error-text">Mật khẩu phải có ít nhất 6 ký tự.</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu</label>
+            <div class="password-wrap">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                [(ngModel)]="form.confirmPassword"
+                #confirmPasswordRef="ngModel"
+                required
+                placeholder="Nhập lại mật khẩu"
+                class="form-control"
+                [class.is-invalid]="(submitted && confirmPasswordRef.invalid) || (submitted && passwordMismatch)"
+              />
+              <button type="button" class="toggle-password" (click)="toggleConfirmPassword()">
+                <i class="fa-solid" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+              </button>
+            </div>
+
+            @if (submitted && confirmPasswordRef.invalid) {
+              <div class="error-text">Vui lòng xác nhận mật khẩu.</div>
+            } @else if (submitted && passwordMismatch) {
+              <div class="error-text">Mật khẩu xác nhận không khớp.</div>
+            }
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          Đăng ký
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span>Đã có tài khoản?</span>
+        <a routerLink="/login">Đăng nhập</a>
+      </div>
+    </div>
+
+    <div class="auth-banner">
+      <p class="auth-subtitle">Join with us</p>
+      <h1>Thưởng thức món ngon theo cách tiện lợi nhất</h1>
+      <p class="auth-desc">
+        Đăng ký tài khoản để lưu địa chỉ giao hàng, theo dõi lịch sử mua hàng và nhận các ưu đãi dành riêng cho thành viên.
+      </p>
+
+      <div class="auth-highlight">
+        <div class="highlight-item">
+          <i class="fa-solid fa-gift"></i>
+          <span>Ưu đãi thành viên mới</span>
+        </div>
+        <div class="highlight-item">
+          <i class="fa-solid fa-truck-fast"></i>
+          <span>Đặt món nhanh, giao hàng tiện lợi</span>
+        </div>
+        <div class="highlight-item">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Dễ dàng theo dõi lịch sử đơn hàng</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
