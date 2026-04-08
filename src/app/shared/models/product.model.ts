@@ -7,7 +7,7 @@ export interface ProductUnitDto {
 
 export interface ProductImageDto {
   productId: string;
-  childImage: unknown | null;
+  childImage: string | null;
   imageUrl: string;
   displayOrder: number;
 }
@@ -22,4 +22,9 @@ export interface ProductDto {
   slug: string;
   units: ProductUnitDto[];
   images: ProductImageDto[];
+}
+
+export interface PagedResultDto<T> {
+  totalCount: number;
+  items: T[];
 }

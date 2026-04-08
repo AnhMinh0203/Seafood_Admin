@@ -28,16 +28,16 @@ export class ProductDetailComponent {
 
     if (!id) return;
 
-    this.productService.getProductById(id).subscribe(res => {
-      if (!res) {
-        this.product = null;
-        return;
-      }
+    // this.productService.getProductById(id).subscribe(res => {
+    //   if (!res) {
+    //     this.product = null;
+    //     return;
+    //   }
 
-      this.product = res;
-      this.selectedImage = this.getGalleryImages(res)[0] || res.coverImage || '';
-      this.selectedUnit = this.getDefaultUnit(res);
-    });
+    //   this.product = res;
+    //   this.selectedImage = this.getGalleryImages(res)[0] || res.coverImage || '';
+    //   this.selectedUnit = this.getDefaultUnit(res);
+    // });
   }
 
   getDefaultUnit(product: ProductDto): ProductUnitDto | null {
