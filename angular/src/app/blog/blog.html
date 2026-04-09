@@ -60,8 +60,8 @@
             (click)="editBlog(blog)" />
           <p-button icon="pi pi-trash" class="ms-2" severity="danger" [rounded]="true" [outlined]="true"
             (click)="deleteBlog(blog)" />
-          <!-- <p-button icon="pi pi-eye" class="ms-2" severity="info" [rounded]="true" [outlined]="true"
-            (click)="viewBlog(blog)" /> -->
+          <p-button icon="pi pi-eye" class="ms-2" severity="info" [rounded]="true" [outlined]="true"
+            (click)="viewBlog(blog)" />
         </td>
       </tr>
     </ng-template>
@@ -70,8 +70,12 @@
 </div>
 
 
-<!-- Product Form Template -->
+<!-- Blog Form Template -->
 <app-blog-form [visible]="isFormVisible" [isEditMode]="isEditMode" (close)="closeForm()"
   (save)="onBlogSaved()" [blogInput]="newBlog"></app-blog-form>
 
+<!-- Blog Preview Template -->
+<app-blog-preview [blog]="selectedBlog" [visible]="isPreViewMode"  (close)="handlePreviewClose()"></app-blog-preview>
+
+  
 <p-confirmdialog [style]="{ width: '450px' }" />

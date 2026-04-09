@@ -13,8 +13,9 @@ namespace SeaFood.Products
 {
     public interface IProductAppService
     {
+        Task<PagedResultDto<ProductCardDto>> GetPagedCardsAsync(PagedAndSortedResultRequestDto input);
+        Task<ProductDto> GetDetailBySlugAsync(string slug);
         Task<PagedResultDto<ProductDto>> GetListWithUnitsAsync(PagedAndSortedResultRequestDto input);
-        //Task<string> CreateOrUpdateAsync(CreateUpdateProductDto input);
         Task<BaseResponse<ProductDto>> CreateProductAsync(CreateProductDto input, List<IRemoteStreamContent> childImages);
         Task<ProductDto> GetDetailAsync(Guid id);
         Task<BaseResponse<ProductDto>> UpdateProductAsync(

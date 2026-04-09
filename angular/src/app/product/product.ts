@@ -64,10 +64,6 @@ interface ExportColumn {
 @Component({
   selector: 'app-product',
   imports: [
-    DatatableComponent,
-    DataTableColumnDirective,
-    DataTableColumnHeaderDirective,
-    DataTableColumnCellDirective,
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
@@ -83,7 +79,6 @@ interface ExportColumn {
     EditorModule,
     ProductForm,
     ConfirmDialogModule,
-    Dialog,
     IconFieldModule,
     InputIconModule,
     InputNumberModule,

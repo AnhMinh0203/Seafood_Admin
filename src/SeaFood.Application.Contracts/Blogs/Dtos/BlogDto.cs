@@ -12,6 +12,9 @@ namespace SeaFood.Blogs.Dtos
         public string Title { get; set; }
         public string CoverImage { get; set; }  
         public string Content { get; set; }
+        public int View { get; set; }
         public DateTime CreationTime { get; set; }
+        public Guid? CreatorId { get; set; }
+        public string CreatorName { get; set; }
     }
 }

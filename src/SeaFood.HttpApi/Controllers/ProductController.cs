@@ -24,6 +24,18 @@ namespace SeaFood.Controllers
             _productAppService = productAppService;
         }
 
+        [HttpGet("paged-cards")]
+        public async Task<PagedResultDto<ProductCardDto>> GetCards([FromQuery] PagedAndSortedResultRequestDto input)
+        {
+            return await _productAppService.GetPagedCardsAsync(input);
+        }
+
+        [HttpGet("detail-by-slug")]
+        public async Task<ProductDto> GetDetailBySlug(string slug)
+        {
+            return await _productAppService.GetDetailBySlugAsync(slug);
+        }
+
         [HttpGet("GetListWithUnits")]
         public async Task<PagedResultDto<ProductDto>> GetListWithUnits([FromQuery] PagedAndSortedResultRequestDto input)
         {

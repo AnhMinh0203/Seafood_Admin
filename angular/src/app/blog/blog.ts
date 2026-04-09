@@ -1,5 +1,3 @@
-
-
 import { Component, inject } from '@angular/core';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -8,21 +6,13 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormsModule } from '@angular/forms';
-import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadModule } from 'primeng/fileupload';
 import { EditorModule } from 'primeng/editor';
 import { MultiSelectModule } from 'primeng/multiselect';
 import {
-  DatatableComponent,
-  DataTableColumnDirective,
   ColumnMode,
-  SelectionType,
-
   ActivateEvent,
-  DataTableColumnCellDirective,
-  DataTableColumnHeaderDirective,
-
 } from '@swimlane/ngx-datatable';
 import { Employee } from 'src/app/product/data.model';
 import { Toast, ToastModule } from "primeng/toast";
@@ -39,19 +29,14 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RatingModule } from 'primeng/rating';
 import { TagModule } from 'primeng/tag';
-import { ProductForm } from 'src/app/product/product-form/product-form';
-import { ProductPreview } from 'src/app/product/product-preview/product-preview';
 import { BlogForm } from "./blog-form/blog-form";
 import { BlogService } from 'src/app/proxy/controllers/blog.service';
 import { BlogDto } from 'src/app/proxy/blogs/dtos/models';
+import { BlogPreview } from "./blog-preview/blog-preview";
 
 @Component({
   selector: 'app-unit',
   imports: [
-    DatatableComponent,
-    DataTableColumnDirective,
-    DataTableColumnHeaderDirective,
-    DataTableColumnCellDirective,
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
@@ -65,9 +50,7 @@ import { BlogDto } from 'src/app/proxy/blogs/dtos/models';
     SelectModule,
     MultiSelectModule,
     EditorModule,
-    ProductForm,
     ConfirmDialogModule,
-    Dialog,
     IconFieldModule,
     InputIconModule,
     InputNumberModule,
@@ -78,10 +61,10 @@ import { BlogDto } from 'src/app/proxy/blogs/dtos/models';
     ToastModule,
     ToolbarModule,
     CommonModule,
-    ProductPreview,
     DialogModule,
-    BlogForm
-  ],
+    BlogForm,
+    BlogPreview
+],
   providers: [MessageService, ConfirmationService],
   templateUrl: './blog.html',
   styleUrl: './blog.scss'

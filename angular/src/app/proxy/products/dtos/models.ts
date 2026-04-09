@@ -33,3 +33,14 @@ export interface UpdateProductDto {
   categoryId: number;
   units: ProductUnitDto[];
 }
+
+export interface UpdateProductPayload {
+  name?: string;
+  coverImage?: File | null;
+  origin?: string;
+  description?: string;
+  slug?: string;
+  categoryId: number;
+  units: ProductUnitDto[];
+  deletedImageUrls?: string[];
+}

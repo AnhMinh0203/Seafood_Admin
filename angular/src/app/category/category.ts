@@ -50,10 +50,6 @@ interface Column {
 @Component({
   selector: 'app-unit',
   imports: [
-    DatatableComponent,
-    DataTableColumnDirective,
-    DataTableColumnHeaderDirective,
-    DataTableColumnCellDirective,
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
@@ -67,7 +63,6 @@ interface Column {
     SelectModule,
     MultiSelectModule,
     EditorModule,
-    ProductForm,
     ConfirmDialogModule,
     Dialog,
     IconFieldModule,
@@ -80,7 +75,6 @@ interface Column {
     ToastModule,
     ToolbarModule,
     CommonModule,
-    ProductPreview,
     DialogModule
   ],
   providers: [ConfirmationService, MessageService],

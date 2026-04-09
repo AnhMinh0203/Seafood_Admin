@@ -12,5 +12,7 @@ namespace SeaFood.Entities
         public string Title { get; set; }
         public string CoverImage { get; set; }
         public string Content { get; set; }
+        public int View { get; set; } = 0;
+
     }
 }

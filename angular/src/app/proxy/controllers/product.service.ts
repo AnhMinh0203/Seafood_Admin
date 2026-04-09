@@ -2,7 +2,7 @@ import { RestService, Rest } from '@abp/ng.core';
 import type { PagedAndSortedResultRequestDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import type { CreateProductDto, ProductDto } from '../products/dtos/models';
+import type { CreateProductDto, ProductDto, UpdateProductPayload } from '../products/dtos/models';
 import type { BaseResponse } from '../utils/models';
 import { IRemoteStreamContent } from 'src/app/proxy/volo/abp/content/models';
 
@@ -49,7 +49,7 @@ export class ProductService {
       { apiName: this.apiName });
   }
 
-  updateProduct(id: string, input: CreateProductDto, childImages: File[]) {
+  updateProduct(id: string, input: UpdateProductPayload, childImages: File[]) {
 
     const formData = new FormData();
 
@@ -73,10 +73,17 @@ export class ProductService {
       formData.append('coverImage', input.coverImage);
     }
 
+    // ===== Deleted old images =====
+    (input.deletedImageUrls ?? []).forEach((url, index) => {
+      formData.append(`DeletedImageUrls[${index}]`, url);
+    });
+
     // ===== Child images (chỉ là ảnh mới thêm) =====
-    childImages.forEach(file => {
+    (childImages ?? []).forEach(file => {
       formData.append('childImages', file);
     });
+
+
 
     return this.restService.request<any, BaseResponse<ProductDto>>({
       method: 'PUT',

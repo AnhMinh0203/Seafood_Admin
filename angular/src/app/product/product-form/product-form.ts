@@ -1,23 +1,49 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  inject
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
-import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from "primeng/button";
-import { CategoryService } from '../../proxy/controllers/category.service';
-import { CategoryDto } from 'src/app/proxy/categories/dtos';
-import { CreateProductDto } from 'src/app/proxy/products/dtos';
-import { ProductService } from 'src/app/proxy/controllers/product.service';
+import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
-import { CommonModule } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ToastModule } from "primeng/toast";
+
+import { CategoryService } from '../../proxy/controllers/category.service';
+import { ProductService } from '../../proxy/controllers/product.service';
+
+import { CategoryDto } from 'src/app/proxy/categories/dtos';
+import { CreateProductDto, UpdateProductPayload } from 'src/app/proxy/products/dtos';
+import { ViewChild } from '@angular/core';
+import { FileUpload } from 'primeng/fileupload';
+
+interface ExistingImageVm {
+  imageUrl: string;
+  displayOrder: number;
+}
+
+interface NewImagePreviewVm {
+  file: File;
+  previewUrl: string;
+}
+
 @Component({
   selector: 'app-product-form',
+  standalone: true,
   imports: [
     EditorModule,
     FileUploadModule,
@@ -36,13 +62,14 @@ import { ToastModule } from "primeng/toast";
   templateUrl: './product-form.html',
   styleUrl: './product-form.scss'
 })
-export class ProductForm implements OnChanges {
-
+export class ProductForm implements OnInit, OnChanges {
   @Input() visible = false;
   @Input() isEditMode = false;
   @Input() product: any;
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<FormData>();
+  @Output() save = new EventEmitter<void>();
+  @ViewChild('childUpload') childUpload?: FileUpload;
+
 
   private categoryService = inject(CategoryService);
   private productService = inject(ProductService);
@@ -54,52 +81,123 @@ export class ProductForm implements OnChanges {
     origin: '',
     slug: '',
     description: '',
-    categoryId: null,
-    units: []
+    categoryId: null
   };
 
-  coverFile!: File;
+  coverFile: File | null = null;
   childFiles: File[] = [];
-  units = [];
+  previewCover: string | null = null;
+
+  // Ảnh cũ từ server
+  existingImages: ExistingImageVm[] = [];
+
+  // Danh sách URL ảnh cũ bị xóa
+  deletedImageUrls: string[] = [];
+
+  // Ảnh mới user chọn
+  previewImages: NewImagePreviewVm[] = [];
+
+  units: any[] = [];
   unitIdCounter = 0;
   categories: CategoryDto[] = [];
   selectedCategoryId: number | null = null;
   selectedUnits: any[] = [];
-  previewCover: any = null;
-  previewImages: any[] = [];
 
-  totalRecords: number = 0;
-
+  totalRecords = 0;
   pageSize = 100;
   pageIndex = 0;
 
-  ngOnInit() {
+  ngOnInit(): void {
     const input = {
       skipCount: this.pageIndex * this.pageSize,
       maxResultCount: this.pageSize
     };
+
     this.categoryService.getListByInput(input).subscribe(res => {
       this.categories = res.items;
-      console.log('Categories:', this.categories);
     });
   }
 
-  ngOnChanges() {
-    console.log('Changes detected in ProductForm:', this.product);
-    this.form = {
-      name: this.product.name,
-      origin: this.product.origin,
-      slug: this.product.slug,
-      description: this.product.description,
-      categoryId: this.product.categoryId,
-    };
-    this.selectedCategoryId = this.product.categoryId;
-    this.units = this.product.units ? [...this.product.units] : [];
-    const cover = this.product.coverImage;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['visible'] && this.visible) {
+      if (this.isEditMode && this.product) {
+        this.bindEditData();
+      } else if (!this.isEditMode) {
+        this.resetForm();
+      }
+    }
+  }
 
+  private bindEditData(): void {
+    if (!this.product) return;
+
+    this.resetPreviewObjects();
+
+    this.form = {
+      name: this.product.name ?? '',
+      origin: this.product.origin ?? '',
+      slug: this.product.slug ?? '',
+      description: this.product.description ?? '',
+      categoryId: this.product.categoryId ?? null
+    };
+
+    this.selectedCategoryId = this.product.categoryId ?? null;
+    this.units = this.product.units ? [...this.product.units] : [];
+    this.selectedUnits = [];
+
+    const cover = this.product.coverImage;
     this.previewCover = cover
       ? (cover.startsWith('http') ? cover : 'https://' + cover)
       : null;
+
+    this.existingImages = this.product.images
+      ? [...this.product.images]
+        .sort((a: any, b: any) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+        .map((x: any) => ({
+          imageUrl: x.imageUrl,
+          displayOrder: x.displayOrder ?? 0
+        }))
+      : [];
+
+    this.deletedImageUrls = [];
+    this.childFiles = [];
+    this.previewImages = [];
+
+    this.unitIdCounter =
+      this.units.length > 0
+        ? Math.max(...this.units.map((x: any) => x.id ?? 0), 0) + 1
+        : 1;
+
+    this.coverFile = null;
+  }
+
+  private resetForm(): void {
+    this.resetPreviewObjects();
+
+    this.form = {
+      name: '',
+      origin: '',
+      slug: '',
+      description: '',
+      categoryId: null
+    };
+
+    this.coverFile = null;
+    this.childFiles = [];
+    this.previewCover = null;
+    this.previewImages = [];
+    this.existingImages = [];
+    this.deletedImageUrls = [];
+
+    this.units = [];
+    this.selectedUnits = [];
+    this.selectedCategoryId = null;
+    this.unitIdCounter = 1;
+    this.childUpload?.clear();
+  }
+
+  private resetPreviewObjects(): void {
+    this.previewImages.forEach(x => URL.revokeObjectURL(x.previewUrl));
   }
 
   getCategoryName(categoryId: number): string {
@@ -107,7 +205,7 @@ export class ProductForm implements OnChanges {
     return category ? category.name : '';
   }
 
-  addUnit() {
+  addUnit(): void {
     const newUnit = {
       id: this.unitIdCounter++,
       unitName: null,
@@ -115,89 +213,183 @@ export class ProductForm implements OnChanges {
       stockQuantity: null,
       isDefault: false
     };
+
     this.units = [...this.units, newUnit];
   }
 
-  removeSelectedUnits() {
-    if (!this.selectedUnits || this.selectedUnits.length === 0) return;
-    this.units = this.units.filter(
-      unit => !this.selectedUnits.includes(unit)
-    );
+  removeSelectedUnits(): void {
+    if (!this.selectedUnits?.length) return;
+
+    this.units = this.units.filter(unit => !this.selectedUnits.includes(unit));
     this.selectedUnits = [];
   }
 
-  onCoverSelect(event: any) {
-    const file = event.files[0];
+  onCoverSelect(event: any): void {
+    const file = event.files?.[0];
+    if (!file) return;
+
     this.coverFile = file;
     this.previewCover = URL.createObjectURL(file);
   }
-  onImagesSelect(event: any) {
-    for (let file of event.files) {
+
+  onImagesSelect(event: any): void {
+    const files: File[] = event.files ?? [];
+    for (const file of files) {
       this.childFiles.push(file);
-      this.previewImages.push(URL.createObjectURL(file));
+      this.previewImages.push({
+        file,
+        previewUrl: URL.createObjectURL(file)
+      });
     }
   }
 
-  onCancel() {
-    this.previewCover = null;
+  removeExistingImage(img: ExistingImageVm): void {
+    if (!this.deletedImageUrls.includes(img.imageUrl)) {
+      this.deletedImageUrls.push(img.imageUrl);
+    }
+
+    this.existingImages = this.existingImages.filter(x => x.imageUrl !== img.imageUrl);
+  }
+
+  removeNewImage(item: NewImagePreviewVm): void {
+    URL.revokeObjectURL(item.previewUrl);
+
+    this.previewImages = this.previewImages.filter(x => x !== item);
+    this.childFiles = this.childFiles.filter(x => x !== item.file);
+  }
+
+  onCancel(): void {
+    this.resetForm();
     this.close.emit();
   }
 
-  onDefaultChange(selectedUnit: any) {
-    this.units.forEach(unit => unit.isDefault = false);
+  onDefaultChange(selectedUnit: any): void {
+    this.units.forEach(unit => (unit.isDefault = false));
     selectedUnit.isDefault = true;
   }
 
-  onCreate() {
-    if (!this.form.name) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Product name is required' });
-      return;
+  private validateForm(isCreate: boolean): boolean {
+    if (!this.form.name?.trim()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warn',
+        detail: 'Product name is required'
+      });
+      return false;
     }
+
     if (!this.selectedCategoryId) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Category is required' });
-      return;
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warn',
+        detail: 'Category is required'
+      });
+      return false;
     }
 
     if (this.units.length === 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'At least one unit is required' });
-      return;
-    }
-    const defaultUnits = this.units.filter(u => u.isDefault);
-    if (defaultUnits.length !== 1) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Exactly one default unit is required' });
-      return;
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warn',
+        detail: 'At least one unit is required'
+      });
+      return false;
     }
 
-    if (!this.coverFile) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Cover image is required' });
-      return;
+    const defaultUnits = this.units.filter(u => u.isDefault);
+    if (defaultUnits.length !== 1) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warn',
+        detail: 'Exactly one default unit is required'
+      });
+      return false;
     }
+
+    if (isCreate && !this.coverFile) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warn',
+        detail: 'Cover image is required'
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  onCreate(): void {
+    if (!this.validateForm(true)) return;
 
     const input: CreateProductDto = {
       name: this.form.name,
       origin: this.form.origin,
       slug: this.form.slug || '',
       description: this.form.description,
-      categoryId: this.selectedCategoryId,
+      categoryId: this.selectedCategoryId!,
       units: this.units,
-      coverImage: this.coverFile
+      coverImage: this.coverFile as any
     };
 
-    this.productService.createProduct(input, this.childFiles)
-      .subscribe({
-        next: (res) => {
-          console.log('Success', res);
-          this.visible = false;
-          this.close.emit();
-          this.save.emit();
-        },
-        error: (err) => {
-          console.error(err);
-        }
-      });
+    this.productService.createProduct(input, this.childFiles).subscribe({
+      next: (res) => {
+        console.log('Created successfully', res);
+        this.visible = false;
+        this.resetForm();
+        this.close.emit();
+        this.save.emit();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
   }
 
-  onSubmit() {
+  onSave(): void {
+    if (!this.validateForm(false)) return;
+
+    // Nếu backend đã thêm DeletedImageUrls thì payload này phải khớp DTO đó
+    // const input: any = {
+    //   name: this.form.name,
+    //   origin: this.form.origin,
+    //   slug: this.form.slug || '',
+    //   description: this.form.description,
+    //   categoryId: this.selectedCategoryId!,
+    //   units: this.units,
+    //   coverImage: this.coverFile ?? undefined,
+    //   deletedImageUrls: this.deletedImageUrls
+    // };
+
+    const input: UpdateProductPayload = {
+      name: this.form.name,
+      origin: this.form.origin,
+      slug: this.form.slug || '',
+      description: this.form.description,
+      categoryId: this.selectedCategoryId!,
+      units: this.units,
+      coverImage: this.coverFile ?? null,
+      deletedImageUrls: this.deletedImageUrls
+    };
+
+    console.log("update object: ",input);
+
+    const filesToSend = this.childFiles.length ? this.childFiles : null;
+
+    this.productService.updateProduct(this.product.id, input, filesToSend as any).subscribe({
+      next: (res) => {
+        console.log('Updated successfully', res);
+        this.visible = false;
+        this.resetForm();
+        this.close.emit();
+        this.save.emit();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  onSubmit(): void {
     if (this.isEditMode) {
       this.onSave();
     } else {
@@ -205,49 +397,7 @@ export class ProductForm implements OnChanges {
     }
   }
 
-  onSave() {
-    if (!this.form.name) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Product name is required' });
-      return;
-    }
-    if (!this.selectedCategoryId) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Category is required' });
-      return;
-    }
-    if (this.units.length === 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'At least one unit is required' });
-      return;
-    }
-    const defaultUnits = this.units.filter(u => u.isDefault);
-    if (defaultUnits.length !== 1) {
-      this.messageService.add({ severity: 'warn', summary: 'Warn', detail: 'Exactly one default unit is required' });
-      return;
-    }
-    const input: CreateProductDto = {
-      name: this.form.name,
-      origin: this.form.origin,
-      slug: this.form.slug || '',
-      description: this.form.description,
-      categoryId: this.selectedCategoryId,
-      units: this.units,
-      coverImage: this.coverFile
-    };
-
-    this.productService.updateProduct(this.product.id, input, this.childFiles)
-      .subscribe({
-        next: (res) => {
-          console.log('Updated successfully', res);
-          this.visible = false;
-          this.close.emit();
-          this.save.emit();
-        },
-        error: (err) => {
-          console.error(err);
-        }
-      });
-  }
-
-  onCategoryChange(value: number) {
-    console.log('Category Id:', value);
+  onCategoryChange(value: any): void {
+    console.log('Category change:', value);
   }
 }

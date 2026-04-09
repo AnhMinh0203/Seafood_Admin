@@ -1,87 +1,119 @@
-<!-- Add form -->
-<p-dialog header="{{isEditMode ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}}" [(visible)]="visible" [modal]="true"
+<p-dialog header="{{ isEditMode ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm' }}" [(visible)]="visible" [modal]="true"
   [style]="{ width: '70rem' }" [breakpoints]="{ '1199px': '90vw', '575px': '100vw' }" (onHide)="onCancel()"
   [draggable]="false" [resizable]="false">
-  <div class="row">
+  <div class="row g-3">
     <div class="col-4">
       <!-- Ảnh đại diện -->
-      <div class="field col-12 md:col-6">
+      <div class="w-100">
         <label class="font-semibold">Ảnh đại diện</label>
         <div class="image-upload-wrapper">
-
           <p-fileUpload #fileUpload name="cover" mode="basic" accept="image/*" chooseLabel="Chọn ảnh"
             (onSelect)="onCoverSelect($event)">
           </p-fileUpload>
 
           <div class="image-preview-box mt-3">
             @if (previewCover) {
-
             <img [src]="previewCover" class="preview-image" />
-
             } @else {
-
             <div class="image-placeholder">
               <i class="pi pi-image"></i>
               <span>Chưa có ảnh</span>
             </div>
-
             }
           </div>
         </div>
       </div>
     </div>
-    <div class="col-8 row">
-      <div class="col-12">
-        <!-- Tên sản phẩm -->
-        <div class="d-flex flex-column flex-fill">
-          <label class="font-semibold">Tên sản phẩm</label>
-          <input pInputText [(ngModel)]="form.name" name="name" class="w-full" />
+
+    <div class="col-8">
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="d-flex flex-column flex-fill">
+            <label class="font-semibold">Tên sản phẩm</label>
+            <input pInputText [(ngModel)]="form.name" name="name" class="w-full" />
+          </div>
+        </div>
+
+        <div class="col-12 mt-1">
+          <div class="row">
+            <div class="col-4">
+              <div class="d-flex flex-column flex-fill mb-2">
+                <label class="font-semibold">Xuất xứ</label>
+                <input pInputText [(ngModel)]="form.origin" name="origin" class="w-full" />
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="d-flex flex-column flex-fill">
+                <label class="font-semibold">Slug</label>
+                <input pInputText [(ngModel)]="form.slug" name="slug" class="w-full" />
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="d-flex flex-column flex-fill">
+                <label class="font-semibold">Danh mục</label>
+                <p-select [options]="categories" [filter]="true" optionLabel="name" optionValue="id"
+                  placeholder="Chọn danh mục" (onChange)="onCategoryChange($event)" [(ngModel)]="selectedCategoryId"
+                  name="categoryId" class="w-full">
+                </p-select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="d-flex flex-column">
+            <label class="font-semibold">Mô tả</label>
+            <p-editor [(ngModel)]="form.description" [style]="{ height: '200px' }" />
+          </div>
         </div>
       </div>
 
-      <div class="col-12 mt-1">
-        <div class="row">
-          <!-- Xuất xứ -->
-          <div class="col-4">
-            <div class="d-flex flex-column flex-fill mb-2">
-              <label class="font-semibold">Xuất xứ</label>
-              <input pInputText [(ngModel)]="form.origin" name="origin" class="w-full" />
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="d-flex flex-column flex-fill">
-              <label class="font-semibold">Slug</label>
-              <input pInputText [(ngModel)]="form.slug" name="slug" class="w-full" />
-            </div>
-          </div>
-          <!-- Danh mục -->
-          <div class="col-4">
-            <div class="d-flex flex-column flex-fill">
-              <label class="font-semibold">Danh mục</label>
-              <p-select [options]="categories" [filter]="true" optionLabel="name" optionValue="id"
-                placeholder="Chọn danh mục" (onChange)="onCategoryChange($event)" [(ngModel)]="selectedCategoryId"
-                name="categoryId" class="w-full">
-              </p-select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Mô tả -->
-      <div class="col-12">
-        <div class=" d-flex flex-column">
-          <label class="font-semibold">Mô tả</label>
-          <p-editor [(ngModel)]="form.description" [style]="{ height: '200px' }" />
-        </div>
-      </div>
     </div>
 
     <!-- Ảnh chi tiết -->
     <div class="field col-12 mt-3">
       <label class="font-semibold">Ảnh chi tiết</label>
 
-      <p-fileUpload class="custom-upload" name="images" mode="advanced" accept="image/*" multiple="multiple"
-        (onSelect)="onImagesSelect($event)" chooseLabel="Chọn ảnh" uploadLabel="Tải lên"
-        cancelLabel="Hủy"></p-fileUpload>
+      <p-fileUpload #childUpload class="custom-upload" name="images" mode="advanced" accept="image/*" [multiple]="true"
+        [showUploadButton]="false" [showCancelButton]="false" (onSelect)="onImagesSelect($event)"
+        chooseLabel="Chọn ảnh">
+      </p-fileUpload>
+
+      <small class="text-muted d-block mt-2">
+        Ảnh cũ có thể xóa từng ảnh bằng nút X. Ảnh mới chọn sẽ được thêm khi bấm Lưu.
+      </small>
+
+      @if (existingImages.length || previewImages.length) {
+      <div class="image-preview-list mt-3">
+        <!-- Ảnh cũ -->
+        @for (img of existingImages; track img.imageUrl) {
+        <div class="image-preview-item">
+          <img [src]="img.imageUrl" class="preview-image" />
+          <button type="button" class="remove-btn" (click)="removeExistingImage(img)" title="Xóa ảnh này">
+            ×
+          </button>
+          <div class="img-tag">Ảnh cũ</div>
+        </div>
+        }
+
+        <!-- Ảnh mới -->
+        @for (item of previewImages; track item.previewUrl) {
+        <div class="image-preview-item">
+          <img [src]="item.previewUrl" class="preview-image" />
+          <button type="button" class="remove-btn" (click)="removeNewImage(item)" title="Bỏ ảnh mới này">
+            ×
+          </button>
+          <div class="img-tag new">Ảnh mới</div>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="empty-images mt-3">
+        Chưa có ảnh chi tiết
+      </div>
+      }
     </div>
 
     <!-- Đơn vị -->
@@ -89,7 +121,7 @@
       <label class="font-semibold">Đơn vị</label>
       <div class="card">
         <p-table [value]="units" [(selection)]="selectedUnits" dataKey="id"
-          [tableStyle]="{  'min-width': '50rem','table-layout': 'fixed' }">
+          [tableStyle]="{ 'min-width': '50rem', 'table-layout': 'fixed' }">
           <ng-template #header>
             <tr>
               <th style="width: 4rem">
@@ -101,18 +133,17 @@
               <th>Is Default</th>
             </tr>
           </ng-template>
+
           <ng-template pTemplate="body" let-unit>
             <tr>
-              <!-- Checkbox chọn -->
               <td>
                 <p-tableCheckbox [value]="unit"></p-tableCheckbox>
               </td>
 
-              <!-- Unit Name -->
               <td [pEditableColumn]="unit.unitName" pEditableColumnField="unitName">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <input pInputText [(ngModel)]="unit.unitName" [ngModelOptions]="{standalone: true}" />
+                    <input pInputText [(ngModel)]="unit.unitName" [ngModelOptions]="{ standalone: true }" />
                   </ng-template>
                   <ng-template pTemplate="output">
                     {{ unit.unitName || ' ' }}
@@ -120,11 +151,10 @@
                 </p-cellEditor>
               </td>
 
-              <!-- Price -->
               <td [pEditableColumn]="unit.price" pEditableColumnField="price">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <input type="number" pInputText [(ngModel)]="unit.price" [ngModelOptions]="{standalone: true}" />
+                    <input type="number" pInputText [(ngModel)]="unit.price" [ngModelOptions]="{ standalone: true }" />
                   </ng-template>
                   <ng-template pTemplate="output">
                     {{ unit.price ?? ' ' }}
@@ -132,12 +162,11 @@
                 </p-cellEditor>
               </td>
 
-              <!-- Stock quantity -->
               <td [pEditableColumn]="unit.stockQuantity" pEditableColumnField="stockQuantity">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
                     <input type="number" pInputText [(ngModel)]="unit.stockQuantity"
-                      [ngModelOptions]="{standalone: true}" />
+                      [ngModelOptions]="{ standalone: true }" />
                   </ng-template>
                   <ng-template pTemplate="output">
                     {{ unit.stockQuantity ?? ' ' }}
@@ -145,10 +174,9 @@
                 </p-cellEditor>
               </td>
 
-              <!-- Is Default -->
               <td>
                 <p-checkbox [(ngModel)]="unit.isDefault" (onChange)="onDefaultChange(unit)"
-                  [ngModelOptions]="{standalone: true}" binary="true">
+                  [ngModelOptions]="{ standalone: true }" binary="true">
                 </p-checkbox>
               </td>
             </tr>
@@ -157,9 +185,7 @@
           <ng-template pTemplate="footer">
             <tr>
               <td colspan="5" class="text-right">
-                <!-- Icon thêm -->
                 <i class="pi pi-plus action-icon text-green-500 me-2" (click)="addUnit()"></i>
-                <!-- Icon xóa -->
                 <i class="pi pi-minus action-icon text-red-500" (click)="removeSelectedUnits()"></i>
               </td>
             </tr>
@@ -169,7 +195,6 @@
     </div>
   </div>
 
-  <!-- Button Save - Cancel -->
   <ng-template pTemplate="footer">
     <div class="d-flex justify-content-end gap-2 w-full">
       <p-button label="Hủy" severity="secondary" (click)="onCancel()"></p-button>
@@ -178,5 +203,4 @@
   </ng-template>
 </p-dialog>
 
-<!-- Toast -->
 <p-toast />

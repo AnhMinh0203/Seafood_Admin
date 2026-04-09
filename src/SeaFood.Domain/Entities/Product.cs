@@ -18,5 +18,7 @@ namespace SeaFood.Entities
         public string? Slug { get; set; }
         public List<ProductUnit>? Units { get; set; }
         public List<ProductImage>? Images { get; set; }
+        public List<Favorite>? Favorites { get; set; }
+
     }
 }

@@ -18,5 +18,6 @@ namespace SeaFood.Products.Dtos
         public string? Slug { get; set; }
         public int CategoryId { get; set; }
         public List<ProductUnitDto>? Units { get; set; }
+        public List<string>? DeletedImageUrls { get; set; }
     }
 }

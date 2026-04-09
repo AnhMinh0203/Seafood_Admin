@@ -48,10 +48,10 @@ public class SeaFoodDomainModule : AbpModule
             options.Password.RequireDigit = false;              // không c?n s?
             options.Password.RequireLowercase = false;          // không c?n ch? th??ng
             options.Password.RequireUppercase = false;          // không c?n ch? hoa
-            options.Password.RequireNonAlphanumeric = false;    // không c?n ký t? ??c bi?t
+            options.Password.RequireNonAlphanumeric = false;    // không c?n k?t? ??c bi?t
 
             options.Password.RequiredLength = 4;                // ?? dài t?i thi?u (b?n t? ch?n)
-            options.Password.RequiredUniqueChars = 1;           // không c?n ký t? khác nhau
+            options.Password.RequiredUniqueChars = 1;           // không c?n k?t? khác nhau
             options.User.RequireUniqueEmail = false;
         });
 

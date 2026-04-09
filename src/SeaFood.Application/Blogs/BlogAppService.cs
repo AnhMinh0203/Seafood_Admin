@@ -17,6 +17,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Content;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
 
 namespace SeaFood.Blogs
@@ -25,30 +26,74 @@ namespace SeaFood.Blogs
     {
         private readonly IRepository <Blog,int> _blogRepository;
         private readonly IFileStorageService _fileService;
-        public BlogAppService(IRepository<Blog, int> blogRepository, IFileStorageService fileStorageService)
+        private readonly IIdentityUserRepository _identityUserRepository;
+
+        public BlogAppService(IRepository<Blog, int> blogRepository, IFileStorageService fileStorageService, IIdentityUserRepository identityUserRepository)
         {
             _blogRepository = blogRepository;
             _fileService = fileStorageService;
+            _identityUserRepository = identityUserRepository;
+
         }
 
-        public async Task<PagedResultDto<BlogDto>> GetListAsync(PagedAndSortedResultRequestDto input)
-        {
-            var query = await _blogRepository.GetQueryableAsync();               
-            var totalCount = await AsyncExecuter.CountAsync(query);
+        //public async Task<PagedResultDto<BlogDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        //{
+        //    var query = await _blogRepository.GetQueryableAsync();               
+        //    var totalCount = await AsyncExecuter.CountAsync(query);
 
-            if (!input.Sorting.IsNullOrWhiteSpace())
-            {
-                query = query.OrderBy(input.Sorting);
-            }
-            else
-            {
-                query = query.OrderByDescending(p => p.Id);
-            }
+        //    if (!input.Sorting.IsNullOrWhiteSpace())
+        //    {
+        //        query = query.OrderBy(input.Sorting);
+        //    }
+        //    else
+        //    {
+        //        query = query.OrderByDescending(p => p.Id);
+        //    }
 
-            var entities = await AsyncExecuter.ToListAsync(query.Skip(input.SkipCount).Take(input.MaxResultCount));
-            var items = ObjectMapper.Map<List<Blog>, List<BlogDto>>(entities);
-            return new PagedResultDto<BlogDto>(totalCount, items);
-        }
+        //    var entities = await AsyncExecuter.ToListAsync(query.Skip(input.SkipCount).Take(input.MaxResultCount));
+        //    var items = ObjectMapper.Map<List<Blog>, List<BlogDto>>(entities);
+
+        //    var creatorIds = entities
+        //        .Where(x => x.CreatorId.HasValue)
+        //        .Select(x => x.CreatorId.Value)
+        //        .Distinct()
+        //        .ToList();
+
+        //    Dictionary<Guid, string> creatorNameDict = new();
+
+        //    if (creatorIds.Any())
+        //    {
+        //        var userQuery = await _identityUserRepository.GetQueryableAsync();
+
+        //        var users = await AsyncExecuter.ToListAsync(
+        //            userQuery.Where(u => creatorIds.Contains(u.Id))
+        //        );
+
+        //        creatorNameDict = users.ToDictionary(
+        //            u => u.Id,
+        //            u =>
+        //            {
+        //                var fullName = $"{u.Name} {u.Surname}".Trim();
+        //                return string.IsNullOrWhiteSpace(fullName) ? u.UserName : fullName;
+        //            }
+        //        );
+        //    }
+
+        //    foreach (var dto in items)
+        //    {
+        //        var entity = entities.First(x => x.Id == dto.Id);
+
+        //        dto.CreatorId = entity.CreatorId;
+
+        //        if (entity.CreatorId.HasValue &&
+        //            creatorNameDict.TryGetValue(entity.CreatorId.Value, out var creatorName))
+        //        {
+        //            dto.CreatorName = creatorName;
+        //        }
+        //    }
+
+        //    return new PagedResultDto<BlogDto>(totalCount, items);
+        //}
 
         public async Task<BlogDto> GetDetailAsync(int id)
         {

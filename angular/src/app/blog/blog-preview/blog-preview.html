@@ -1,1 +1,59 @@
-<p>blog-preview works!</p>
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [style]="{ width: '900px', maxWidth: '95vw' }"
+  [breakpoints]="{ '960px': '95vw', '640px': '100vw' }"
+  styleClass="blog-preview-dialog"
+  (onHide)="onClose()"
+>
+  <ng-template pTemplate="header">
+    <div class="dialog-header">
+      <div class="dialog-header-left">
+        <i class="pi pi-eye"></i>
+        <span>Xem trước bài viết</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-container *ngIf="blog">
+    <div class="blog-preview-container">
+      <!-- Cover -->
+      <div class="blog-cover-wrapper" *ngIf="blog.coverImage; else noCover">
+        <img
+          [src]="blog.coverImage"
+          [alt]="blog.title || 'Blog cover'"
+          class="blog-cover-image"
+        />
+      </div>
+
+      <ng-template #noCover>
+        <div class="blog-cover-placeholder">
+          <i class="pi pi-image"></i>
+          <span>Không có ảnh bìa</span>
+        </div>
+      </ng-template>
+
+      <!-- Body -->
+      <div class="blog-body">
+        <div class="blog-meta">
+          <span class="meta-chip">
+            <i class="pi pi-calendar"></i>
+            {{ blog.creationTime | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+
+        <h1 class="blog-title">
+          {{ blog.title || 'Chưa có tiêu đề' }}
+        </h1>
+
+        <div class="blog-divider"></div>
+
+        <article class="blog-content" [innerHTML]="blog.content"></article>
+      </div>
+    </div>
+  </ng-container>
+</p-dialog>
