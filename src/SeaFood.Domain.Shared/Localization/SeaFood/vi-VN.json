@@ -2,7 +2,8 @@
   "Culture": "vi-VN",
   "Texts": {
     "AppName": "SeaFood",
-    "Menu:Home": "Home",
+    "Menu:Home": "Trang chủ",
+    "Menu:Categories": "Loại",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
     "Welcome": "Welcome"
   }
