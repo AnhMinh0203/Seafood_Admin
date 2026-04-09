@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
+import { AuthService } from '../../shared/services/auth.service';
 
 interface RegisterForm {
   fullName: string;
@@ -9,7 +10,6 @@ interface RegisterForm {
   phone: string;
   password: string;
   confirmPassword: string;
-  agreeTerms: boolean;
 }
 
 @Component({
@@ -30,8 +30,9 @@ export class RegisterComponent {
     phone: '',
     password: '',
     confirmPassword: '',
-    agreeTerms: false
   };
+
+  constructor(private authService: AuthService) { }
 
   get passwordMismatch(): boolean {
     return !!this.form.password && !!this.form.confirmPassword && this.form.password !== this.form.confirmPassword;
@@ -46,26 +47,42 @@ export class RegisterComponent {
       !this.form.phone.trim() ||
       !this.form.password.trim() ||
       !this.form.confirmPassword.trim() ||
-      !this.form.agreeTerms ||
       this.passwordMismatch
     ) {
       return;
     }
 
-    console.log('Register form:', this.form);
-
-    alert('Đăng ký thành công!');
-
-    this.form = {
-      fullName: '',
-      username: '',
-      phone: '',
-      password: '',
-      confirmPassword: '',
-      agreeTerms: false
+    const payload: any = {
+      userName: this.form.username || '',
+      password: this.form.password || '',
+      phoneNumber: this.form.phone || '',
+      fullName: this.form.fullName || ''
     };
 
-    this.submitted = false;
+    this.authService.register(payload).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          alert('Đăng ký thành công!');
+
+          // reset form
+          this.form = {
+            fullName: '',
+            username: '',
+            phone: '',
+            password: '',
+            confirmPassword: '',
+          };
+
+          this.submitted = false;
+        } else {
+          alert(res.message);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Có lỗi xảy ra!');
+      }
+    });
   }
 
   togglePassword(): void {
