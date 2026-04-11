@@ -1,49 +1,41 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
-import { PagedResultDto, ProductDto } from '../models/product.model';
-import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ProductCardVm } from '../models/product-card.model';
+import { ProductDetailVm } from '../models/product-detail.model';
+import { PagedResultDto } from '../models/base.model';
+
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProductService {
-    private readonly baseUrl = `/api/app/product`;
+    private readonly baseUrl = '/api/app/product';
 
     constructor(private http: HttpClient) { }
 
-    getProducts(skipCount: number, maxResultCount: number, sorting: string): Observable<ProductCardVm[]> {
+    getPagedCards(request: {
+        skipCount: number;
+        maxResultCount: number;
+        sorting?: string;
+    }): Observable<PagedResultDto<ProductCardVm>> {
         const params = new HttpParams()
-            .set('Sorting', sorting ?? '')
-            .set('SkipCount', skipCount.toString())
-            .set('MaxResultCount', maxResultCount.toString());
+            .set('Sorting', request.sorting ?? '')
+            .set('SkipCount', request.skipCount.toString())
+            .set('MaxResultCount', request.maxResultCount.toString());
 
-        return this.http
-            .get<PagedResultDto<ProductDto>>(`${this.baseUrl}/GetListWithUnits`, { params })
-            .pipe(
-                map(response => response.items.map(item => this.mapToCardVm(item)))
-            );
+        return this.http.get<PagedResultDto<ProductCardVm>>(
+            `${this.baseUrl}/paged-cards`,
+            { params }
+        );
     }
 
-    // getProductById(id: string): Observable<ProductDto | undefined> {
-    //     return of(this.products.find(x => x.id === id));
-    // }
-
-    private mapToCardVm(item: ProductDto): ProductCardVm {
-        const defaultUnit =
-            item.units?.find(x => x.isDefault) ||
-            item.units?.[0];
-
-        return {
-            id: item.id,
-            name: item.name,
-            image: item.coverImage,
-            price: defaultUnit?.price ?? 0,
-            weight: defaultUnit?.unitName ?? '',
-            isFavorite: false,
-            origin: item.origin,
-            slug: item.slug
-        };
+    getDetailBySlug(slug: string): Observable<ProductDetailVm> {
+        const params = new HttpParams().set('slug', slug);
+        return this.http.get<ProductDetailVm>(
+            `${this.baseUrl}/detail-by-slug`,
+            { params }
+        );
     }
 }

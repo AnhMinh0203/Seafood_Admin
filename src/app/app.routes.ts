@@ -20,7 +20,7 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'contact', component: ContactComponent },
-  { path: 'product-detail/:id', component: ProductDetailComponent },
+  { path: 'products/:slug', component: ProductDetailComponent },
   { path: 'order', component: OrderComponent },
   { path: 'order-history', component: OrderHistoryComponent },
   { path: 'blog', component: BlogComponent },

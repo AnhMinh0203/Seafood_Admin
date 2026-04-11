@@ -1,22 +1,80 @@
 <section class="favorites-page mt-5">
-    <div class="page-header">
-        <h2>Sản phẩm yêu thích</h2>
-        <p>Lưu lại những món bạn thích để xem lại dễ hơn</p>
-    </div>
+  <div class="page-header">
+    <h2>Sản phẩm yêu thích</h2>
+    <p>Lưu lại những món bạn thích để xem lại dễ hơn</p>
+  </div>
 
-    @if (favoriteProducts.length > 0) {
-    <app-product-list [products]="favoriteProducts" [showHeader]="false" layout="grid">
-    </app-product-list>
-    } @else {
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Đang tải danh sách yêu thích...</p>
+    </div>
+  } @else if (favoriteProducts.length > 0) {
+    <div class="favorites-grid">
+      @for (item of favoriteProducts; track item.productId) {
+        <article class="favorite-card">
+          <a
+            class="favorite-link"
+            [routerLink]="getProductLink(item)"
+          >
+            <div class="favorite-image">
+              @if (item.coverImage) {
+                <img [src]="item.coverImage" [alt]="item.name" />
+              } @else {
+                <div class="image-placeholder">
+                  <i class="fa-solid fa-shrimp"></i>
+                </div>
+              }
+
+              <button
+                type="button"
+                class="favorite-remove-btn"
+                [disabled]="isRemoving(item.productId)"
+                (click)="$event.preventDefault(); $event.stopPropagation(); removeFavorite(item)"
+                title="Bỏ yêu thích"
+              >
+                @if (isRemoving(item.productId)) {
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                } @else {
+                  <i class="fa-solid fa-heart-crack"></i>
+                }
+              </button>
+            </div>
+
+            <div class="favorite-body">
+              <h3 class="favorite-name">{{ item.name }}</h3>
+
+              <div class="favorite-meta">
+                <span class="meta-item">
+                  <i class="fa-solid fa-location-dot"></i>
+                  {{ item.origin || 'Đang cập nhật' }}
+                </span>
+              </div>
+
+              <div class="favorite-price-row">
+                <span class="price">
+                  {{ item.price | number:'1.0-0' }}đ
+                </span>
+
+                @if (item.unit) {
+                  <span class="unit">/ {{ item.unit }}</span>
+                }
+              </div>
+            </div>
+          </a>
+        </article>
+      }
+    </div>
+  } @else {
     <div class="empty-state">
-        <div class="empty-icon">
-            <i class="fa-regular fa-heart"></i>
-        </div>
+      <div class="empty-icon">
+        <i class="fa-regular fa-heart"></i>
+      </div>
 
-        <h3>Chưa có sản phẩm yêu thích</h3>
-        <p>Hãy thêm những món bạn thích vào danh sách yêu thích để xem lại dễ hơn.</p>
+      <h3>Chưa có sản phẩm yêu thích</h3>
+      <p>Hãy thêm những món bạn thích vào danh sách yêu thích để xem lại dễ hơn.</p>
 
-        <a routerLink="/menu" class="go-menu-btn">Khám phá menu</a>
+      <a routerLink="/menu" class="go-menu-btn">Khám phá menu</a>
     </div>
-    }
+  }
 </section>

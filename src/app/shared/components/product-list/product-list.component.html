@@ -1,39 +1,41 @@
 <div class="container-xxl py-5">
   @if (showHeader) {
-  <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-    <h5 class="section-title ff-secondary text-center text-primary fw-normal">Đề xuất</h5>
-    <h1 class="mb-5">Sản phẩm nổi bật</h1>
-  </div>
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+      <h5 class="section-title ff-secondary text-center text-primary fw-normal">Đề xuất</h5>
+      <h1 class="mb-5">Sản phẩm nổi bật</h1>
+    </div>
   }
 
   <div class="product-list" [ngClass]="layout">
     @for (item of displayProducts; track item.id) {
-    <div class="product-item">
-      <div class="product-card" (click)="goToDetail(item)">
-        <div class="image-wrapper">
-          <img [src]="item.image" [alt]="item.name" />
+      <div class="product-item">
+        <div class="product-card" (click)="goToDetail(item)">
+          <div class="image-wrapper">
+            <img [src]="item.coverImage" [alt]="item.name" />
 
-          <div class="favorite" (click)="toggleFavorite(item, $event)">
-            <i [ngClass]="item.isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
-          </div>
-        </div>
-
-        <div class="info">
-          <div class="name">{{ item.name }}</div>
-
-          <div class="bottom">
-            <div>
-              <div class="price">{{ item.price | number:'1.0-0' }}đ</div>
-              <div class="weight">{{ item.weight }}</div>
+            <div class="favorite" (click)="toggleFavorite(item, $event)">
+              <i [class]="item.isFavorite ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart'"></i>
             </div>
+          </div>
 
-            <button class="add-btn" type="button" (click)="addToCart(item, $event)">
-              +
-            </button>
+          <div class="info">
+            <div class="name">{{ item.name }}</div>
+
+            <div class="bottom">
+              <div>
+                <div class="price">
+                  {{ item.defaultPrice | number:'1.0-0' }}đ /
+                  <span class="weight">{{ item.defaultUnitName }}</span>
+                </div>
+              </div>
+
+              <button class="add-btn" type="button" (click)="addToCart(item, $event)">
+                +
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     }
   </div>
 </div>

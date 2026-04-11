@@ -1,25 +1,26 @@
-export interface ProductUnitDto {
+export interface ProductUnitVm {
+  id: number;
   unitName: string;
   price: number;
   stockQuantity: number;
   isDefault: boolean;
 }
 
-export interface ProductImageDto {
-  productId: string;
-  childImage: string | null;
+export interface ProductImageVm {
+  id: number;
   imageUrl: string;
-  displayOrder: number;
+  displayOrder?: number;
 }
 
-export interface ProductDto {
+export interface ProductDetailVm {
   id: string;
   name: string;
   origin: string;
   description: string;
   categoryId: number;
+  categoryName: string;
   coverImage: string;
   slug: string;
-  units: ProductUnitDto[];
-  images: ProductImageDto[];
+  units: ProductUnitVm[];
+  images: ProductImageVm[];
 }

@@ -31,25 +31,16 @@
 
       <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
         <div class="form-group">
-          <label for="username">username</label>
+          <label for="userNameOrPhoneNumber">Tên đăng nhập hoặc số điện thoại</label>
           <input
-            id="username"
-            name="username"
-            type="username"
-            [(ngModel)]="form.username"
-            #usernameRef="ngModel"
+            id="userNameOrPhoneNumber"
+            name="userNameOrPhoneNumber"
+            type="text"
+            [(ngModel)]="form.userNameOrPhoneNumber"
             required
-            username
-            placeholder="Nhập username của bạn"
+            placeholder="Nhập tên đăng nhập hoặc số điện thoại"
             class="form-control"
-            [class.is-invalid]="submitted && usernameRef.invalid"
           />
-
-          @if (submitted && usernameRef.invalid) {
-            <div class="error-text">
-              Vui lòng nhập username hợp lệ.
-            </div>
-          }
         </div>
 
         <div class="form-group">
@@ -60,24 +51,17 @@
               name="password"
               [type]="showPassword ? 'text' : 'password'"
               [(ngModel)]="form.password"
-              #passwordRef="ngModel"
               required
-              minlength="6"
+              minlength="4"
               placeholder="Nhập mật khẩu"
               class="form-control"
-              [class.is-invalid]="submitted && passwordRef.invalid"
+              
             />
 
             <button type="button" class="toggle-password" (click)="togglePassword()">
               <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
             </button>
           </div>
-
-          @if (submitted && passwordRef.invalid) {
-            <div class="error-text">
-              Mật khẩu phải có ít nhất 6 ký tự.
-            </div>
-          }
         </div>
 
         <div class="form-options">
@@ -89,8 +73,8 @@
           <a routerLink="/forgot-password" class="forgot-link">Quên mật khẩu?</a>
         </div>
 
-        <button type="submit" class="submit-btn">
-          Đăng nhập
+        <button type="submit" class="submit-btn" [disabled]="loading">
+          {{ loading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
         </button>
       </form>
 

@@ -36,12 +36,54 @@
         </div>
 
         <div class="header-actions">
+          @if (!authService.isLoggedIn()) {
           <a routerLink="/login" class="login-link">Đăng nhập</a>
           <a routerLink="/register" class="register-btn">Đăng ký</a>
+          } @else {
+          <div class="user-menu" (click)="$event.stopPropagation()">
+            <button type="button" class="user-trigger" (click)="toggleDropdown($event)">
+              <div class="user-avatar">{{ userInitial }}</div>
+            </button>
+
+            @if (dropdownOpen) {
+            <div class="user-dropdown">
+              <div class="user-info">
+                <div class="user-name">{{ displayName }}</div>
+                <div class="user-phone">{{ authService.currentUser()?.phoneNumber }}</div>
+              </div>
+
+              <a routerLink="/profile" class="dropdown-item" (click)="closeDropdown()">
+                <i class="fa-regular fa-user"></i>
+                <span>Tài khoản của tôi</span>
+              </a>
+
+              <a routerLink="/order-history" class="dropdown-item" (click)="closeDropdown()">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Lịch sử đặt hàng</span>
+              </a>
+
+              <a routerLink="/favorites" class="dropdown-item" (click)="closeDropdown()">
+                <i class="fa-regular fa-heart"></i>
+                <span>Yêu thích</span>
+              </a>
+
+              <a routerLink="/notifications" class="dropdown-item" (click)="closeDropdown()">
+                <i class="fa-regular fa-bell"></i>
+                <span>Thông báo</span>
+              </a>
+
+              <button type="button" class="dropdown-item logout-item" (click)="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+            }
+          </div>
+          }
 
           <a routerLink="/order" class="cart-btn" aria-label="Giỏ hàng">
             <i class="fa-solid fa-cart-shopping"></i>
-            <span class="cart-badge">{{ cartService.cartCount()}}</span>
+            <span class="cart-badge">{{ cartService.cartCount() }}</span>
           </a>
         </div>
       </div>

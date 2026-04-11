@@ -6,10 +6,11 @@ import { FooterComponent } from "./layout/footer/footer.component";
 import { BottomNavComponent } from "./layout/bottom-nav/bottom-nav.component";
 import { TopBarComponent } from "./layout/top-bar/top-bar.component";
 import { UserSidebarComponent } from "./layout/user-sidebar/user-sidebar.component";
+import { ToastContainerComponent } from "./shared/components/toast-container/toast-container.component";
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, BottomNavComponent, TopBarComponent, UserSidebarComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, BottomNavComponent, TopBarComponent, UserSidebarComponent, ToastContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

@@ -1,9 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ProductDto, ProductImageDto, ProductUnitDto } from '../../shared/models/product.model';
-import { ProductService } from '../../shared/services/product.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CartService } from '../../shared/services/cart.service';
+import { ProductService } from '../../shared/services/product.service';
+import { ProductCardVm } from '../../shared/models/product-card.model';
+import {
+  ProductDetailVm,
+  ProductImageVm,
+  ProductUnitVm
+} from '../../shared/models/product-detail.model';
 
 @Component({
   selector: 'app-product-detail',
@@ -12,65 +17,143 @@ import { CartService } from '../../shared/services/cart.service';
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.scss'
 })
-export class ProductDetailComponent {
+export class ProductDetailComponent implements OnInit {
   cartService = inject(CartService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private productService = inject(ProductService);
 
-  product: ProductDto | null = null;
+  slug = '';
+  loading = false;
+  notFound = false;
+
+  product: ProductDetailVm | null = null;
+  productCard: ProductCardVm | null = null;
+  detail: ProductDetailVm | null = null;
 
   selectedImage = '';
-  selectedUnit: ProductUnitDto | null = null;
+  selectedUnit: ProductUnitVm | null = null;
   quantity = 1;
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
+    this.slug = this.route.snapshot.paramMap.get('slug') ?? '';
+    if (!this.slug) {
+      this.notFound = true;
+      return;
+    }
 
-    if (!id) return;
+    // Lấy card data từ router state khi click từ list sang
+    const navState =
+      this.router.getCurrentNavigation()?.extras?.state?.['productCard'] ||
+      history.state?.productCard;
 
-    // this.productService.getProductById(id).subscribe(res => {
-    //   if (!res) {
-    //     this.product = null;
-    //     return;
-    //   }
+    if (navState) {
+      this.productCard = navState as ProductCardVm;
+      this.product = this.buildFallbackProduct(this.productCard);
+      this.selectedImage = this.product.coverImage || '';
+      this.selectedUnit = this.getDefaultUnit(this.product);
+    }
 
-    //   this.product = res;
-    //   this.selectedImage = this.getGalleryImages(res)[0] || res.coverImage || '';
-    //   this.selectedUnit = this.getDefaultUnit(res);
-    // });
+    this.loadDetail();
   }
 
-  getDefaultUnit(product: ProductDto): ProductUnitDto | null {
+  private loadDetail(): void {
+    this.loading = true;
+    this.notFound = false;
+
+    this.productService.getDetailBySlug(this.slug).subscribe({
+      next: (res) => {
+        this.detail = res;
+        this.product = res;
+        console.log("res của slug: ", res)
+
+        const currentUnitName = this.selectedUnit?.unitName;
+        this.selectedUnit =
+          res.units?.find(x => x.unitName === currentUnitName) ||
+          this.getDefaultUnit(res);
+
+        const galleryImages = this.getGalleryImages(res);
+        if (!this.selectedImage || !galleryImages.includes(this.selectedImage)) {
+          this.selectedImage = galleryImages[0] || res.coverImage || '';
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Load product detail failed:', err);
+        this.loading = false;
+
+        // Nếu không có cả fallback card lẫn detail thì coi như not found
+        if (!this.product) {
+          this.notFound = true;
+        }
+      }
+    });
+  }
+
+  private buildFallbackProduct(card: ProductCardVm): ProductDetailVm {
+    const fallbackUnit: ProductUnitVm[] =
+      card.defaultPrice != null || card.defaultUnitName
+        ? [
+            {
+              id: 0,
+              unitName: card.defaultUnitName ?? '',
+              price: card.defaultPrice ?? 0,
+              stockQuantity: 0,
+              isDefault: true
+            }
+          ]
+        : [];
+
+    return {
+      id: card.id,
+      name: card.name,
+      origin: card.origin,
+      description: '',
+      categoryId: 0,
+      categoryName: '',
+      coverImage: card.coverImage,
+      slug: card.slug,
+      units: fallbackUnit,
+      images: []
+    };
+  }
+
+  getDefaultUnit(product: ProductDetailVm): ProductUnitVm | null {
     if (!product.units?.length) return null;
     return product.units.find(x => x.isDefault) || product.units[0];
   }
 
-  getGalleryImages(product: ProductDto): string[] {
+  getGalleryImages(product: ProductDetailVm): string[] {
     const childImages =
       product.images
         ?.slice()
-        .sort((a, b) => a.displayOrder - b.displayOrder)
-        .map(x => x.imageUrl) || [];
+        .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+        .map((x: ProductImageVm) => x.imageUrl) || [];
 
-    const allImages = [product.coverImage, ...childImages].filter(Boolean);
-
-    // loại bỏ duplicate nếu coverImage trùng child image
-    //return [...new Set(allImages)];
     return [product.coverImage, ...childImages].filter(Boolean);
-
   }
 
   selectImage(image: string): void {
     this.selectedImage = image;
   }
 
-  selectUnit(unit: ProductUnitDto): void {
+  selectUnit(unit: ProductUnitVm): void {
     this.selectedUnit = unit;
     this.quantity = 1;
   }
 
   increaseQuantity(): void {
     const maxStock = this.selectedUnit?.stockQuantity ?? 0;
+
+    // Nếu đang là fallback card data chưa có stock thật, cứ cho tăng tối thiểu đến 99
+    if (!this.detail) {
+      if (this.quantity < 99) {
+        this.quantity++;
+      }
+      return;
+    }
+
     if (this.quantity < maxStock) {
       this.quantity++;
     }
@@ -86,7 +169,8 @@ export class ProductDetailComponent {
     return this.selectedUnit?.price ?? 0;
   }
 
-  get displayStock(): number {
+  get displayStock(): number | string {
+    if (!this.detail) return '--';
     return this.selectedUnit?.stockQuantity ?? 0;
   }
 

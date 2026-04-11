@@ -1,46 +1,65 @@
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import {  LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from '../models/auth.model';
+import { Observable, tap } from 'rxjs';
+import { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from '../models/auth.model';
 import { BaseResponse } from '../models/base.model';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly baseUrl = '/api/app/user';
+  private readonly storageKey = 'current_user';
+
+  private readonly _currentUser = signal<LoginResponseDto | null>(this.getStoredUser());
+  currentUser = this._currentUser.asReadonly();
+  isLoggedIn = computed(() => !!this._currentUser());
 
   constructor(private http: HttpClient) {}
 
-  // ✅ REG ISTER
   register(input: RegisterDto): Observable<BaseResponse<RegisterResponseDto>> {
     return this.http.post<BaseResponse<RegisterResponseDto>>(
-      `${this.baseUrl}/create`,
+      `${this.baseUrl}/register`,
       input
     );
   }
 
-  // ✅ LOGIN (bạn cần có API BE tương ứng)
   login(input: LoginDto): Observable<BaseResponse<LoginResponseDto>> {
     return this.http.post<BaseResponse<LoginResponseDto>>(
       `${this.baseUrl}/login`,
       input
+    ).pipe(
+      tap((res) => {
+        if (res.isSuccess && res.data) {
+          this.setCurrentUser(res.data);
+        }
+      })
     );
   }
 
-  // ✅ Lưu token
-  saveToken(token: string) {
-    localStorage.setItem('access_token', token);
+  logout(): void {
+    this.clearCurrentUser();
   }
 
-  // ✅ Lấy token
-  getToken(): string | null {
-    return localStorage.getItem('access_token');
+  setCurrentUser(user: LoginResponseDto): void {
+    this._currentUser.set(user);
+    localStorage.setItem(this.storageKey, JSON.stringify(user));
   }
 
-  // ✅ Logout
-  logout() {
-    localStorage.removeItem('access_token');
+  clearCurrentUser(): void {
+    this._currentUser.set(null);
+    localStorage.removeItem(this.storageKey);
+  }
+
+  private getStoredUser(): LoginResponseDto | null {
+    const raw = localStorage.getItem(this.storageKey);
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw) as LoginResponseDto;
+    } catch {
+      localStorage.removeItem(this.storageKey);
+      return null;
+    }
   }
 }

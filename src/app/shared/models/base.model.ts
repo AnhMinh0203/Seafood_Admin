@@ -4,3 +4,8 @@ export interface BaseResponse<T> {
   message: string;
   data: T;
 }
+
+export interface PagedResultDto<T> {
+  totalCount: number;
+  items: T[];
+}

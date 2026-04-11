@@ -5,11 +5,6 @@ export interface RegisterDto {
   fullName: string;
 }
 
-export interface LoginDto {
-  userName: string;
-  password: string;
-}
-
 export interface RegisterResponseDto {
   id: string;
   userName: string;
@@ -17,7 +12,15 @@ export interface RegisterResponseDto {
   fullName: string;
 }
 
+export interface LoginDto {
+  userNameOrPhoneNumber: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 export interface LoginResponseDto {
-  accessToken: string;
-  refreshToken?: string;
+  id: string;
+  userName: string;
+  phoneNumber: string;
+  fullName: string;
 }

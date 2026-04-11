@@ -15,15 +15,10 @@
               name="fullName"
               type="text"
               [(ngModel)]="form.fullName"
-              #fullNameRef="ngModel"
               required
               placeholder="Nhập họ và tên"
               class="form-control"
-              [class.is-invalid]="submitted && fullNameRef.invalid"
             />
-            @if (submitted && fullNameRef.invalid) {
-              <div class="error-text">Vui lòng nhập họ và tên.</div>
-            }
           </div>
 
           <div class="form-group">
@@ -33,15 +28,10 @@
               name="phone"
               type="text"
               [(ngModel)]="form.phone"
-              #phoneRef="ngModel"
               required
               placeholder="Nhập số điện thoại"
               class="form-control"
-              [class.is-invalid]="submitted && phoneRef.invalid"
             />
-            @if (submitted && phoneRef.invalid) {
-              <div class="error-text">Vui lòng nhập số điện thoại.</div>
-            }
           </div>
         </div>
 
@@ -50,18 +40,12 @@
           <input
             id="registerusername"
             name="username"
-            type="username"
+            type="text"
             [(ngModel)]="form.username"
-            #usernameRef="ngModel"
             required
-            username
             placeholder="Nhập username của bạn"
             class="form-control"
-            [class.is-invalid]="submitted && usernameRef.invalid"
           />
-          @if (submitted && usernameRef.invalid) {
-            <div class="error-text">Vui lòng nhập username hợp lệ.</div>
-          }
         </div>
 
         <div class="form-row">
@@ -73,20 +57,15 @@
                 name="password"
                 [type]="showPassword ? 'text' : 'password'"
                 [(ngModel)]="form.password"
-                #passwordRef="ngModel"
                 required
-                minlength="6"
+                minlength="4"
                 placeholder="Tạo mật khẩu"
                 class="form-control"
-                [class.is-invalid]="submitted && passwordRef.invalid"
               />
               <button type="button" class="toggle-password" (click)="togglePassword()">
                 <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
               </button>
             </div>
-            @if (submitted && passwordRef.invalid) {
-              <div class="error-text">Mật khẩu phải có ít nhất 6 ký tự.</div>
-            }
           </div>
 
           <div class="form-group">
@@ -97,27 +76,19 @@
                 name="confirmPassword"
                 [type]="showConfirmPassword ? 'text' : 'password'"
                 [(ngModel)]="form.confirmPassword"
-                #confirmPasswordRef="ngModel"
                 required
                 placeholder="Nhập lại mật khẩu"
                 class="form-control"
-                [class.is-invalid]="(submitted && confirmPasswordRef.invalid) || (submitted && passwordMismatch)"
               />
               <button type="button" class="toggle-password" (click)="toggleConfirmPassword()">
                 <i class="fa-solid" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
               </button>
             </div>
-
-            @if (submitted && confirmPasswordRef.invalid) {
-              <div class="error-text">Vui lòng xác nhận mật khẩu.</div>
-            } @else if (submitted && passwordMismatch) {
-              <div class="error-text">Mật khẩu xác nhận không khớp.</div>
-            }
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">
-          Đăng ký
+        <button type="submit" class="submit-btn" [disabled]="loading">
+          {{ loading ? 'Đang đăng ký...' : 'Đăng ký' }}
         </button>
       </form>
 

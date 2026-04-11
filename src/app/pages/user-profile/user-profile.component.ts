@@ -1,12 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { UserProfile } from '../../shared/models/user.model';
+import { UserService } from '../../shared/services/user.service';
 
-interface UserProfile {
-  fullName: string;
-  phoneNumber: string;
-  address: string;
-}
 
 @Component({
   selector: 'app-user-profile',
@@ -15,36 +12,72 @@ interface UserProfile {
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
 })
-export class UserProfileComponent {
-  private readonly storageKey = 'seafood_user_profile';
-  
+export class UserProfileComponent implements OnInit {
   profile: UserProfile = {
-    fullName: 'Nguyễn Văn Minh',
-    phoneNumber: '0901234567',
-    address: '123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh'
+    fullName: '',
+    phoneNumber: '',
+    address: ''
   };
 
   saveSuccess = false;
+  loading = false;
+  saving = false;
 
-  constructor() {
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
     this.loadProfile();
   }
 
   loadProfile(): void {
-    const rawData = localStorage.getItem(this.storageKey);
+    this.loading = true;
 
-    if (rawData) {
-      this.profile = JSON.parse(rawData) as UserProfile;
-    }
+    this.userService.getMyProfile().subscribe({
+      next: (res) => {
+        this.loading = false;
+
+        if (res?.data) {
+          this.profile = {
+            fullName: res.data.fullName ?? '',
+            phoneNumber: res.data.phoneNumber ?? '',
+            address: res.data.address ?? ''
+          };
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Load profile failed', err);
+      }
+    });
   }
 
   saveProfile(): void {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.profile));
-    this.saveSuccess = true;
+    this.saving = true;
+    this.saveSuccess = false;
 
-    setTimeout(() => {
-      this.saveSuccess = false;
-    }, 2000);
+    this.userService.updateMyProfile(this.profile).subscribe({
+      next: (res) => {
+        this.saving = false;
+
+        if (res?.data) {
+          this.profile = {
+            fullName: res.data.fullName ?? '',
+            phoneNumber: res.data.phoneNumber ?? '',
+            address: res.data.address ?? ''
+          };
+        }
+
+        this.saveSuccess = true;
+
+        setTimeout(() => {
+          this.saveSuccess = false;
+        }, 2000);
+      },
+      error: (err) => {
+        this.saving = false;
+        console.error('Update profile failed', err);
+      }
+    });
   }
 
   clearProfile(): void {
@@ -54,7 +87,6 @@ export class UserProfileComponent {
       address: ''
     };
 
-    localStorage.removeItem(this.storageKey);
     this.saveSuccess = false;
   }
 }

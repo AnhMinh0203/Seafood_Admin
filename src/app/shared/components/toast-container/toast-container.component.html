@@ -1,0 +1,28 @@
+<div class="toast-container">
+  <div
+    class="toast-item"
+    *ngFor="let toast of toastService.toasts$ | async; trackBy: trackById"
+    [ngClass]="'toast-' + toast.type"
+  >
+    <div class="toast-icon">
+      <i
+        class="fa-solid"
+        [ngClass]="{
+          'fa-circle-check': toast.type === 'success',
+          'fa-circle-xmark': toast.type === 'error',
+          'fa-triangle-exclamation': toast.type === 'warning',
+          'fa-circle-info': toast.type === 'info'
+        }"
+      ></i>
+    </div>
+
+    <div class="toast-content">
+      <div class="toast-title">{{ toast.title }}</div>
+      <div class="toast-message">{{ toast.message }}</div>
+    </div>
+
+    <button class="toast-close" type="button" (click)="remove(toast.id)">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+</div>
