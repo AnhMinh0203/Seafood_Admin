@@ -15,5 +15,7 @@ namespace SeaFood.Products.Dtos
         public string Slug { get; set; }
         public decimal? DefaultPrice { get; set; }
         public string? DefaultUnitName { get; set; }
+        public bool IsFavorite { get; set; }
+
     }
 }

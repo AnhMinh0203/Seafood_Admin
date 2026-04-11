@@ -48,6 +48,17 @@ public static class SeaFoodEfCoreEntityExtensionMappings
                         propertyBuilder.HasColumnName("UserType");
                     }
                 );
+
+            ObjectExtensionManager.Instance
+                .MapEfCoreProperty<IdentityUser, string>(
+                    "Address",
+                    (entityBuilder, propertyBuilder) =>
+                    {
+                        propertyBuilder.HasMaxLength(500);
+                        propertyBuilder.HasColumnName("Address");
+                        propertyBuilder.HasDefaultValue(string.Empty);
+                    }
+                );
         });
     }
 }

@@ -11,5 +11,8 @@ namespace SeaFood.Users
     public interface IUserAppService
     {
         Task<BaseResponse<RegisterResponseDto>> RegisterAsync(RegisterDto input);
+        Task<BaseResponse<LoginResponseDto>> LoginAsync(LoginDto input);
+        Task<BaseResponse<UserProfileDto>> GetMyProfileAsync();
+        Task<BaseResponse<UserProfileDto>> UpdateMyProfileAsync(UpdateUserProfileDto input);
     }
 }

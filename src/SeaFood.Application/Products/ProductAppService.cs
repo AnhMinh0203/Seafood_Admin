@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Polly;
 using SeaFood.Entities;
 using SeaFood.EntityFrameworkCore;
+using SeaFood.Favorites;
 using SeaFood.Products.Dtos;
 using SeaFood.Storage;
 using SeaFood.Utils;
@@ -25,6 +26,7 @@ using Volo.Abp.Content;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
+using Volo.Abp.Users;
 namespace SeaFood.Products
 {
     public class ProductAppService : ApplicationService, IProductAppService
@@ -35,16 +37,22 @@ namespace SeaFood.Products
         //private readonly IAmazonS3 _s3Client;
         private readonly string? _containerCoverImg;
         private readonly IRepository<Product, Guid> _productRepo;
+        private readonly IRepository<Favorite, Guid> _favoriteRepo;
+
         public readonly IConfiguration _config;
         //private readonly IMapper _mapper;
         private readonly IFileStorageService _fileService;
+        private readonly ICurrentUser _currentUser;
+
 
         public ProductAppService(
             SeaFoodDbContext context,
             IConfiguration config,
             IMapper mapper,
             IRepository<Product, Guid> productRepo,
-            IFileStorageService fileService
+            IFileStorageService fileService,
+            IRepository<Favorite, Guid> favoriteRepo,
+            ICurrentUser currentUser
             )
         {
             _config = config;
@@ -53,6 +61,8 @@ namespace SeaFood.Products
             _cloudFrontDomain = _config["AWS:CloudFrontDomain"];
             _s3Domain = _config["AWS:S3Domain"];
             _productRepo = productRepo;
+            _favoriteRepo = favoriteRepo;
+            _currentUser = currentUser;
             _fileService = fileService;
         }
 
@@ -91,9 +101,30 @@ namespace SeaFood.Products
                         DefaultPrice = p.Units
                             .Where(u => u.IsDefault)
                             .Select(u => (decimal?)u.Price)
-                            .FirstOrDefault()
+                            .FirstOrDefault(),
+                        IsFavorite = false
                     })
             );
+
+            var userId = _currentUser.Id;
+            if (userId.HasValue && items.Any())
+            {
+                var productIds = items.Select(x => x.Id).ToList();
+                var favoriteQueryable = await _favoriteRepo.GetQueryableAsync();
+
+                var favoriteProductIds = await AsyncExecuter.ToListAsync(
+                    favoriteQueryable
+                        .Where(f => f.UserId == userId.Value && productIds.Contains(f.ProductId))
+                        .Select(f => f.ProductId)
+                );
+
+                var favoriteSet = favoriteProductIds.ToHashSet();
+
+                foreach (var item in items)
+                {
+                    item.IsFavorite = favoriteSet.Contains(item.Id);
+                }
+            }
 
             return new PagedResultDto<ProductCardDto>(totalCount, items);
         }

@@ -167,17 +167,28 @@ namespace SeaFood.Favorites
             var favoriteQuery = await _favoriteRepository.GetQueryableAsync();
             var productQuery = await _productRepository.GetQueryableAsync();
 
-            var query = from f in favoriteQuery
-                        join p in productQuery on f.ProductId equals p.Id
-                        where f.UserId == userId.Value
-                        select new FavoriteProductDto
-                        {
-                            ProductId = p.Id,
-                            Name = p.Name,
-                            CoverImage = p.CoverImage,
-                            Origin = p.Origin,
-                            Slug = p.Slug
-                        };
+            var query =
+                from f in favoriteQuery
+                join p in productQuery on f.ProductId equals p.Id
+                where f.UserId == userId.Value
+                select new FavoriteProductDto
+                {
+                    ProductId = p.Id,
+                    Name = p.Name ?? string.Empty,
+                    CoverImage = p.CoverImage ?? string.Empty,
+                    Origin = p.Origin ?? string.Empty,
+                    Slug = p.Slug ?? string.Empty,
+
+                    Price = p.Units
+                        .Where(u => u.IsDefault)
+                        .Select(u => u.Price)
+                        .FirstOrDefault(),
+
+                    Unit = p.Units
+                        .Where(u => u.IsDefault)
+                        .Select(u => u.UnitName)
+                        .FirstOrDefault() ?? string.Empty
+                };
 
             return await AsyncExecuter.ToListAsync(query);
         }

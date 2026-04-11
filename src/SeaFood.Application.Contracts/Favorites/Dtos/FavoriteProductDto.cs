@@ -13,5 +13,8 @@ namespace SeaFood.Favorites.Dtos
         public string? CoverImage { get; set; }
         public string? Origin { get; set; }
         public string? Slug { get; set; }
+
+        public decimal Price { get; set; }
+        public string Unit { get; set; }
     }
 }

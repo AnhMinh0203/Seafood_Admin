@@ -45,14 +45,14 @@ public class SeaFoodDomainModule : AbpModule
 
         Configure<IdentityOptions>(options =>
         {
-            options.Password.RequireDigit = false;              // kh獼g c?n s?
-            options.Password.RequireLowercase = false;          // kh獼g c?n ch? th??ng
-            options.Password.RequireUppercase = false;          // kh獼g c?n ch? hoa
-            options.Password.RequireNonAlphanumeric = false;    // kh獼g c?n k?t? ??c bi?t
-
-            options.Password.RequiredLength = 4;                // ?? d跬 t?i thi?u (b?n t? ch?n)
-            options.Password.RequiredUniqueChars = 1;           // kh獼g c?n k?t? kh塶 nhau
-            options.User.RequireUniqueEmail = false;
+            options.Password.RequireDigit = false; // M?t kh?u kh?ng b?t bu?c c車 ch? s?
+            options.Password.RequireLowercase = false; // M?t kh?u kh?ng b?t bu?c c車 ch? th??ng
+            options.Password.RequireUppercase = false; // M?t kh?u kh?ng b?t bu?c c車 ch? in hoa
+            options.Password.RequireNonAlphanumeric = false; // M?t kh?u kh?ng b?t bu?c c車 k? t? ??c bi?t
+            options.Password.RequiredLength = 4; // M?t kh?u ph?i c車 t?i thi?u 4 k? t?
+            options.Password.RequiredUniqueChars = 1; // M?t kh?u ph?i c車 t?i thi?u 1 k? t? kh芍c bi?t
+            options.User.RequireUniqueEmail = false; // Email kh?ng b?t bu?c l角 duy nh?t
+            options.Lockout.AllowedForNewUsers = false; // User m?i kh?ng 芍p d?ng c? ch? kh車a t?m th?i
         });
 
 
