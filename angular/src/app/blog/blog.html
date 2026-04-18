@@ -3,15 +3,16 @@
   <p-toolbar class="mb-6">
     <ng-template #start>
       <p-button label="Thêm" icon="pi pi-plus" size="small" class="me-1" (onClick)="addBlog()" />
-      <p-button severity="danger" label="Xóa" size="small" icon="pi pi-trash" outlined
-        (onClick)="deleteBatchBlogs()" [disabled]="!selectedBlogs || !selectedBlogs.length" />
+      <p-button severity="danger" label="Xóa" size="small" icon="pi pi-trash" outlined (onClick)="deleteBatchBlogs()"
+        [disabled]="!selectedBlogs || !selectedBlogs.length" />
     </ng-template>
   </p-toolbar>
 
   <p-table #dt [value]="blogs" [rows]="pageSize" [columns]="cols" [paginator]="true" class="mt-1"
     [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
     [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedBlogs" [rowHover]="true" dataKey="id"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" (onPage)="onPage($event)">
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"
+    (onPage)="onPage($event)">
     <ng-template #caption>
       <div class="d-flex align-items-center justify-content-between">
         <h5 class="m-0">Manage Blogs</h5>
@@ -33,7 +34,8 @@
             <p-sortIcon field="name" />
           </div>
         </th>
-        <th>Ảnh</th>
+        <th class="text-center">Ảnh</th>
+        <th class="text-center">Lượt xem</th>
         <th pSortableColumn="productCount" style="min-width: 8rem; text-align:center">
           <div class="flex items-center justify-content-center gap-2">
             Ngày tạo
@@ -48,16 +50,16 @@
         <td style="width: 3rem">
           <p-tableCheckbox [value]="blog" />
         </td>
-        <td style="min-width: 16rem">{{ blog.title }}</td>
-        <td>
-          <img [src]="getImageUrl(blog.coverImage)" [alt]="blog.title" style="width: 64px" class="rounded" />
+        <td style="min-width: 14rem">{{ blog.title }}</td>
+        <td class="text-center">
+          <img [src]="getImageUrl(blog.coverImage)" [alt]="blog.title" class="table-thumb-rect" />
         </td>
+        <td class="text-center">{{ blog.view }}</td>
         <td class="text-center">
           {{ blog.creationTime | date: 'dd/MM/yyyy' }}
         </td>
         <td>
-          <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
-            (click)="editBlog(blog)" />
+          <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editBlog(blog)" />
           <p-button icon="pi pi-trash" class="ms-2" severity="danger" [rounded]="true" [outlined]="true"
             (click)="deleteBlog(blog)" />
           <p-button icon="pi pi-eye" class="ms-2" severity="info" [rounded]="true" [outlined]="true"
@@ -71,11 +73,11 @@
 
 
 <!-- Blog Form Template -->
-<app-blog-form [visible]="isFormVisible" [isEditMode]="isEditMode" (close)="closeForm()"
-  (save)="onBlogSaved()" [blogInput]="newBlog"></app-blog-form>
+<app-blog-form [visible]="isFormVisible" [isEditMode]="isEditMode" (close)="closeForm()" (save)="onBlogSaved()"
+  [blogInput]="newBlog"></app-blog-form>
 
 <!-- Blog Preview Template -->
-<app-blog-preview [blog]="selectedBlog" [visible]="isPreViewMode"  (close)="handlePreviewClose()"></app-blog-preview>
+<app-blog-preview [blog]="selectedBlog" [visible]="isPreViewMode" (close)="handlePreviewClose()"></app-blog-preview>
 
-  
+
 <p-confirmdialog [style]="{ width: '450px' }" />

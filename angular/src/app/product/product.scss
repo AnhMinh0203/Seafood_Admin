@@ -34,3 +34,10 @@ html, body {
   border-radius: 10px;
   margin-bottom: 1rem;
 }
+
+.table-thumb-rect {
+  width: 64px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 6px;
+}

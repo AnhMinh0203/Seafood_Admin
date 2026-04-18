@@ -1,127 +1,11 @@
-<!-- <div>
-  <div class="d-flex justify-content-between w-100 align-items-center">
-    <div class="w-25 my-2">
-      <p-inputgroup>
-        <input pInputText placeholder="Nhập thông tin cần tìm" (keyup)="updateFilter($event)" />
-        <p-inputgroup-addon>
-          <p-button [label]="this.selectedField" severity="secondary" variant="text" (click)="menu.toggle($event)" />
-        </p-inputgroup-addon>
-      </p-inputgroup>
-      <p-menu #menu [model]="columnItems" popup appendTo="body" />
-    </div>
-    <div class="d-flex">
-      <p-button label="Delete" icon="pi pi-trash" iconPos="right" class="ms-1" size="small" />
-      <p-button label="Add" icon="pi pi-plus" iconPos="right" class="ms-1" size="small" (click)="add()" />
-      <p-button label="Import" icon="pi pi-arrow-down-left" iconPos="right" class="ms-1" size="small" />
-      <p-button label="Export" icon="pi pi-arrow-up-right" iconPos="right" class="ms-1" size="small" />
-    </div>
-
-  </div>
-
-
-  <div class=" p-0">
-    <ngx-datatable
-      #table class="material"
-      [rows]="rows"
-      [count]="totalCount"
-      [limit]="pageSize"
-      [offset]="pageIndex"
-
-      [columnMode]="ColumnMode.force"
-      [headerHeight]="50"
-      [footerHeight]="50"
-      rowHeight="auto"
-      [selected]="selected"
-      [selectionType]="SelectionType.checkbox"
-      [messages]="messages"
-      [externalPaging]="true"
-      (activate)="onActivate($event)"
-      (page)="onPage($event)"
-    >
-
-      <ngx-datatable-column
-        [width]="30" [sortable]="false"
-        [canAutoResize]="false"
-        [draggable]="false"
-        [resizeable]="false"
-      >
-        <ng-template ngx-datatable-header-template let-allRowsSelected="allRowsSelected" let-selectFn="selectFn">
-          <input
-            type="checkbox"
-            [checked]="allRowsSelected"
-            (change)="selectFn()"
-          />
-        </ng-template>
-
-        <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-          let-onCheckboxChangeFn="onCheckboxChangeFn">
-          <input
-            type="checkbox"
-            [checked]="isSelected"
-            (change)="onCheckboxChangeFn($event)"
-          />
-        </ng-template>
-      </ngx-datatable-column>
-
-      <ngx-datatable-column name="Tên sản phẩm" prop="name"></ngx-datatable-column>
-      <ngx-datatable-column name="Giá">
-        <ng-template ngx-datatable-cell-template let-row="row">
-          {{ getDefaultUnit(row)?.price ? getDefaultUnit(row)?.price : 0 }} đ
-        </ng-template>
-      </ngx-datatable-column>
-
-
-      <ngx-datatable-column name="Slug" prop="slug"></ngx-datatable-column>
-      <ngx-datatable-column name="Số lượng" prop="stockQuantity">
-          <ng-template ngx-datatable-cell-template let-row="row">
-          {{ getDefaultUnit(row)?.stockQuantity }}
-
-        </ng-template>
-      </ngx-datatable-column>
-
-      <ngx-datatable-column name="Đơn vị">
-        <ng-template ngx-datatable-cell-template let-row="row">
-         {{ getDefaultUnit(row)?.unitName }}
-        </ng-template>
-      </ngx-datatable-column>
-
-      <ngx-datatable-column
-        name="Action"
-        [width]="120"
-        [sortable]="false"
-        [canAutoResize]="false"
-        [draggable]="false"
-        [resizeable]="false"
-      >
-
-        <ng-template ngx-datatable-cell-template let-row="row">
-          <div class="d-flex gap-1 justify-content-center">
-            <p-button
-              icon="pi pi-ellipsis-h"
-              severity="secondary"
-              size="small" (click)="openRowMenu($event, row)"
-            ></p-button>
-            <p-menu
-              #rowMenu [popup]="true"
-              [model]="rowActions"
-              appendTo="body"
-            ></p-menu>
-          </div>
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
-  </div>
-</div> -->
-
-
 <!-- Management product table -->
 <div class="card">
   <p-toast />
   <p-toolbar class="mb-6">
     <ng-template #start>
       <p-button label="Thêm" icon="pi pi-plus" size="small" class="me-1" (onClick)="addProduct()" />
-      <p-button severity="danger" label="Xóa" size="small" icon="pi pi-trash" outlined
-        (onClick)="deleteBatchProducts()" [disabled]="!selectedProducts || !selectedProducts.length" />
+      <p-button severity="danger" label="Xóa" size="small" icon="pi pi-trash" outlined (onClick)="deleteBatchProducts()"
+        [disabled]="!selectedProducts || !selectedProducts.length" />
     </ng-template>
 
     <ng-template #end>
@@ -157,14 +41,14 @@
             <p-sortIcon field="name" />
           </div>
         </th>
-        <th>Ảnh</th>
-        <th pSortableColumn="price" style="min-width: 8rem">
+        <th class="text-center">Ảnh</th>
+        <th pSortableColumn="price" style="min-width: 8rem" class="text-center">
           <div class="flex items-center gap-2">
             Giá
             <p-sortIcon field="price" />
           </div>
         </th>
-        <th pSortableColumn="category" style="min-width:10rem">
+        <th pSortableColumn="category" style="min-width:10rem" class="text-center">
           <div class="flex items-center gap-2">
             Loại
             <p-sortIcon field="category" />
@@ -179,11 +63,11 @@
           <p-tableCheckbox [value]="product" />
         </td>
         <td style="min-width: 16rem">{{ product.name }}</td>
-        <td>
-          <img [src]="getImageUrl(product.coverImage)" [alt]="product.name" style="width: 64px" class="rounded" />
+        <td class="text-center">
+          <img [src]="getImageUrl(product.coverImage)" [alt]="product.name" class="table-thumb-rect" />
         </td>
-        <td>{{ getDefaultPrice(product) | currency: 'USD' }}</td>
-        <td>{{ getCategoryName(product.categoryId) }}</td>
+        <td class="text-center">{{ getDefaultPrice(product) | currency: 'USD' }}</td>
+        <td class="text-center">{{ getCategoryName(product.categoryId) }}</td>
         <td>
           <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
             (click)="editProduct(product)" />
@@ -200,10 +84,11 @@
 </div>
 
 <!-- Product Form Template -->
-<app-product-form [visible]="isFormVisible" [isEditMode]="isEditMode" (close)="closeForm()"
-  (save)="onProductSaved()" [product]="newProduct"></app-product-form>
+<app-product-form [visible]="isFormVisible" [isEditMode]="isEditMode" (close)="closeForm()" (save)="onProductSaved()"
+  [product]="newProduct"></app-product-form>
 
 <!-- Product Preview Template -->
-<app-product-preview [product]="selectedProduct" [isEditMode]="isPreViewMode"  (close)="handlePreviewClose()"></app-product-preview>
+<app-product-preview [product]="selectedProduct" [isEditMode]="isPreViewMode"
+  (close)="handlePreviewClose()"></app-product-preview>
 
 <!-- <p-confirmDialog></p-confirmDialog> -->

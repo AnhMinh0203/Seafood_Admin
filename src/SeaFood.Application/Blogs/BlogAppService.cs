@@ -22,9 +22,9 @@ using Volo.Abp.ObjectMapping;
 
 namespace SeaFood.Blogs
 {
-    public class BlogAppService: ApplicationService, IBlogAppService
+    public class BlogAppService : ApplicationService, IBlogAppService
     {
-        private readonly IRepository <Blog,int> _blogRepository;
+        private readonly IRepository<Blog, int> _blogRepository;
         private readonly IFileStorageService _fileService;
         private readonly IIdentityUserRepository _identityUserRepository;
 
@@ -36,64 +36,33 @@ namespace SeaFood.Blogs
 
         }
 
-        //public async Task<PagedResultDto<BlogDto>> GetListAsync(PagedAndSortedResultRequestDto input)
-        //{
-        //    var query = await _blogRepository.GetQueryableAsync();               
-        //    var totalCount = await AsyncExecuter.CountAsync(query);
+        public async Task<PagedResultDto<BlogListDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        {
+            var query = await _blogRepository.GetQueryableAsync();
 
-        //    if (!input.Sorting.IsNullOrWhiteSpace())
-        //    {
-        //        query = query.OrderBy(input.Sorting);
-        //    }
-        //    else
-        //    {
-        //        query = query.OrderByDescending(p => p.Id);
-        //    }
+            var totalCount = await AsyncExecuter.CountAsync(query);
 
-        //    var entities = await AsyncExecuter.ToListAsync(query.Skip(input.SkipCount).Take(input.MaxResultCount));
-        //    var items = ObjectMapper.Map<List<Blog>, List<BlogDto>>(entities);
+            query = !input.Sorting.IsNullOrWhiteSpace()
+            ? query.OrderBy(input.Sorting)
+            : query.OrderByDescending(x => x.Id);
 
-        //    var creatorIds = entities
-        //        .Where(x => x.CreatorId.HasValue)
-        //        .Select(x => x.CreatorId.Value)
-        //        .Distinct()
-        //        .ToList();
+            var itemsQuery = query
+                .Skip(input.SkipCount)
+                .Take(input.MaxResultCount)
+                .Select(x => new BlogListDto
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Summary = x.Summary,
+                    CoverImage = x.CoverImage,
+                    View = x.View,
+                    CreationTime = x.CreationTime
+                });
 
-        //    Dictionary<Guid, string> creatorNameDict = new();
+            var items = await AsyncExecuter.ToListAsync(itemsQuery);
 
-        //    if (creatorIds.Any())
-        //    {
-        //        var userQuery = await _identityUserRepository.GetQueryableAsync();
-
-        //        var users = await AsyncExecuter.ToListAsync(
-        //            userQuery.Where(u => creatorIds.Contains(u.Id))
-        //        );
-
-        //        creatorNameDict = users.ToDictionary(
-        //            u => u.Id,
-        //            u =>
-        //            {
-        //                var fullName = $"{u.Name} {u.Surname}".Trim();
-        //                return string.IsNullOrWhiteSpace(fullName) ? u.UserName : fullName;
-        //            }
-        //        );
-        //    }
-
-        //    foreach (var dto in items)
-        //    {
-        //        var entity = entities.First(x => x.Id == dto.Id);
-
-        //        dto.CreatorId = entity.CreatorId;
-
-        //        if (entity.CreatorId.HasValue &&
-        //            creatorNameDict.TryGetValue(entity.CreatorId.Value, out var creatorName))
-        //        {
-        //            dto.CreatorName = creatorName;
-        //        }
-        //    }
-
-        //    return new PagedResultDto<BlogDto>(totalCount, items);
-        //}
+            return new PagedResultDto<BlogListDto>(totalCount, items);
+        }
 
         public async Task<BlogDto> GetDetailAsync(int id)
         {
@@ -130,7 +99,7 @@ namespace SeaFood.Blogs
                 {
                     Title = input.Title,
                     Content = input.Content ?? "",
-                    CoverImage = coverUrl 
+                    CoverImage = coverUrl
                 };
 
                 await _blogRepository.InsertAsync(entity, autoSave: true);

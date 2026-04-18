@@ -1,0 +1,111 @@
+<div class="card">
+  <p-toast />
+
+  <p-toolbar class="mb-6">
+    <ng-template #start>
+      <p-button
+          severity="success"
+          label="Duyệt"
+          size="small"
+          icon="pi pi-check"
+          outlined
+          class="me-1"
+          (onClick)="approveBatchContacts()"
+          [disabled]="!selectedContacts || !selectedContacts.length"
+        />
+      <p-button
+        severity="danger"
+        label="Xóa"
+        size="small"
+        icon="pi pi-trash"
+        outlined
+        (onClick)="deleteBatchContacts()"
+        [disabled]="!selectedContacts || !selectedContacts.length"
+      />
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [value]="contacts"
+    [rows]="pageSize"
+    [paginator]="true"
+    class="mt-1"
+    [globalFilterFields]="['fullName', 'phone']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedContacts"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+  >
+    <ng-template #caption>
+      <div class="d-flex align-items-center justify-content-between">
+        <h5 class="m-0">Manage Contact Requests</h5>
+
+        <p-iconfield>
+          <p-inputicon class="pi pi-search" />
+          <input
+            pInputText
+            type="text"
+            placeholder="Search..."
+            (input)="dt.filterGlobal($event.target.value, 'contains')"
+          />
+        </p-iconfield>
+      </div>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox />
+        </th>
+
+        <th >Họ tên</th>
+        <th class="text-center">Số điện thoại</th>
+        <th class="text-center">Sản phẩm quan tâm</th>
+        <th class="text-center">Loại yêu cầu</th>
+        <th class="text-center">Trạng thái</th>
+        <th ></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-contact>
+      <tr>
+        <td style="width: 3rem">
+          <p-tableCheckbox [value]="contact" />
+        </td>
+
+        <td>{{ contact.fullName }}</td>
+
+        <td class="text-center">{{ contact.phone }}</td>
+
+        <td class="text-center">{{ getProductLabel(contact.interestedProduct) }}</td>
+
+        <td class="text-center">{{ getInquiryTypeLabel(contact.inquiryType) }}</td>
+
+        <td class="text-center">
+          <p-tag
+            [value]="getStatusLabel(contact.status)"
+            [severity]="getStatusSeverity(contact.status)"
+          />
+        </td>
+
+        <td>
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="deleteContact(contact)"
+          />
+
+          <p-button icon="pi pi-eye" class="ms-2" severity="info" [rounded]="true" [outlined]="true"
+            (click)="viewContact(contact)" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

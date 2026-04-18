@@ -11,7 +11,7 @@ namespace SeaFood.Blogs
 {
     public interface IBlogAppService
     {
-        //Task<PagedResultDto<BlogDto>> GetListAsync(PagedAndSortedResultRequestDto input);
+        Task<PagedResultDto<BlogListDto>> GetListAsync(PagedAndSortedResultRequestDto input);
         Task<BlogDto> GetDetailAsync(int id);
         Task<BaseResponse<BlogDto>> CreateBlogAsync(CreateBlogDto input);
         Task<BaseResponse<BlogDto>> UpdateBlogAsync(int iteamId, UpdateBlogDto input);

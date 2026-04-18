@@ -31,4 +31,8 @@ export const APP_ROUTES: Routes = [
     path: 'blog',
     loadComponent: () => import('./blog/blog').then(c => c.Blog),
   },
+  {
+    path: 'contact',
+    loadComponent: () => import('./contact/contact').then(c => c.Contact),
+  },
 ];

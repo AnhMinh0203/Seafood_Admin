@@ -31,7 +31,7 @@ import { RatingModule } from 'primeng/rating';
 import { TagModule } from 'primeng/tag';
 import { BlogForm } from "./blog-form/blog-form";
 import { BlogService } from 'src/app/proxy/controllers/blog.service';
-import { BlogDto } from 'src/app/proxy/blogs/dtos/models';
+import { BlogDto, BlogListDto } from 'src/app/proxy/blogs/dtos/models';
 import { BlogPreview } from "./blog-preview/blog-preview";
 
 @Component({
@@ -82,8 +82,8 @@ export class Blog {
     content: ''
   };
 
-  blogs: BlogDto[] = [];
-  selectedBlog: BlogDto | null = null;
+  blogs: BlogListDto[] = [];
+  selectedBlog: BlogListDto | null = null;
   isAddFormVisible: boolean = false;
   columnItems: MenuItem[] | undefined;
   actionItems: MenuItem[] | undefined;
@@ -94,11 +94,6 @@ export class Blog {
   isEditMode = false;
   isPreViewMode = false;
 
-  // messages = {
-  //   totalMessage: 'tổng cộng',
-  //   selectedMessage: 'đã chọn',
-  //   emptyMessage: 'Không có dữ liệu'
-  // };
 
   previewCover: any = null;
 
@@ -168,7 +163,7 @@ export class Blog {
     return 'https://' + url;
   }
 
-  editBlog(blog: BlogDto) {
+  editBlog(blog: BlogListDto) {
     console.log('Editing blog', blog);
     this.isEditMode = true;
     this.newBlog = { ...blog };
@@ -232,8 +227,8 @@ export class Blog {
                   detail: res.message
                 });
 
-                this.loadBlogs();        // reload table
-                this.selectedBlogs = null; // clear checkbox
+                this.loadBlogs();        
+                this.selectedBlogs = null; 
               }
             },
 
@@ -241,7 +236,7 @@ export class Blog {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Lỗi',
-                detail: err.error?.message || 'Xóa thất bại'
+                detail: err.error?.message
               });
             }
           });

@@ -43,5 +43,12 @@ function configureRoutes() {
       parentName: '::Menu:SeaFoodStore',
       layout: eLayoutType.application,
     },
+    {
+      path: '/contact',
+      name: '::Menu:Contacts',
+      parentName: '::Menu:SeaFoodStore',
+      layout: eLayoutType.application,
+    },
+
   ]);
 }

@@ -16,7 +16,7 @@ namespace SeaFood.Controllers
 {
     [ApiController]
     [Route("api/app/blog")]
-    [RemoteService(Name = "Blog")]
+    [IgnoreAntiforgeryToken]
     public class BlogController: SeaFoodController
     {
         private readonly IBlogAppService _blogAppService;
@@ -25,11 +25,11 @@ namespace SeaFood.Controllers
             _blogAppService = blogAppService;
         }
 
-        //[HttpGet("getList")]
-        //public async Task<PagedResultDto<BlogDto>> GetList([FromQuery] PagedAndSortedResultRequestDto input)
-        //{
-        //    return await _blogAppService.GetListAsync(input);
-        //}
+        [HttpGet("getList")]
+        public async Task<PagedResultDto<BlogListDto>> GetList([FromQuery] PagedAndSortedResultRequestDto input)
+        {
+            return await _blogAppService.GetListAsync(input);
+        }
 
         [HttpGet("getDetail")]
         public async Task<BlogDto> GetBlogById(int iteamId)
