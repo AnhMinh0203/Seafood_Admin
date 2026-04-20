@@ -1,0 +1,39 @@
+<div *ngIf="contact" class="p-fluid">
+
+  <div class="mb-3">
+    <b>Họ tên:</b> {{ contact.fullName }}
+  </div>
+
+  <div class="mb-3">
+    <b>Số điện thoại:</b> {{ contact.phone }}
+  </div>
+
+  <div class="mb-3">
+    <b>Sản phẩm:</b> {{ contact.interestedProduct }}
+  </div>
+
+  <div class="mb-3">
+    <b>Loại yêu cầu:</b> {{ contact.inquiryType }}
+  </div>
+
+  <div class="mb-3">
+    <b>Nội dung:</b>
+    <div class="border p-2 mt-1">
+      {{ contact.message }}
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <b>Trạng thái:</b>
+    <p-tag [value]="statusLabel" [severity]="contact.status == 1 ? 'success' : 'warning'" />
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-4">
+    <button pButton label="Duyệt" icon="pi pi-check" class="p-button-success" (click)="approve()"
+      *ngIf="contact.status === 0"></button>
+
+    <button pButton label="Hủy duyệt" icon="pi pi-times" class="p-button-secondary" (click)="reject()"
+      *ngIf="contact.status === 1"></button>
+  </div>
+
+</div>

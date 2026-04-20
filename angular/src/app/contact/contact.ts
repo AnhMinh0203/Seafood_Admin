@@ -14,6 +14,8 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ContactRequestDto } from '../proxy/contacts/dtos';
 import { ContactRequestService } from '../proxy/controllers/contact-request.service';
+import { DialogModule  } from "primeng/dialog";
+import { ContactForm } from "./contact-form/contact-form";
 
 // TODO: thay bằng đường dẫn proxy/service thực tế của bạn
 
@@ -32,8 +34,10 @@ import { ContactRequestService } from '../proxy/controllers/contact-request.serv
     InputIconModule,
     ToastModule,
     ConfirmDialogModule,
-    TagModule
-  ],
+    TagModule,
+    DialogModule ,
+    ContactForm
+],
   templateUrl: './contact.html',
   styleUrl: './contact.scss',
 
@@ -46,7 +50,8 @@ export class Contact implements OnInit {
 
   contacts: ContactRequestDto[] = [];
   selectedContacts: ContactRequestDto[] = [];
-
+  selectedContact: ContactRequestDto | null = null;
+  showFormDialog = false;
   pageSize = 10;
 
   ngOnInit(): void {
@@ -207,6 +212,8 @@ export class Contact implements OnInit {
     }
   }
   viewContact(contact: ContactRequestDto) {
+    this.selectedContact = contact;
+    this.showFormDialog = true;
 
   }
 }

@@ -109,3 +109,16 @@
 </div>
 
 <p-confirmdialog [style]="{ width: '450px' }" />
+
+<p-dialog
+  header="Chi tiết yêu cầu liên hệ"
+  [(visible)]="showFormDialog"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  [closable]="true"
+>
+  <app-contact-form
+    [contact]="selectedContact"
+    (onUpdated)="loadContacts(); showFormDialog = false"
+  />
+</p-dialog>
