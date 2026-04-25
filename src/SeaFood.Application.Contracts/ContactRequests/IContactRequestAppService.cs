@@ -15,6 +15,8 @@ namespace SeaFood.ContactRequests
         Task<List<ContactRequestDto>> GetListAsync();
         Task DeleteAsync(Guid id);
         Task<BaseResponse<bool>> BatchDeleteAsync(List<Guid> ids);
+        Task<BaseResponse<bool>> UpdateStatusAsync(Guid id, int status);
+        Task<BaseResponse<bool>> BatchApproveAsync(List<Guid> ids);
 
     }
 }

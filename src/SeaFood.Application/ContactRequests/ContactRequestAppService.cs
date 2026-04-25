@@ -76,5 +76,40 @@ namespace SeaFood.ContactRequests
             return BaseResponse<bool>.Success("Xóa danh sách yêu cầu liên hệ thành công.", true);
         }
 
+        public async Task<BaseResponse<bool>> UpdateStatusAsync(Guid id, int status)
+        {
+            if (!Enum.IsDefined(typeof(ContactRequestStatus), status))
+            {
+                throw new UserFriendlyException("Trạng thái không hợp lệ.");
+            }
+
+            var entity = await _contactRequestRepository.GetAsync(id);
+
+            entity.Status = (ContactRequestStatus)status;
+
+            await _contactRequestRepository.UpdateAsync(entity, autoSave: true);
+
+            return BaseResponse<bool>.Success("Cập nhật trạng thái thành công.", true);
+        }
+
+        public async Task<BaseResponse<bool>> BatchApproveAsync(List<Guid> ids)
+        {
+            if (ids == null || !ids.Any())
+                throw new UserFriendlyException("Danh sách yêu cầu liên hệ cần duyệt không hợp lệ.");
+
+            var entities = await _contactRequestRepository.GetListAsync(x => ids.Contains(x.Id));
+
+            if (entities == null || !entities.Any())
+                throw new UserFriendlyException("Không tìm thấy yêu cầu liên hệ nào để duyệt.");
+
+            foreach (var entity in entities)
+            {
+                entity.Status = ContactRequestStatus.Processed;
+            }
+
+            await _contactRequestRepository.UpdateManyAsync(entities, autoSave: true);
+
+            return BaseResponse<bool>.Success("Duyệt danh sách yêu cầu liên hệ thành công.", true);
+        }
     }
 }

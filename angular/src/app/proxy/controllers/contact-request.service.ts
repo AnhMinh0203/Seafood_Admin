@@ -59,4 +59,24 @@ export class ContactRequestService {
       },
       { apiName: this.apiName, ...config }
     );
+
+  updateStatus = (id: string, status: number, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, BaseResponse<boolean>>(
+      {
+        method: 'PUT',
+        url: `/api/app/contact-request/${id}/status`,
+        params: { status },
+      },
+      { apiName: this.apiName, ...config }
+    );
+
+  batchApprove = (ids: string[], config?: Partial<Rest.Config>) =>
+    this.restService.request<any, BaseResponse<boolean>>(
+      {
+        method: 'POST',
+        url: '/api/app/contact-request/batch-approve',
+        body: ids,
+      },
+      { apiName: this.apiName, ...config }
+    );
 }

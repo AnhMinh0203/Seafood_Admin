@@ -5,6 +5,13 @@
     "Menu:Home": "Trang chủ",
     "Menu:Categories": "Loại",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
-    "Welcome": "Welcome"
+    "Welcome": "Welcome",
+
+    "Permission:ContactRequests": "Quản lý yêu cầu liên hệ",
+    "Permission:ContactRequests.Create": "Tạo yêu cầu liên hệ",
+    "Permission:ContactRequests.Delete": "Xóa yêu cầu liên hệ",
+    "Permission:ContactRequests.BatchDelete": "Xóa hàng loạt yêu cầu liên hệ",
+    "Permission:ContactRequests.UpdateStatus": "Cập nhật trạng thái yêu cầu liên hệ",
+    "Permission:ContactRequests.BatchApprove": "Duyệt hàng loạt yêu cầu liên hệ"
   }
 }

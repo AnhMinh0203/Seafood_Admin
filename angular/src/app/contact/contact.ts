@@ -14,8 +14,9 @@ import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ContactRequestDto } from '../proxy/contacts/dtos';
 import { ContactRequestService } from '../proxy/controllers/contact-request.service';
-import { DialogModule  } from "primeng/dialog";
+import { DialogModule } from "primeng/dialog";
 import { ContactForm } from "./contact-form/contact-form";
+import { PermissionDirective, PermissionService } from '@abp/ng.core';
 
 // TODO: thay bằng đường dẫn proxy/service thực tế của bạn
 
@@ -35,9 +36,10 @@ import { ContactForm } from "./contact-form/contact-form";
     ToastModule,
     ConfirmDialogModule,
     TagModule,
-    DialogModule ,
-    ContactForm
-],
+    DialogModule,
+    ContactForm,
+    PermissionDirective
+  ],
   templateUrl: './contact.html',
   styleUrl: './contact.scss',
 
@@ -47,6 +49,7 @@ export class Contact implements OnInit {
   private readonly contactRequestService = inject(ContactRequestService);
   private readonly messageService = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly permissionService = inject(PermissionService);
 
   contacts: ContactRequestDto[] = [];
   selectedContacts: ContactRequestDto[] = [];
@@ -215,5 +218,51 @@ export class Contact implements OnInit {
     this.selectedContact = contact;
     this.showFormDialog = true;
 
+  }
+
+  approveBatchContacts(): void {
+    if (!this.selectedContacts || !this.selectedContacts.length) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Thông báo',
+        detail: 'Vui lòng chọn ít nhất một yêu cầu liên hệ để duyệt'
+      });
+      return;
+    }
+
+    this.confirmationService.confirm({
+      message: `Bạn có chắc muốn duyệt ${this.selectedContacts.length} yêu cầu liên hệ đã chọn?`,
+      header: 'Xác nhận duyệt',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Duyệt',
+      rejectLabel: 'Hủy',
+      acceptButtonStyleClass: 'p-button-success',
+      accept: () => {
+        const ids = this.selectedContacts
+          .map(x => x.id)
+          .filter((id): id is string => !!id);
+
+        this.contactRequestService.batchApprove(ids).subscribe({
+          next: (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: res?.message || 'Đã duyệt các yêu cầu liên hệ đã chọn'
+            });
+
+            this.selectedContacts = [];
+            this.loadContacts();
+          },
+          error: (err) => {
+            console.error(err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: err?.error?.error?.message || err?.error?.message || 'Duyệt hàng loạt thất bại'
+            });
+          }
+        });
+      }
+    });
   }
 }

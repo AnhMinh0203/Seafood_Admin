@@ -49,6 +49,21 @@ function configureRoutes() {
       parentName: '::Menu:SeaFoodStore',
       layout: eLayoutType.application,
     },
+    {
+      path: '/AI',
+      name: '::Menu:AI',
+      parentName: '::Menu:SeaFoodStore',
+    },
+    {
+      path: '/Orders',
+      name: '::Menu:Orders',
+      parentName: '::Menu:SeaFoodStore',
+    },
+    {
+      path: '/Report',
+      name: '::Menu:Report',
+      parentName: '::Menu:SeaFoodStore',
+    }
 
   ]);
 }

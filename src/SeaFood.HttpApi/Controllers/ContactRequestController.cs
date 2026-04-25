@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SeaFood.ContactRequests;
 using SeaFood.ContactRequests.Dtos;
+using SeaFood.Permissions;
 using SeaFood.Utils;
 using System;
 using System.Collections.Generic;
@@ -37,12 +38,14 @@ namespace SeaFood.Controllers
         }
 
         [HttpGet]
+        [Authorize(SeaFoodPermissions.ContactRequests.Default)]
         public async Task<List<ContactRequestDto>> GetListAsync()
         {
             return await _contactRequestAppService.GetListAsync();
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(SeaFoodPermissions.ContactRequests.Delete)]
         public async Task<BaseResponse<bool>> DeleteAsync(Guid id)
         {
             await _contactRequestAppService.DeleteAsync(id);
@@ -50,9 +53,24 @@ namespace SeaFood.Controllers
         }
 
         [HttpPost("batch-delete")]
+        [Authorize(SeaFoodPermissions.ContactRequests.BatchDelete)]
         public async Task<BaseResponse<bool>> BatchDeleteAsync([FromBody] List<Guid> ids)
         {
             return await _contactRequestAppService.BatchDeleteAsync(ids);
+        }
+
+        [HttpPut("{id:guid}/status")]
+        [Authorize(SeaFoodPermissions.ContactRequests.UpdateStatus)]
+        public async Task<BaseResponse<bool>> UpdateStatusAsync(Guid id, [FromQuery] int status)
+        {
+            return await _contactRequestAppService.UpdateStatusAsync(id, status);
+        }
+
+        [HttpPost("batch-approve")]
+        [Authorize(SeaFoodPermissions.ContactRequests.BatchApprove)]
+        public async Task<BaseResponse<bool>> BatchApproveAsync([FromBody] List<Guid> ids)
+        {
+            return await _contactRequestAppService.BatchApproveAsync(ids);
         }
     }
 }
