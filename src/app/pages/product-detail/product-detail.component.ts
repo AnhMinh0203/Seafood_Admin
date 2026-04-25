@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CartService } from '../../shared/services/cart.service';
 import { ProductService } from '../../shared/services/product.service';
 import { ProductCardVm } from '../../shared/models/product-card.model';
+import { ToastService } from '../../shared/services/toast.service';
 import {
   ProductDetailVm,
   ProductImageVm,
@@ -22,6 +23,8 @@ export class ProductDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private productService = inject(ProductService);
+  private toast = inject(ToastService);
+
 
   slug = '';
   loading = false;
@@ -95,14 +98,14 @@ export class ProductDetailComponent implements OnInit {
     const fallbackUnit: ProductUnitVm[] =
       card.defaultPrice != null || card.defaultUnitName
         ? [
-            {
-              id: 0,
-              unitName: card.defaultUnitName ?? '',
-              price: card.defaultPrice ?? 0,
-              stockQuantity: 0,
-              isDefault: true
-            }
-          ]
+          {
+            id: 0,
+            unitName: card.defaultUnitName ?? '',
+            price: card.defaultPrice ?? 0,
+            stockQuantity: 0,
+            isDefault: true
+          }
+        ]
         : [];
 
     return {
@@ -185,13 +188,26 @@ export class ProductDetailComponent implements OnInit {
   addToCart(): void {
     if (!this.product) return;
 
-    this.cartService.addItem({
-      id: this.product.id,
-      name: this.product.name,
-      image: this.selectedImage || this.product.coverImage,
-      price: this.displayPrice,
-      quantity: this.quantity,
-      meta: `${this.displayUnitName || ''}`
+    this.cartService.addToCart({
+      productId: this.product.id,
+      quantity: this.quantity
+    }).subscribe({
+      next: (res) => {
+        if (!res.isSuccess) {
+          this.toast.error(res.message);
+          return;
+        }
+
+        this.toast.success(res.message);
+      },
+      error: (err) => {
+        const message =
+          err?.error?.message ||
+          err?.error?.error?.message ||
+          'Không thể thêm vào giỏ hàng, vui lòng thử lại.';
+
+        this.toast.error(message);
+      }
     });
   }
 

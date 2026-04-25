@@ -7,7 +7,7 @@
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" (click)="openUserSidebar()">
         <span class="fa fa-bars"></span>
       </button>
 
@@ -81,7 +81,7 @@
           </div>
           }
 
-          <a routerLink="/order" class="cart-btn" aria-label="Giỏ hàng">
+          <a routerLink="/cart" class="cart-btn" aria-label="Giỏ hàng">
             <i class="fa-solid fa-cart-shopping"></i>
             <span class="cart-badge">{{ cartService.cartCount() }}</span>
           </a>

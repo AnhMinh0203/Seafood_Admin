@@ -79,7 +79,7 @@ export class FavoritesComponent {
   }
 
   getProductLink(item: FavoriteProductVm): any[] {
-    return item.slug ? ['/products', item.slug] : ['/product', item.productId];
+    return item.slug ? ['/product-detail', item.slug] : ['/product', item.productId];
   }
 }
 

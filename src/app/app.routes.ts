@@ -13,6 +13,7 @@ import { FavoritesComponent } from './pages/favorites/favorites.component';
 import { NotificationsComponent } from './pages/notifications/notifications.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { CartComponent } from './pages/cart/cart.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,8 +21,8 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'contact', component: ContactComponent },
-  { path: 'products/:slug', component: ProductDetailComponent },
-  { path: 'order', component: OrderComponent },
+  { path: 'product-detail/:slug', component: ProductDetailComponent },
+  { path: 'cart', component: CartComponent },
   { path: 'order-history', component: OrderHistoryComponent },
   { path: 'blog', component: BlogComponent },
   { path: 'blog/:id', component: BlogDetailComponent },

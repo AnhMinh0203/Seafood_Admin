@@ -1,0 +1,80 @@
+<div class="order-page">
+  <div class="order-container">
+
+    <!-- Cart list -->
+    <div class="order-list">
+      @if (items().length) {
+        @for (item of items(); track item.id) {
+          <div class="order-item-card mt-2">
+            <div class="order-item-left">
+              <div class="order-item-image">
+                <img [src]="item.imageUrl" [alt]="item.productName" />
+              </div>
+
+              <div class="order-item-info">
+                <div class="order-item-name">{{ item.productName }}</div>
+                <div class="order-item-meta">{{ item.unitName }}</div>
+                <div class="order-item-price">
+                  {{ formatCurrency(item.price) }}
+                </div>
+              </div>
+            </div>
+
+            <div class="order-item-qty">
+              <button type="button" class="qty-btn" (click)="decreaseQty(item)">
+                <i class="fa fa-minus"></i>
+              </button>
+
+              <span class="qty-value">{{ item.quantity }}</span>
+
+              <button type="button" class="qty-btn" (click)="increaseQty(item)">
+                <i class="fa fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="order-empty-card">
+          <i class="fa fa-shopping-basket"></i>
+          <p>Giỏ hàng của bạn đang trống</p>
+        </div>
+      }
+    </div>
+
+    <!-- Promo -->
+    <button type="button" class="promo-link">
+      Apply promocode
+      <i class="fa fa-angle-right"></i>
+    </button>
+
+    <!-- Summary -->
+    <div class="summary-row">
+      <span>Tạm tính</span>
+      <strong>{{ formatCurrency(subtotal()) }}</strong>
+    </div>
+
+    <div class="summary-row muted">
+      <span>Giảm giá</span>
+      <span>{{ formatCurrency(discount) }}</span>
+    </div>
+
+    <div class="summary-row muted">
+      <span>Phí giao hàng</span>
+      <span>{{ formatCurrency(delivery) }}</span>
+    </div>
+
+    <div class="summary-row total">
+      <span>Tổng cộng</span>
+      <strong>{{ formatCurrency(total()) }}</strong>
+    </div>
+
+    <!-- Checkout -->
+    <button
+      type="button"
+      class="checkout-btn"
+      [disabled]="!items().length"
+      (click)="checkout()">
+      Checkout
+    </button>
+  </div>
+</div>

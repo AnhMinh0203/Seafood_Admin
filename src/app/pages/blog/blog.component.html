@@ -18,11 +18,6 @@
 <!-- Navbar & Hero End -->
 
 <section class="container blog-page">
-  <!-- <div class="blog-header">
-    <h2 class="blog-title">Latest Blog</h2>
-    <p class="blog-subtitle">Khám phá các bài viết mới nhất về hải sản và ẩm thực</p>
-  </div> -->
-
   <div class="menu-header text-center">
     <h5 class="section-title ff-secondary text-primary fw-normal">Tin tức</h5>
     <h1 class="mb-3">Blog &Tin tức nổi bật</h1>
@@ -33,7 +28,7 @@
   </div>
 
   <div class="blog-list">
-    @for (blog of blogs; track blog.id) {
+    @for (blog of blogs; track trackByBlogId($index, blog)) {
     <article class="blog-card">
       <a class="blog-image-wrap" [routerLink]="['/blog', blog.id]">
         <img [src]="blog.coverImage" [alt]="blog.title" class="blog-image" />
@@ -41,7 +36,7 @@
 
       <div class="blog-content">
         <div class="blog-meta">
-          <span class="blog-author">{{ blog.creatorName }}</span>
+          <!-- <span class="blog-author">{{ blog.creatorName }}</span> -->
           <span class="dot">•</span>
           <span class="blog-date">{{ blog.creationTime | date:'dd/MM/yyyy' }}</span>
           <span class="dot">•</span>
@@ -53,7 +48,7 @@
         </h3>
 
         <p class="blog-desc">
-          {{ blog.content }}
+          {{ blog.summary }}
         </p>
 
         <a class="read-more" [routerLink]="['/blog', blog.id]">

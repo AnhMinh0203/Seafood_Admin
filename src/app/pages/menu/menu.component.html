@@ -30,11 +30,11 @@
       <button type="button" class="menu-tab" [class.active]="activeCategory === category.key"
         (click)="selectCategory(category.key)">
         <div class="menu-tab-icon">
-          <i [class]="category.icon"></i>
+          <i [class]="category.icon || 'fa fa-folder'"></i>
         </div>
         <div class="menu-tab-text">
-          <small>{{ category.subLabel }}</small>
-          <span>{{ category.label }}</span>
+          <small>{{ category.subLabel || '' }}</small>
+          <span>{{ category.name }}</span>
         </div>
       </button>
       }
@@ -45,27 +45,22 @@
       <div class="col-12 col-md-6">
         <div class="menu-card" (click)="goToDetail(item)">
           <div class="menu-image-wrap">
-            @if (item.isPopular) {
-            <span class="menu-badge">Bán chạy</span>
-            }
-
-            <img [src]="item.image" [alt]="item.name" />
+            <img [src]="item.coverImage" [alt]="item.name" />
           </div>
 
           <div class="menu-info">
             <div class="menu-info-top">
               <h5>{{ item.name }}</h5>
-              <span class="menu-price">{{ formatPrice(item.price) }}</span>
             </div>
 
-            <p>{{ item.description }}</p>
+            <p>{{ stripHtml(item.description) }}</p>
 
             <div class="menu-actions">
               <button type="button" class="menu-detail-btn" (click)="goToDetail(item); $event.stopPropagation()">
                 Xem chi tiết
               </button>
 
-              <button type="button" class="menu-cart-btn" (click)="addToCart(item); $event.stopPropagation()"
+              <button type="button" class="menu-cart-btn" (click)="addToCart(item, $event)"
                 aria-label="Thêm vào giỏ hàng">
                 <i class="fa fa-plus"></i>
               </button>

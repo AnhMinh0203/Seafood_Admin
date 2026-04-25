@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ProductCardVm } from '../../models/product-card.model';
 import { ProductService } from '../../services/product.service';
 import { FavoriteService } from '../../services/favorite.service';
+import { CartService } from '../../services/cart.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-product-list',
@@ -13,6 +15,8 @@ import { FavoriteService } from '../../services/favorite.service';
   styleUrl: './product-list.component.scss'
 })
 export class ProductListComponent implements OnInit {
+  cartService = inject(CartService);
+
   @Input() showHeader = true;
   @Input() layout: 'scroll' | 'grid' = 'scroll';
 
@@ -22,7 +26,8 @@ export class ProductListComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private router: Router,
-    private favoriteService: FavoriteService
+    private favoriteService: FavoriteService,
+    private toast: ToastService
 
   ) { }
 
@@ -51,7 +56,7 @@ export class ProductListComponent implements OnInit {
   }
 
   goToDetail(product: ProductCardVm): void {
-    this.router.navigate(['/products', product.slug], {
+    this.router.navigate(['/product-detail', product.slug], {
       state: { productCard: product }
     });
   }
@@ -71,6 +76,27 @@ export class ProductListComponent implements OnInit {
 
   addToCart(product: ProductCardVm, event: Event): void {
     event.stopPropagation();
-    console.log('Add to cart', product);
+
+    if (!product?.id) {
+      return;
+    }
+
+    this.cartService.addToCart({
+      productId: product.id,
+      quantity: 1
+    }).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.toast.success(res.message);
+        } else {
+          this.toast.warning(res.message);
+        }
+      },
+      error: (err) => {
+        console.error('Add to cart failed:', err);
+        this.toast.error(err?.error?.message);
+      }
+    });
   }
+
 }

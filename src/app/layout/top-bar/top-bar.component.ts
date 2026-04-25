@@ -16,7 +16,7 @@ export class TopBarComponent {
   userSidebarService = inject(UserSidebarService);
 
   openUserSidebar(): void {
-    this.userSidebarService.open();
+    this.userSidebarService.open('top-bar');
   }
 
 }

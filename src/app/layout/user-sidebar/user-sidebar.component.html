@@ -1,8 +1,9 @@
 @if (sidebarService.isOpen()) {
-  <div class="sidebar-overlay" (click)="close()"></div>
+<div class="sidebar-overlay" (click)="close()"></div>
 }
 
-<aside class="user-sidebar" [class.open]="sidebarService.isOpen()">
+<aside class="user-sidebar" [class.open]="sidebarService.isOpen()"
+  [class.header-mode]="sidebarService.mode() === 'header'">
   <div class="sidebar-header">
     <div>
       <h3 class="sidebar-title">My Account</h3>
@@ -49,6 +50,25 @@
       <i class="fa fa-phone"></i>
       <span>Contact</span>
     </a>
+
+    @if (sidebarService.mode() === 'header') {
+    <hr>
+
+    <a routerLink="/menu" class="menu-item" (click)="close()">
+      <i class="fa fa-utensils"></i>
+      <span>Menu</span>
+    </a>
+
+    <a routerLink="/favorites" class="menu-item" (click)="close()">
+      <i class="fa fa-heart"></i>
+      <span>Yêu thích</span>
+    </a>
+
+    <a routerLink="/notifications" class="menu-item" (click)="close()">
+      <i class="fa fa-bell"></i>
+      <span>Thông báo</span>
+    </a>
+    }
   </nav>
 
   <div class="sidebar-footer">

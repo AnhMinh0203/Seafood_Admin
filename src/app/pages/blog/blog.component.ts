@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { Blog } from '../../shared/models/blog.model';
-import { BLOG_FAKE_DATA } from '../../shared/mock-data/blog.mock';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { BlogDto, BlogListDto } from '../../shared/models/blog.model';
+import { BlogService } from '../../shared/services/blog.service';
 
 @Component({
   selector: 'app-blog',
@@ -12,17 +11,44 @@ import { filter } from 'rxjs/operators';
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.scss'
 })
-export class BlogComponent {
-  blogs: Blog[] = BLOG_FAKE_DATA;
-  constructor(private router: Router) {
+export class BlogComponent implements OnInit {
+  blogs: BlogListDto[] = [];
+  loading = false;
 
+  constructor(
+    private router: Router,
+    private blogService: BlogService
+  ) {}
+
+  ngOnInit(): void {
+    this.getBlogs();
   }
 
   get isBlogPage(): boolean {
     return this.router.url.includes('/blog');
   }
 
-  trackByBlogId(index: number, item: Blog): number {
+  getBlogs(): void {
+    this.loading = true;
+
+    this.blogService.getList({
+      skipCount: 0,
+      maxResultCount: 100,
+      sorting: 'creationTime desc'
+    }).subscribe({
+      next: (res) => {
+        this.blogs = res.items || [];
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Get blog list error:', err);
+        this.blogs = [];
+        this.loading = false;
+      }
+    });
+  }
+
+  trackByBlogId(index: number, item: BlogListDto): number {
     return item.id;
   }
 }

@@ -1,10 +1,11 @@
-import { Blog } from '../models/blog.model';
+import { BlogDto } from '../models/blog.model';
 
-export const BLOG_FAKE_DATA: Blog[] = [
+export const BLOG_FAKE_DATA: BlogDto[] = [
   {
     id: 1,
     title: 'Top 5 loại hải sản tươi ngon nên thử trong tuần này',
     coverImage: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=1200',
+    summary: "abc",
     content: `
       Hải sản luôn là lựa chọn hàng đầu cho những bữa ăn vừa ngon vừa giàu dinh dưỡng.
       Trong bài viết này, chúng tôi sẽ giới thiệu 5 loại hải sản được yêu thích nhất hiện nay
@@ -23,6 +24,7 @@ export const BLOG_FAKE_DATA: Blog[] = [
     id: 2,
     title: 'Cách chọn cua biển chắc thịt, nhiều gạch cho người mới',
     coverImage: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=1200',
+    summary: "abc",
     content: `
       Việc chọn cua ngon không khó nếu bạn nắm được một vài mẹo nhỏ như quan sát yếm cua,
       màu sắc mai và cảm giác khi cầm. Những con cua chắc tay, di chuyển khỏe và có mai sáng
@@ -40,6 +42,7 @@ export const BLOG_FAKE_DATA: Blog[] = [
     id: 3,
     title: 'Tôm hấp hay tôm nướng: món nào giữ được vị ngọt tự nhiên hơn?',
     coverImage: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=1200',
+    summary: "abc",
     content: `
       Tôm là nguyên liệu rất dễ chế biến, tuy nhiên mỗi phương pháp nấu sẽ mang đến hương vị khác nhau.
       Tôm hấp giữ được độ ngọt tự nhiên, trong khi tôm nướng mang mùi thơm đậm đà và hấp dẫn hơn.
@@ -56,6 +59,7 @@ export const BLOG_FAKE_DATA: Blog[] = [
     id: 4,
     title: '3 công thức sốt chấm hải sản cực cuốn tại nhà',
     coverImage: 'https://images.unsplash.com/photo-1510130387422-82bed34b37e9?w=1200',
+    summary: "abc",
     content: `
       Một món hải sản ngon sẽ càng trọn vị hơn nếu đi kèm loại sốt chấm phù hợp.
       Bạn có thể thử sốt muối tiêu chanh, sốt xanh kiểu Thái hoặc sốt đỏ cay ngọt.

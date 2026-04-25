@@ -15,7 +15,6 @@
   </div>
   }
 
-
   <!-- Main -->
   <div class="container">
     <div class="contact-wrapper">
@@ -97,14 +96,14 @@
               <label for="interestedProduct">Sản phẩm quan tâm <span>*</span></label>
               <div class="select-field">
                 <select id="interestedProduct" name="interestedProduct" [(ngModel)]="form.interestedProduct">
-                  <option value="">Chọn sản phẩm</option>
-                  @for (item of productOptions; track item) {
-                  <option [value]="item">{{ item }}</option>
+                  <option [ngValue]="null">Chọn sản phẩm</option>
+                  @for (item of productOptions; track item.value) {
+                  <option [ngValue]="item.value">{{ item.label }}</option>
                   }
                 </select>
                 <i class="fa-solid fa-chevron-down select-arrow"></i>
               </div>
-              @if (submitted && !form.interestedProduct.trim()) {
+              @if (submitted && form.interestedProduct === null) {
               <small class="error-text">Vui lòng chọn sản phẩm quan tâm</small>
               }
             </div>
@@ -113,14 +112,14 @@
               <label for="inquiryType">Loại yêu cầu <span>*</span></label>
               <div class="select-field">
                 <select id="inquiryType" name="inquiryType" [(ngModel)]="form.inquiryType">
-                  <option value="">Chọn loại yêu cầu</option>
-                  @for (type of inquiryTypes; track type) {
-                  <option [value]="type">{{ type }}</option>
+                  <option [ngValue]="null">Chọn loại yêu cầu</option>
+                  @for (type of inquiryTypes; track type.value) {
+                  <option [ngValue]="type.value">{{ type.label }}</option>
                   }
                 </select>
                 <i class="fa-solid fa-chevron-down select-arrow"></i>
               </div>
-              @if (submitted && !form.inquiryType.trim()) {
+              @if (submitted && form.inquiryType === null) {
               <small class="error-text">Vui lòng chọn loại yêu cầu</small>
               }
             </div>
