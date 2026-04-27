@@ -4,6 +4,7 @@ using Amazon.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SeaFood.Storage;
+using SeaFood.VnPay;
 using System;
 using Volo.Abp.Account;
 using Volo.Abp.AutoMapper;
@@ -44,6 +45,7 @@ public class SeaFoodApplicationModule : AbpModule
         });
         context.Services.AddScoped<IFileStorageService, FileStorageService>();
 
+        context.Services.AddScoped<IVnPayAppService, VnPayAppService>();
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddMaps<SeaFoodApplicationModule>();
