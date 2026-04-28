@@ -1,0 +1,151 @@
+<div class="payment-result-page">
+    <div class="payment-result-container">
+
+        <div class="payment-result-card" 
+            [class.success]="isSuccess" 
+            [class.failed]="isFailed" 
+            [class.error]="isError"
+            [class.unknown]="isUnknown">
+
+            <div class="result-icon-wrap">
+                @if (isSuccess) {
+                <div class="result-icon success">
+                    <i class="fa fa-check"></i>
+                </div>
+                }
+
+                @if (isFailed) {
+                <div class="result-icon failed">
+                    <i class="fa fa-times"></i>
+                </div>
+                }
+
+                @if (isError) {
+                <div class="result-icon error">
+                    <i class="fa fa-exclamation"></i>
+                </div>
+                }
+
+                @if (isUnknown) {
+                <div class="result-icon unknown">
+                    <i class="fa fa-question"></i>
+                </div>
+                }
+            </div>
+
+            <h1 class="result-title">{{ title }}</h1>
+
+            <p class="result-desc">
+                {{ description }}
+            </p>
+
+            <div class="result-info-card">
+                @if (orderId) {
+                <div class="result-info-row">
+                    <span>Mã đơn hàng</span>
+                    <strong>{{ orderId }}</strong>
+                </div>
+                }
+
+                @if (transactionId) {
+                <div class="result-info-row">
+                    <span>Mã giao dịch</span>
+                    <strong>{{ transactionId }}</strong>
+                </div>
+                }
+
+                @if (code) {
+                <div class="result-info-row">
+                    <span>Mã phản hồi</span>
+                    <strong>{{ code }}</strong>
+                </div>
+                }
+
+                @if ((isFailed || isError) && responseMessage) {
+                <div class="result-info-row">
+                    <span>Lý do</span>
+                    <strong class="reason-text">{{ responseMessage }}</strong>
+                </div>
+                }
+
+                <div class="result-info-row">
+                    <span>Phương thức</span>
+                    <strong>{{ paymentMethodText }}</strong>
+                </div>
+
+                <div class="result-info-row">
+                    <span>Trạng thái</span>
+
+                    @if (isSuccess && paymentMethod === 'COD') {
+                    <strong class="status-text success-text">Đã đặt hàng</strong>
+                    }
+
+                    @if (isSuccess && paymentMethod !== 'COD') {
+                    <strong class="status-text success-text">Đã thanh toán</strong>
+                    }
+
+                    @if (isFailed) {
+                    <strong class="status-text failed-text">Thất bại</strong>
+                    }
+
+                    @if (isError) {
+                    <strong class="status-text error-text">Lỗi xử lý</strong>
+                    }
+
+                    @if (isUnknown) {
+                    <strong class="status-text unknown-text">Không xác định</strong>
+                    }
+                </div>
+            </div>
+
+            @if (isSuccess && paymentMethod === 'COD') {
+            <div class="result-note success-note">
+                <i class="fa fa-info-circle"></i>
+                <span>Đơn hàng của bạn đã được ghi nhận. Bạn sẽ thanh toán khi nhận hàng.</span>
+            </div>
+            }
+
+            @if (isSuccess && paymentMethod !== 'COD') {
+            <div class="result-note success-note">
+                <i class="fa fa-info-circle"></i>
+                <span>Đơn hàng của bạn đang được xử lý. Vui lòng theo dõi trạng thái đơn hàng trong mục đơn hàng.</span>
+            </div>
+            }
+
+            @if ((isFailed || isError || isUnknown) && paymentMethod === 'VNPAY') {
+            <div class="result-note failed-note">
+                <i class="fa fa-info-circle"></i>
+                <span>Nếu tài khoản đã bị trừ tiền, vui lòng liên hệ hỗ trợ để được kiểm tra giao dịch.</span>
+            </div>
+            }
+
+            @if ((isFailed || isError || isUnknown) && paymentMethod !== 'VNPAY') {
+            <div class="result-note failed-note">
+                <i class="fa fa-info-circle"></i>
+                <span>Vui lòng kiểm tra lại đơn hàng hoặc liên hệ hỗ trợ nếu cần.</span>
+            </div>
+            }
+
+            <div class="result-actions">
+                @if (isSuccess) {
+                <button type="button" class="primary-btn" (click)="goOrders()">
+                    Xem đơn hàng
+                </button>
+
+                <button type="button" class="secondary-btn" (click)="continueShopping()">
+                    Tiếp tục mua hàng
+                </button>
+                } @else {
+                <button type="button" class="primary-btn" (click)="continueShopping()">
+                    Quay lại mua hàng
+                </button>
+
+                <button type="button" class="secondary-btn" (click)="goHome()">
+                    Về trang chủ
+                </button>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

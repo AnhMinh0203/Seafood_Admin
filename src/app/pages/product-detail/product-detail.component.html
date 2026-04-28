@@ -15,10 +15,7 @@
 
           <div class="pd-thumb-list">
             @for (img of getGalleryImages(p); track $index) {
-            <button
-              type="button"
-              class="pd-thumb-item"
-              [class.active]="selectedImage === img"
+            <button type="button" class="pd-thumb-item" [class.active]="selectedImage === img"
               (click)="selectImage(img)">
               <img [src]="img" [alt]="p.name" />
             </button>
@@ -42,10 +39,7 @@
 
             <div class="pd-option-list">
               @for (unit of p.units; track unit.unitName) {
-              <button
-                type="button"
-                class="pd-option-card"
-                [class.active]="selectedUnit?.unitName === unit.unitName"
+              <button type="button" class="pd-option-card" [class.active]="selectedUnit?.unitName === unit.unitName"
                 (click)="selectUnit(unit)">
                 <div class="pd-option-name">{{ unit.unitName }}</div>
                 <div class="pd-option-price">{{ formatCurrency(unit.price) }}</div>
@@ -93,8 +87,8 @@
               Thêm giỏ hàng
             </button>
 
-            <button type="button" class="pd-buy-btn" (click)="buyNow()">
-              Mua ngay
+            <button type="button" class="pd-buy-btn" [disabled]="buyingNow" (click)="buyNow(p)">
+              {{ buyingNow ? 'Đang xử lý...' : 'Mua ngay' }}
             </button>
           </div>
         </div>

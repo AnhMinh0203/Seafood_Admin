@@ -1,0 +1,160 @@
+<div class="checkout-page">
+  <div class="checkout-container">
+
+    <h1 class="checkout-title">Thông tin đặt hàng</h1>
+
+    <form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="submit()">
+
+      <!-- STEP 1: Thông tin người nhận -->
+      @if (currentStep === 1) {
+        <div class="checkout-card">
+          <h2 class="section-title">Thông tin người nhận</h2>
+
+          <div class="form-group">
+            <label>Họ tên</label>
+            <input
+              type="text"
+              formControlName="fullName"
+              placeholder="Nhập họ tên người nhận" />
+
+            @if (hasError('fullName')) {
+              <small>Vui lòng nhập họ tên hợp lệ.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Số điện thoại</label>
+            <input
+              type="tel"
+              formControlName="phoneNumber"
+              placeholder="Nhập số điện thoại" />
+
+            @if (hasError('phoneNumber')) {
+              <small>Vui lòng nhập số điện thoại hợp lệ.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Địa chỉ nhận hàng</label>
+            <textarea
+              rows="3"
+              formControlName="address"
+              placeholder="Nhập địa chỉ nhận hàng"></textarea>
+
+            @if (hasError('address')) {
+              <small>Vui lòng nhập địa chỉ nhận hàng.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Ghi chú</label>
+            <textarea
+              rows="2"
+              formControlName="note"
+              placeholder="Ghi chú thêm nếu có"></textarea>
+          </div>
+
+          <div class="checkout-actions">
+            <button
+              type="button"
+              class="continue-btn"
+              [disabled]="isSubmitting"
+              (click)="goNextFromStep1()">
+
+              @if (isSubmitting) {
+                Đang xử lý...
+              } @else {
+                Tiếp theo
+              }
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- STEP 2: Phương thức thanh toán + tóm tắt -->
+      @if (currentStep === 2) {
+
+        <div class="checkout-card">
+          <h2 class="section-title">Phương thức thanh toán</h2>
+
+          <label class="payment-option">
+            <input
+              type="radio"
+              formControlName="paymentMethod"
+              value="COD" />
+            <div>
+              <strong>Thanh toán khi nhận hàng</strong>
+              <span>Thanh toán bằng tiền mặt khi đơn hàng được giao.</span>
+            </div>
+          </label>
+
+          <label class="payment-option">
+            <input
+              type="radio"
+              formControlName="paymentMethod"
+              value="VNPAY" />
+            <div>
+              <strong>Thanh toán qua VNPAY</strong>
+              <span>Chuyển sang cổng thanh toán VNPAY sau khi bấm tiếp tục.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="summary-card">
+          <h2 class="section-title">Tóm tắt đơn hàng</h2>
+
+          @for (item of items; track item.productId) {
+            <div class="summary-item">
+              <span>{{ item.name }} x {{ item.quantity }}</span>
+              <strong>{{ item.price * item.quantity | number }}đ</strong>
+            </div>
+          }
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-row">
+            <span>Tạm tính</span>
+            <strong>{{ subtotal | number }}đ</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Phí giao hàng</span>
+            <strong>{{ deliveryFee | number }}đ</strong>
+          </div>
+
+          <div class="summary-row total">
+            <span>Tổng cộng</span>
+            <strong>{{ total | number }}đ</strong>
+          </div>
+        </div>
+
+        <div class="checkout-actions">
+          <button
+            type="button"
+            class="back-btn"
+            (click)="currentStep = 1"
+            [disabled]="isSubmitting">
+            Quay lại
+          </button>
+
+          <button
+            type="submit"
+            class="continue-btn"
+            [disabled]="isSubmitting">
+
+            @if (isSubmitting) {
+              Đang xử lý...
+            } @else {
+              @if (paymentMethod === 'VNPAY') {
+                Tiếp tục thanh toán VNPAY
+              } @else {
+                Đặt hàng
+              }
+            }
+          </button>
+        </div>
+      }
+
+    </form>
+  </div>
+</div>

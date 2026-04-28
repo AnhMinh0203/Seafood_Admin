@@ -5,6 +5,9 @@ import { CartService } from '../../shared/services/cart.service';
 import { ProductService } from '../../shared/services/product.service';
 import { ProductCardVm } from '../../shared/models/product-card.model';
 import { ToastService } from '../../shared/services/toast.service';
+import { VnPayService } from '../../shared/services/vnpay.service';
+import { finalize } from 'rxjs';
+
 import {
   ProductDetailVm,
   ProductImageVm,
@@ -24,11 +27,12 @@ export class ProductDetailComponent implements OnInit {
   private router = inject(Router);
   private productService = inject(ProductService);
   private toast = inject(ToastService);
-
+  private vnPayService = inject(VnPayService);
 
   slug = '';
   loading = false;
   notFound = false;
+  buyingNow = false;
 
   product: ProductDetailVm | null = null;
   productCard: ProductCardVm | null = null;
@@ -211,17 +215,20 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-  buyNow(): void {
-    if (!this.product || !this.selectedUnit) return;
+  buyNow(product: ProductDetailVm): void {
+    if (!product?.id) {
+      this.toast.error('Không tìm thấy sản phẩm.');
+      return;
+    }
 
-    const payload = {
-      productId: this.product.id,
-      productName: this.product.name,
-      unitName: this.selectedUnit.unitName,
-      price: this.selectedUnit.price,
-      quantity: this.quantity
-    };
 
-    console.log('Buy now:', payload);
+    this.router.navigate(['/checkout'], {
+      queryParams: {
+        mode: 'buy-now',
+        productId: product.id,
+        quantity: this.quantity,
+        unitName: this.selectedUnit?.unitName ?? ''
+      }
+    });
   }
 }
