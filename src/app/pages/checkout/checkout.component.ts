@@ -1,12 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CheckoutService } from '../../shared/services/checkout.service';
 import { UserService } from '../../shared/services/user.service';
+import { ProductDetailVm, ProductUnitVm } from '../../shared/models/product-detail.model';
+import { ProductService } from '../../shared/services/product.service';
 
 type PaymentMethod = 'COD' | 'VNPAY';
-
+interface CheckoutItemVm {
+  productId: string;
+  productUnitId: number;
+  unitName: string;
+  name: string;
+  quantity: number;
+  price: number;
+  image: string;
+  stockQuantity: number;
+}
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -19,19 +30,17 @@ export class CheckoutComponent implements OnInit {
   private router = inject(Router);
   private checkoutService = inject(CheckoutService);
   private userService = inject(UserService);
+  private route = inject(ActivatedRoute);
+  private productService = inject(ProductService);
+
 
   isSubmitting = false;
+  isLoadingItems = false;
+
   currentStep: 1 | 2 = 1;
 
-  items = [
-    {
-      productId: 'P001',
-      name: 'Seafood Combo',
-      quantity: 1,
-      price: 250000,
-      image: 'assets/img/menu-1.jpg'
-    }
-  ];
+  items: CheckoutItemVm[] = [];
+
 
   checkoutForm = this.fb.group({
     fullName: ['', [Validators.required, Validators.minLength(2)]],
@@ -71,6 +80,159 @@ export class CheckoutComponent implements OnInit {
       }
     });
   }
+
+  private loadUserProfile(): void {
+    this.userService.getMyProfile().subscribe({
+      next: (res) => {
+        if (!res?.isSuccess || !res.data) return;
+
+        const u = res.data;
+
+        this.checkoutForm.patchValue({
+          fullName: u.fullName ?? '',
+          phoneNumber: u.phoneNumber ?? '',
+          address: u.address ?? ''
+        });
+
+        const cFullName = this.checkoutForm.get('fullName')!;
+        const cPhone = this.checkoutForm.get('phoneNumber')!;
+        const cAddress = this.checkoutForm.get('address')!;
+
+        cFullName.updateValueAndValidity();
+        cPhone.updateValueAndValidity();
+        cAddress.updateValueAndValidity();
+
+        if (cFullName.valid && cPhone.valid && cAddress.valid) {
+          this.currentStep = 2;
+        }
+      },
+      error: () => {
+        // Chưa đăng nhập thì bỏ qua
+      }
+    });
+  }
+
+  private loadCheckoutItems(): void {
+    const mode = this.route.snapshot.queryParamMap.get('mode');
+
+    if (mode === 'buy-now') {
+      this.loadBuyNowItem();
+      return;
+    }
+
+    /**
+     * Nếu sau này checkout từ giỏ hàng thì xử lý ở đây.
+     * Ví dụ:
+     * this.loadCartItems();
+     */
+    this.items = [];
+  }
+
+  private loadBuyNowItem(): void {
+    const slug = this.route.snapshot.queryParamMap.get('slug');
+    const productIdParam = this.route.snapshot.queryParamMap.get('productId');
+    const quantityParam = this.route.snapshot.queryParamMap.get('quantity');
+    const unitIdParam = this.route.snapshot.queryParamMap.get('unitId');
+    const unitNameParam = this.route.snapshot.queryParamMap.get('unitName') || '';
+
+    const productId = Number(productIdParam);
+    const quantity = Number(quantityParam || 1);
+    const unitId = Number(unitIdParam);
+
+    if (!slug) {
+      alert('Không tìm thấy thông tin sản phẩm.');
+      this.router.navigate(['/']);
+      return;
+    }
+
+    if (!productId || Number.isNaN(productId)) {
+      alert('Mã sản phẩm không hợp lệ.');
+      this.router.navigate(['/']);
+      return;
+    }
+
+    if (!quantity || Number.isNaN(quantity) || quantity <= 0) {
+      alert('Số lượng sản phẩm không hợp lệ.');
+      this.router.navigate(['/']);
+      return;
+    }
+
+    this.isLoadingItems = true;
+
+    this.productService.getDetailBySlug(slug).subscribe({
+      next: (product) => {
+        this.isLoadingItems = false;
+
+        if (!product) {
+          alert('Không tìm thấy sản phẩm.');
+          this.router.navigate(['/']);
+          return;
+        }
+
+        const selectedUnit = this.findSelectedUnit(product, unitId, unitNameParam);
+
+        if (!selectedUnit) {
+          alert('Không tìm thấy đơn vị sản phẩm.');
+          this.router.navigate(['/']);
+          return;
+        }
+
+        const stockQuantity = selectedUnit.stockQuantity ?? 0;
+
+        if (stockQuantity <= 0) {
+          alert('Sản phẩm đã hết hàng.');
+          this.router.navigate(['/']);
+          return;
+        }
+
+        if (quantity > stockQuantity) {
+          alert('Số lượng vượt quá tồn kho.');
+          this.router.navigate(['/']);
+          return;
+        }
+
+        this.items = [
+          {
+            productId: product.id,
+            productUnitId: selectedUnit.id,
+            unitName: selectedUnit.unitName,
+            name: product.name,
+            quantity,
+            price: selectedUnit.price ?? 0,
+            image: product.coverImage,
+            stockQuantity
+          }
+        ];
+      },
+      error: (err) => {
+        this.isLoadingItems = false;
+        console.error('Load buy now item failed:', err);
+        alert('Có lỗi xảy ra khi tải thông tin sản phẩm.');
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
+  private findSelectedUnit(
+    product: ProductDetailVm,
+    unitId: number,
+    unitName: string
+  ): ProductUnitVm | null {
+    if (!product.units?.length) return null;
+
+    if (unitId && !Number.isNaN(unitId)) {
+      const unitById = product.units.find(x => x.id === unitId);
+      if (unitById) return unitById;
+    }
+
+    if (unitName) {
+      const unitByName = product.units.find(x => x.unitName === unitName);
+      if (unitByName) return unitByName;
+    }
+
+    return product.units.find(x => x.isDefault) || product.units[0];
+  }
+
 
   get subtotal(): number {
     return this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
