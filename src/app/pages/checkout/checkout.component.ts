@@ -36,10 +36,9 @@ export class CheckoutComponent implements OnInit {
 
   isSubmitting = false;
   isLoadingItems = false;
-
   currentStep: 1 | 2 = 1;
-
   items: CheckoutItemVm[] = [];
+  product: any;
 
 
   checkoutForm = this.fb.group({
@@ -51,34 +50,8 @@ export class CheckoutComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.userService.getMyProfile().subscribe({
-      next: (res) => {
-        if (!res?.isSuccess || !res.data) return;
-
-        const u = res.data;
-
-        this.checkoutForm.patchValue({
-          fullName: u.fullName ?? '',
-          phoneNumber: u.phoneNumber ?? '',
-          address: u.address ?? ''
-        });
-
-        const cFullName = this.checkoutForm.get('fullName')!;
-        const cPhone = this.checkoutForm.get('phoneNumber')!;
-        const cAddress = this.checkoutForm.get('address')!;
-
-        cFullName.updateValueAndValidity();
-        cPhone.updateValueAndValidity();
-        cAddress.updateValueAndValidity();
-
-        if (cFullName.valid && cPhone.valid && cAddress.valid) {
-          this.currentStep = 2;
-        }
-      },
-      error: () => {
-        // Chưa đăng nhập thì bỏ qua
-      }
-    });
+    this.loadUserProfile();
+    this.loadCheckoutItems();
   }
 
   private loadUserProfile(): void {
@@ -117,100 +90,56 @@ export class CheckoutComponent implements OnInit {
 
     if (mode === 'buy-now') {
       this.loadBuyNowItem();
-      return;
+    } else {
+      this.loadCartItems();
     }
-
-    /**
-     * Nếu sau này checkout từ giỏ hàng thì xử lý ở đây.
-     * Ví dụ:
-     * this.loadCartItems();
-     */
-    this.items = [];
   }
 
   private loadBuyNowItem(): void {
-    const slug = this.route.snapshot.queryParamMap.get('slug');
-    const productIdParam = this.route.snapshot.queryParamMap.get('productId');
-    const quantityParam = this.route.snapshot.queryParamMap.get('quantity');
-    const unitIdParam = this.route.snapshot.queryParamMap.get('unitId');
-    const unitNameParam = this.route.snapshot.queryParamMap.get('unitName') || '';
+    const productId = this.route.snapshot.queryParamMap.get('productId') || '';
+    const quantity = +(this.route.snapshot.queryParamMap.get('quantity') || 1);
+    const unitId = +(this.route.snapshot.queryParamMap.get('unitId') || 0);
 
-    const productId = Number(productIdParam);
-    const quantity = Number(quantityParam || 1);
-    const unitId = Number(unitIdParam);
+    this.productService.getDetailById(productId).subscribe({
+      next: (res) => {
+        const product = res;
 
-    if (!slug) {
-      alert('Không tìm thấy thông tin sản phẩm.');
-      this.router.navigate(['/']);
-      return;
-    }
-
-    if (!productId || Number.isNaN(productId)) {
-      alert('Mã sản phẩm không hợp lệ.');
-      this.router.navigate(['/']);
-      return;
-    }
-
-    if (!quantity || Number.isNaN(quantity) || quantity <= 0) {
-      alert('Số lượng sản phẩm không hợp lệ.');
-      this.router.navigate(['/']);
-      return;
-    }
-
-    this.isLoadingItems = true;
-
-    this.productService.getDetailBySlug(slug).subscribe({
-      next: (product) => {
-        this.isLoadingItems = false;
-
-        if (!product) {
-          alert('Không tìm thấy sản phẩm.');
-          this.router.navigate(['/']);
-          return;
-        }
-
-        const selectedUnit = this.findSelectedUnit(product, unitId, unitNameParam);
-
-        if (!selectedUnit) {
-          alert('Không tìm thấy đơn vị sản phẩm.');
-          this.router.navigate(['/']);
-          return;
-        }
-
-        const stockQuantity = selectedUnit.stockQuantity ?? 0;
-
-        if (stockQuantity <= 0) {
-          alert('Sản phẩm đã hết hàng.');
-          this.router.navigate(['/']);
-          return;
-        }
-
-        if (quantity > stockQuantity) {
-          alert('Số lượng vượt quá tồn kho.');
-          this.router.navigate(['/']);
-          return;
-        }
+        const unit = product.units.find((u: any) => u.id === unitId)
+          || product.units[0];
 
         this.items = [
           {
             productId: product.id,
-            productUnitId: selectedUnit.id,
-            unitName: selectedUnit.unitName,
+            productUnitId: unit.id,
+            unitName: unit.unitName,
             name: product.name,
-            quantity,
-            price: selectedUnit.price ?? 0,
+            quantity: quantity,
+            price: unit.price,
             image: product.coverImage,
-            stockQuantity
+            stockQuantity: unit.stockQuantity
           }
         ];
-      },
-      error: (err) => {
-        this.isLoadingItems = false;
-        console.error('Load buy now item failed:', err);
-        alert('Có lỗi xảy ra khi tải thông tin sản phẩm.');
-        this.router.navigate(['/']);
       }
     });
+  }
+
+  private loadCartItems(): void {
+    // this.checkoutService.getMyCart().subscribe({
+    //   next: (res) => {
+    //     if (!res?.data) return;
+
+    //     this.items = res.data.map((c: any) => ({
+    //       productId: c.productId,
+    //       productUnitId: c.productUnitId,
+    //       unitName: c.unitName,
+    //       name: c.productName,
+    //       quantity: c.quantity,
+    //       price: c.price,
+    //       image: c.image,
+    //       stockQuantity: c.stockQuantity
+    //     }));
+    //   }
+    // });
   }
 
   private findSelectedUnit(
@@ -269,6 +198,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   submit(): void {
+    console.log('Submit checkout form with items:', this.items);
     if (this.currentStep !== 2) return;
 
     if (this.checkoutForm.invalid) {

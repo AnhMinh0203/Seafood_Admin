@@ -29,7 +29,37 @@ export class PaymentResultComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.route.queryParamMap.subscribe(params => {
+    //   const statusParam = params.get('status');
+    //   const methodParam = params.get('method');
+
+    //   this.status = this.normalizeStatus(statusParam);
+    //   this.paymentMethod = this.normalizePaymentMethod(methodParam);
+
+    //   this.orderId = params.get('orderId') || '';
+    //   this.transactionId = params.get('transactionId') || '';
+    //   this.code = params.get('code') || '';
+    //   this.message = params.get('message') || '';
+
+    //   /**
+    //    * Nếu callback VNPAY chưa truyền method=VNPAY,
+    //    * nhưng có transactionId hoặc code thì có thể suy ra là VNPAY.
+    //    */
+    //   if (this.paymentMethod === 'UNKNOWN' && (this.transactionId || this.code)) {
+    //     this.paymentMethod = 'VNPAY';
+    //   }
+    // });
+
     this.route.queryParamMap.subscribe(params => {
+
+      const vnpCode = params.get('vnp_ResponseCode');
+      const vnpStatus = params.get('vnp_TransactionStatus');
+
+      if (vnpCode) {
+        this.handleVnpayCallback(params);
+        return;
+      }
+
       const statusParam = params.get('status');
       const methodParam = params.get('method');
 
@@ -40,15 +70,28 @@ export class PaymentResultComponent implements OnInit {
       this.transactionId = params.get('transactionId') || '';
       this.code = params.get('code') || '';
       this.message = params.get('message') || '';
-
-      /**
-       * Nếu callback VNPAY chưa truyền method=VNPAY,
-       * nhưng có transactionId hoặc code thì có thể suy ra là VNPAY.
-       */
-      if (this.paymentMethod === 'UNKNOWN' && (this.transactionId || this.code)) {
-        this.paymentMethod = 'VNPAY';
-      }
     });
+  }
+
+  private handleVnpayCallback(params: any): void {
+    const vnpCode = params.get('vnp_ResponseCode');
+    const txnStatus = params.get('vnp_TransactionStatus');
+
+    this.paymentMethod = 'VNPAY';
+    this.code = vnpCode || '';
+    this.transactionId = params.get('vnp_TransactionNo') || '';
+    this.orderId = params.get('vnp_TxnRef') || '';
+
+    // 🔥 Map trạng thái
+    if (vnpCode === '00' && txnStatus === '00') {
+      this.status = 'success';
+    } else if (vnpCode === '24') {
+      // ❗ User cancel
+      this.status = 'failed';
+      this.message = 'Bạn đã hủy giao dịch thanh toán.';
+    } else {
+      this.status = 'failed';
+    }
   }
 
   private normalizeStatus(status: string | null): PaymentStatus {

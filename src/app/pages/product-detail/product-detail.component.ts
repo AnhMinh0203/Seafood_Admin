@@ -221,14 +221,15 @@ export class ProductDetailComponent implements OnInit {
       return;
     }
 
-
+    console.log('Buy now clicked for product:', product)
     this.router.navigate(['/checkout'], {
       queryParams: {
         mode: 'buy-now',
         slug: product.slug,
         productId: product.id,
         quantity: this.quantity,
-        unitName: this.selectedUnit?.unitName ?? ''
+        unitName: this.selectedUnit?.unitName ?? '',
+        price: this.selectedUnit?.price ?? 0
       }
     });
   }

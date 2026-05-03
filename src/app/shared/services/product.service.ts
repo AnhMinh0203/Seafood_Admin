@@ -38,4 +38,12 @@ export class ProductService {
             { params }
         );
     }
+
+    getDetailById(id: string): Observable<ProductDetailVm> {
+        const params = new HttpParams().set('productId', id);
+        return this.http.get<ProductDetailVm>(
+            `${this.baseUrl}/GetDetail`,
+            { params }
+        );
+    }
 }
