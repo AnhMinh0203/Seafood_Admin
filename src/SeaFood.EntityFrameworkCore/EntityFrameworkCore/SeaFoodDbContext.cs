@@ -31,7 +31,8 @@ public class SeaFoodDbContext :
     public DbSet<Favorite> Favorites { get; set; }
     public DbSet<Cart> Carts { get; set; }
     public DbSet<ContactRequest> ContactRequests { get; set; }
-
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
 
     #region Entities from the modules
 

@@ -94,6 +94,7 @@ namespace SeaFood.Orders
                     {
                         OrderId = orderId,
                         Amount = totalAmount,
+                        OrderType = "other",
                         OrderDescription = $"Thanh toán đơn hàng {orderId}",
                         Name = input.Customer.FullName
                     };

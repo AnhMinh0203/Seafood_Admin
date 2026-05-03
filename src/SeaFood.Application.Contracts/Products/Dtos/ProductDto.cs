@@ -10,6 +10,7 @@ namespace SeaFood.Products.Dtos
 {
     public class ProductDto: EntityDto<Guid>
     {
+        public string? Id { get; set; }
         public string Name { get; set; }
         public string Origin { get; set; }
         public string Description { get; set; }
